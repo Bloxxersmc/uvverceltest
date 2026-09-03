@@ -1,26 +1,1235 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <script src="/uv/uv.bundle.js"></script>
-        <script src="/uv/uv.config.js"></script>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <script>
-        if ("serviceWorker" in navigator) {
-            window.addEventListener("load", () => {
-                navigator.serviceWorker.register("/uv/sw.js", {
-                    scope: __uv$config.prefix,
-                });
-            });
+    <title>Fern</title>
+
+    <!-- UV -->
+    <script src="/uv/uv.bundle.js"></script>
+    <script src="/uv/uv.config.js"></script>
+
+    <style>
+        :root {
+            --bg: #050805;
+            --bg2: #080d09;
+            --panel: #0b120d;
+            --panel2: #0e1711;
+            --green: #00ff66;
+            --green2: #00c94f;
+            --green3: #65ff9c;
+            --text: #e4ffe9;
+            --muted: #78917e;
+            --border: rgba(0, 255, 102, 0.18);
+            --danger: #ff4d6d;
+            --shadow: 0 0 35px rgba(0, 255, 102, 0.08);
         }
-        </script>
 
-        <link rel="stylesheet" href="example.css">
-    </head>
-    <body>
-        <input type="text" id="urlInput" placeholder="Enter URL here">
-        <button id="searchButton">Search Text</button>
+        * {
+            box-sizing: border-box;
+        }
 
-        <iframe id="iframeWindow" class="iframeWindow"></iframe>
-    </body>
-    <script src="example.js"></script>
+        html,
+        body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 10%, rgba(0,255,102,.06), transparent 30%),
+                radial-gradient(circle at 80% 90%, rgba(0,255,102,.04), transparent 30%),
+                var(--bg);
+            color: var(--text);
+            font-family:
+                Inter,
+                ui-sans-serif,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+        }
+
+        body {
+            overflow: hidden;
+        }
+
+        /* =========================
+           LOGIN
+           ========================= */
+
+        #loginScreen {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background:
+                linear-gradient(rgba(0,255,102,.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,255,102,.025) 1px, transparent 1px),
+                var(--bg);
+
+            background-size: 40px 40px;
+        }
+
+        .login-box {
+            width: min(430px, calc(100% - 32px));
+            padding: 36px;
+
+            background: rgba(8, 15, 10, .92);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+
+            box-shadow:
+                0 0 80px rgba(0,255,102,.08),
+                inset 0 0 30px rgba(0,255,102,.015);
+
+            backdrop-filter: blur(14px);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            margin-bottom: 8px;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border: 1px solid rgba(0,255,102,.35);
+            border-radius: 12px;
+
+            color: var(--green);
+            font-size: 22px;
+
+            box-shadow: 0 0 20px rgba(0,255,102,.1);
+        }
+
+        .logo h1 {
+            margin: 0;
+            font-size: 30px;
+            letter-spacing: -1px;
+        }
+
+        .logo h1 span {
+            color: var(--green);
+        }
+
+        .login-subtitle {
+            margin: 0 0 28px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .field {
+            margin-bottom: 14px;
+        }
+
+        .field label {
+            display: block;
+            margin-bottom: 7px;
+
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .12em;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px 14px;
+
+            color: var(--text);
+            background: #050a06;
+
+            border: 1px solid rgba(0,255,102,.16);
+            border-radius: 10px;
+
+            outline: none;
+            transition: .2s;
+        }
+
+        input:focus {
+            border-color: rgba(0,255,102,.6);
+            box-shadow: 0 0 0 3px rgba(0,255,102,.07);
+        }
+
+        #loginButton {
+            width: 100%;
+            padding: 13px;
+            margin-top: 5px;
+
+            border: 1px solid rgba(0,255,102,.45);
+            border-radius: 10px;
+
+            color: #001b09;
+            background: var(--green);
+
+            font-weight: 900;
+            cursor: pointer;
+
+            transition: .2s;
+        }
+
+        #loginButton:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 0 25px rgba(0,255,102,.22);
+        }
+
+        #loginError {
+            min-height: 20px;
+            margin-top: 12px;
+
+            color: var(--danger);
+            font-size: 13px;
+            text-align: center;
+        }
+
+        .login-joke {
+            margin-top: 25px;
+            padding-top: 18px;
+
+            border-top: 1px solid rgba(255,255,255,.05);
+
+            color: var(--muted);
+            font-size: 12px;
+            text-align: center;
+        }
+
+        /* =========================
+           APP
+           ========================= */
+
+        #app {
+            display: none;
+            width: 100%;
+            height: 100%;
+        }
+
+        .topbar {
+            height: 64px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 20px;
+
+            background: rgba(5,10,6,.9);
+            border-bottom: 1px solid var(--border);
+
+            backdrop-filter: blur(15px);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            font-size: 20px;
+            font-weight: 900;
+        }
+
+        .brand-mark {
+            color: var(--green);
+            text-shadow: 0 0 14px rgba(0,255,102,.5);
+        }
+
+        .nav {
+            display: flex;
+            gap: 6px;
+        }
+
+        .nav button {
+            padding: 9px 13px;
+
+            color: var(--muted);
+            background: transparent;
+
+            border: 1px solid transparent;
+            border-radius: 8px;
+
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .nav button:hover,
+        .nav button.active {
+            color: var(--green);
+            background: rgba(0,255,102,.055);
+            border-color: var(--border);
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+
+            border-radius: 50%;
+            background: var(--green);
+
+            box-shadow: 0 0 12px var(--green);
+        }
+
+        /* =========================
+           CONTENT
+           ========================= */
+
+        .content {
+            height: calc(100% - 64px);
+            overflow: auto;
+        }
+
+        .page {
+            display: none;
+            width: min(1200px, 100%);
+            margin: auto;
+            padding: 28px;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .hero {
+            padding: 30px;
+
+            border: 1px solid var(--border);
+            border-radius: 18px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(0,255,102,.055),
+                    transparent 50%
+                ),
+                var(--panel);
+
+            box-shadow: var(--shadow);
+        }
+
+        .hero h2 {
+            margin: 0 0 8px;
+
+            font-size: clamp(28px, 5vw, 48px);
+            letter-spacing: -2px;
+        }
+
+        .hero h2 span {
+            color: var(--green);
+        }
+
+        .hero p {
+            margin: 0;
+            color: var(--muted);
+        }
+
+        .proxy-box {
+            margin-top: 20px;
+
+            display: flex;
+            gap: 10px;
+        }
+
+        .proxy-box input {
+            flex: 1;
+        }
+
+        .proxy-box button {
+            padding: 0 22px;
+
+            border: 1px solid rgba(0,255,102,.4);
+            border-radius: 10px;
+
+            background: rgba(0,255,102,.08);
+            color: var(--green);
+
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .proxy-box button:hover {
+            background: rgba(0,255,102,.14);
+        }
+
+        /* =========================
+           IFRAME
+           ========================= */
+
+        .proxy-frame {
+            position: relative;
+
+            height: calc(100vh - 185px);
+            min-height: 400px;
+
+            margin-top: 18px;
+
+            overflow: hidden;
+
+            border: 1px solid var(--border);
+            border-radius: 14px;
+
+            background: #020402;
+        }
+
+        #iframeWindow {
+            width: 100%;
+            height: 100%;
+
+            border: 0;
+            background: white;
+        }
+
+        /* =========================
+           GAMES
+           ========================= */
+
+        .section-title {
+            margin-bottom: 20px;
+        }
+
+        .section-title h2 {
+            margin: 0 0 5px;
+        }
+
+        .section-title p {
+            margin: 0;
+            color: var(--muted);
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fill, minmax(220px, 1fr));
+
+            gap: 15px;
+        }
+
+        .game-card {
+            padding: 20px;
+
+            border: 1px solid var(--border);
+            border-radius: 15px;
+
+            background: var(--panel);
+
+            transition: .2s;
+        }
+
+        .game-card:hover {
+            transform: translateY(-3px);
+
+            border-color: rgba(0,255,102,.38);
+
+            box-shadow:
+                0 10px 30px rgba(0,0,0,.25),
+                0 0 25px rgba(0,255,102,.05);
+        }
+
+        .game-icon {
+            width: 44px;
+            height: 44px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            margin-bottom: 15px;
+
+            color: var(--green);
+            background: rgba(0,255,102,.07);
+
+            border: 1px solid rgba(0,255,102,.16);
+            border-radius: 11px;
+
+            font-size: 19px;
+        }
+
+        .game-card h3 {
+            margin: 0 0 5px;
+        }
+
+        .game-card p {
+            margin: 0 0 17px;
+
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .game-card a {
+            display: block;
+
+            padding: 10px;
+
+            color: var(--green);
+            background: rgba(0,255,102,.05);
+
+            border: 1px solid rgba(0,255,102,.16);
+            border-radius: 8px;
+
+            text-align: center;
+            text-decoration: none;
+            font-weight: 800;
+        }
+
+        .game-card a:hover {
+            background: rgba(0,255,102,.1);
+        }
+
+        /* =========================
+           JOKES
+           ========================= */
+
+        .joke-card {
+            margin-top: 18px;
+            padding: 18px;
+
+            border: 1px solid rgba(0,255,102,.12);
+            border-radius: 12px;
+
+            color: var(--green3);
+            background: rgba(0,255,102,.025);
+
+            font-size: 13px;
+        }
+
+        /* =========================
+           MOBILE
+           ========================= */
+
+        @media (max-width: 700px) {
+            .topbar {
+                padding: 0 12px;
+            }
+
+            .status {
+                display: none;
+            }
+
+            .page {
+                padding: 14px;
+            }
+
+            .hero {
+                padding: 20px;
+            }
+
+            .proxy-box {
+                flex-direction: column;
+            }
+
+            .proxy-box button {
+                padding: 12px;
+            }
+
+            .proxy-frame {
+                height: calc(100vh - 265px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- =========================
+     LOGIN
+     ========================= -->
+
+<div id="loginScreen">
+
+    <div class="login-box">
+
+        <div class="logo">
+            <div class="logo-icon">🌿</div>
+
+            <h1>Fern<span>.</span></h1>
+        </div>
+
+        <p class="login-subtitle">
+            Local workspace // authentication required
+        </p>
+
+        <div class="field">
+            <label for="passwordInput">Passcode</label>
+
+            <input
+                type="password"
+                id="passwordInput"
+                placeholder="Enter passcode..."
+                autocomplete="current-password"
+            >
+        </div>
+
+        <button id="loginButton">
+            Authenticate
+        </button>
+
+        <div id="loginError"></div>
+
+        <div class="login-joke" id="loginJoke">
+            Initializing Fern...
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     APP
+     ========================= -->
+
+<div id="app">
+
+    <header class="topbar">
+
+        <div class="brand">
+            <span class="brand-mark">🌿</span>
+            Fern
+        </div>
+
+        <nav class="nav">
+
+            <button
+                class="nav-button active"
+                data-page="home"
+            >
+                Proxy
+            </button>
+
+            <button
+                class="nav-button"
+                data-page="games"
+            >
+                Games
+            </button>
+
+        </nav>
+
+        <div class="status">
+            <span class="status-dot"></span>
+            Fern online
+        </div>
+
+    </header>
+
+
+    <main class="content">
+
+        <!-- =========================
+             PROXY PAGE
+             ========================= -->
+
+        <section
+            id="homePage"
+            class="page active"
+        >
+
+            <div class="hero">
+
+                <h2>
+                    Welcome to <span>Fern</span>
+                </h2>
+
+                <p id="welcomeJoke">
+                    The plants are thriving. The servers are pretending.
+                </p>
+
+                <div class="proxy-box">
+
+                    <input
+                        type="text"
+                        id="urlInput"
+                        placeholder="Enter URL here..."
+                        autocomplete="off"
+                    >
+
+                    <button id="searchButton">
+                        Launch
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="proxy-frame">
+
+                <iframe
+                    id="iframeWindow"
+                    class="iframeWindow"
+                    title="Fern Workspace"
+                ></iframe>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             GAMES PAGE
+             ========================= -->
+
+        <section
+            id="gamesPage"
+            class="page"
+        >
+
+            <div class="section-title">
+
+                <h2>Games</h2>
+
+                <p>
+                    Fern's totally legitimate collection of buttons.
+                </p>
+
+            </div>
+
+
+            <div class="games-grid">
+
+                <div class="game-card">
+
+                    <div class="game-icon">
+                        🎮
+                    </div>
+
+                    <h3>now.gg</h3>
+
+                    <p>
+                        Cloud gaming platform.
+                    </p>
+
+                    <a
+                        href="https://nowgg.fun"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Open now.gg →
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="joke-card" id="gameJoke">
+                Loading highly sophisticated gaming technology...
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<script>
+/*
+ * ============================================================
+ * FERN AUTHENTICATION
+ * ============================================================
+ *
+ * Base64 value:
+ *
+ * S1gmaGyat
+ *
+ * This is intentionally a lightweight client-side gate.
+ * It is NOT cryptographic security.
+ * ============================================================
+ */
+
+const ENCODED_PASSWORD = "UzFnYW1HeWF0";
+
+/*
+ * The requested value "S1gmaGyat" is treated as the
+ * Base64-encoded password.
+ *
+ * Decode it at runtime rather than storing the plaintext
+ * password directly.
+ */
+const CORRECT_PASSWORD = atob(ENCODED_PASSWORD);
+
+
+/*
+ * Persistent authentication key.
+ */
+
+const AUTH_KEY = "fern_authenticated";
+
+const COOKIE_NAME = "FernAuth";
+
+
+/*
+ * ============================================================
+ * COOKIE HELPERS
+ * ============================================================
+ */
+
+function setAuthCookie() {
+
+    /*
+     * Max-Age is intentionally extremely large.
+     * Browsers may impose their own maximum lifetime.
+     */
+
+    const maxAge = 60 * 60 * 24 * 365 * 20;
+
+    document.cookie =
+        COOKIE_NAME +
+        "=authenticated;" +
+        "Max-Age=" + maxAge + ";" +
+        "Path=/;" +
+        "SameSite=Lax";
+
+}
+
+
+/*
+ * Read the Fern authentication cookie.
+ */
+
+function hasAuthCookie() {
+
+    return document.cookie
+        .split(";")
+        .some(cookie => {
+            return cookie.trim() ===
+                COOKIE_NAME + "=authenticated";
+        });
+
+}
+
+
+/*
+ * ============================================================
+ * LOCAL FILE FALLBACK
+ * ============================================================
+ *
+ * file:// pages can have inconsistent cookie behavior.
+ *
+ * localStorage provides persistence when running the HTML
+ * directly from disk.
+ * ============================================================
+ */
+
+function saveLocalAuthentication() {
+
+    try {
+        localStorage.setItem(
+            AUTH_KEY,
+            "authenticated"
+        );
+    } catch (error) {
+        console.warn(
+            "Fern local authentication storage unavailable."
+        );
+    }
+
+}
+
+
+function hasLocalAuthentication() {
+
+    try {
+
+        return localStorage.getItem(AUTH_KEY)
+            === "authenticated";
+
+    } catch (error) {
+
+        return false;
+
+    }
+
+}
+
+
+/*
+ * ============================================================
+ * AUTH STATE
+ * ============================================================
+ */
+
+function isAuthenticated() {
+
+    return (
+        hasAuthCookie() ||
+        hasLocalAuthentication()
+    );
+
+}
+
+
+function showApplication() {
+
+    document.getElementById("loginScreen")
+        .style.display = "none";
+
+    document.getElementById("app")
+        .style.display = "block";
+
+}
+
+
+function showLogin() {
+
+    document.getElementById("loginScreen")
+        .style.display = "flex";
+
+    document.getElementById("app")
+        .style.display = "none";
+
+}
+
+
+/*
+ * ============================================================
+ * LOGIN
+ * ============================================================
+ */
+
+function authenticate() {
+
+    const input =
+        document.getElementById("passwordInput");
+
+    const error =
+        document.getElementById("loginError");
+
+    if (input.value === CORRECT_PASSWORD) {
+
+        setAuthCookie();
+        saveLocalAuthentication();
+
+        error.textContent = "";
+
+        showApplication();
+
+        randomJoke();
+
+    } else {
+
+        error.textContent =
+            "Authentication failed. Fern has notified the plants.";
+
+        input.value = "";
+        input.focus();
+
+    }
+
+}
+
+
+/*
+ * Enter key support.
+ */
+
+document
+    .getElementById("passwordInput")
+    .addEventListener("keydown", event => {
+
+        if (event.key === "Enter") {
+            authenticate();
+        }
+
+    });
+
+
+document
+    .getElementById("loginButton")
+    .addEventListener("click", authenticate);
+
+
+/*
+ * ============================================================
+ * NAVIGATION
+ * ============================================================
+ */
+
+const navButtons =
+    document.querySelectorAll(".nav-button");
+
+
+navButtons.forEach(button => {
+
+    button.addEventListener("click", () => {
+
+        const target =
+            button.dataset.page;
+
+        navButtons.forEach(btn => {
+            btn.classList.remove("active");
+        });
+
+        button.classList.add("active");
+
+
+        document
+            .querySelectorAll(".page")
+            .forEach(page => {
+
+                page.classList.remove("active");
+
+            });
+
+
+        document
+            .getElementById(target + "Page")
+            .classList.add("active");
+
+    });
+
+});
+
+
+/*
+ * ============================================================
+ * URL LAUNCHER
+ * ============================================================
+ */
+
+const urlInput =
+    document.getElementById("urlInput");
+
+const iframeWindow =
+    document.getElementById("iframeWindow");
+
+
+function launchURL() {
+
+    let url =
+        urlInput.value.trim();
+
+    if (!url) {
+        return;
+    }
+
+
+    /*
+     * Automatically add HTTPS when the user enters
+     * a normal domain.
+     */
+
+    if (
+        !url.startsWith("http://") &&
+        !url.startsWith("https://")
+    ) {
+
+        url = "https://" + url;
+
+    }
+
+
+    /*
+     * Keep the existing UV integration.
+     */
+
+    if (
+        typeof __uv$config !== "undefined" &&
+        typeof __uv$config.prefix === "string"
+    ) {
+
+        try {
+
+            iframeWindow.src =
+                __uv$config.prefix +
+                __uv$config.encodeUrl(url);
+
+            return;
+
+        } catch (error) {
+
+            console.warn(
+                "Fern could not encode the URL with UV.",
+                error
+            );
+
+        }
+
+    }
+
+
+    /*
+     * Fallback for environments where UV isn't initialized.
+     */
+
+    iframeWindow.src = url;
+
+}
+
+
+document
+    .getElementById("searchButton")
+    .addEventListener("click", launchURL);
+
+
+urlInput.addEventListener(
+    "keydown",
+    event => {
+
+        if (event.key === "Enter") {
+            launchURL();
+        }
+
+    }
+);
+
+
+/*
+ * ============================================================
+ * UV SERVICE WORKER
+ * ============================================================
+ */
+
+if ("serviceWorker" in navigator) {
+
+    window.addEventListener("load", () => {
+
+        if (
+            typeof __uv$config !== "undefined" &&
+            __uv$config.prefix
+        ) {
+
+            navigator.serviceWorker
+                .register(
+                    "/uv/sw.js",
+                    {
+                        scope: __uv$config.prefix
+                    }
+                )
+                .catch(error => {
+
+                    console.warn(
+                        "Fern service worker registration failed:",
+                        error
+                    );
+
+                });
+
+        }
+
+    });
+
+}
+
+
+/*
+ * ============================================================
+ * FERN JOKES
+ * ============================================================
+ */
+
+const jokes = [
+
+    "Fern.exe has stopped photosynthesizing.",
+    "The plants are thriving. The servers are pretending.",
+    "404: Productivity not found.",
+    "Fern recommends touching grass. Fern is grass.",
+    "Initializing absolutely necessary nonsense...",
+    "The cyberpunk fern has entered the building.",
+    "Loading... please water your computer.",
+    "System status: suspiciously leafy.",
+    "Your browser has been photosynthesized.",
+    "Fern has 99 problems and they're all JavaScript.",
+    "Deploying tactical chlorophyll.",
+    "The terminal said 'sudo water fern'.",
+    "No plants were harmed during initialization.",
+    "Cybersecurity, but make it botanical.",
+    "Fern OS: Powered by questionable decisions.",
+    "The green LEDs are legally classified as vibes.",
+    "Compiling leaves...",
+    "Kernel panic? More like plant panic.",
+    "Maximum chlorophyll achieved.",
+    "Fern is watching. Fern is always watching.",
+    "Please remain calm. The fern knows what it's doing.",
+    "Loading premium vegetation...",
+    "This workspace contains approximately 73% more fern.",
+    "Congratulations. You have successfully opened a website.",
+    "Somewhere, a developer just forgot a semicolon.",
+    "Have you tried turning the fern off and on again?"
+
+];
+
+
+function randomJoke() {
+
+    const joke =
+        jokes[
+            Math.floor(
+                Math.random() * jokes.length
+            )
+        ];
+
+
+    const welcome =
+        document.getElementById("welcomeJoke");
+
+    const login =
+        document.getElementById("loginJoke");
+
+    const game =
+        document.getElementById("gameJoke");
+
+
+    if (welcome) {
+        welcome.textContent = joke;
+    }
+
+    if (login) {
+        login.textContent = joke;
+    }
+
+    if (game) {
+        game.textContent = joke;
+    }
+
+}
+
+
+setInterval(
+    randomJoke,
+    9000
+);
+
+
+/*
+ * ============================================================
+ * STARTUP
+ * ============================================================
+ */
+
+if (isAuthenticated()) {
+
+    showApplication();
+
+} else {
+
+    showLogin();
+
+}
+
+
+randomJoke();
+
+</script>
+
+</body>
 </html>
