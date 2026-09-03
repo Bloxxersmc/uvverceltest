@@ -6,7 +6,7 @@
 
     <title>Fern</title>
 
-    <meta name="fern-version" content="1.0.4">
+    <meta name="fern-version" content="1.0.5">
 
     <!-- UV -->
     <script src="/uv/uv.bundle.js"></script>
@@ -1040,7 +1040,7 @@
         </div>
 
         <div class="version-indicator" title="Fern build version">
-            BUILD <span id="fernVersion">v1.0.4</span>
+            BUILD <span id="fernVersion">v1.0.5</span>
         </div>
 
     </header>
@@ -1152,71 +1152,24 @@
             </div>
 
 
-            <div class="games-grid">
+            <div class="games-grid" id="gamesGrid">
 
+                <!--
+                    =====================================================
+                    ADD GAMES HERE
+                    =====================================================
 
-                <!-- now.gg -->
+                    Just add another object using this format:
 
-                <div class="game-card">
+                    {
+                        name: "Game Name",
+                        description: "Game description",
+                        link: "https://game.com"
+                    },
 
-                    <div class="game-icon">
-                        🎮
-                    </div>
-
-
-                    <h3>
-                        now.gg
-                    </h3>
-
-
-                    <p>
-                        Cloud gaming.
-                        Because apparently your computer
-                        wasn't invited.
-                    </p>
-
-
-                    <a
-                        href="https://nowgg.fun"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        Open now.gg →
-                    </a>
-
-                </div>
-
-
-
-                <!-- itch.io -->
-
-                <div class="game-card">
-
-                    <div class="game-icon">
-                        🕹️
-                    </div>
-
-
-                    <h3>
-                        itch.io
-                    </h3>
-
-
-                    <p>
-                        Indie games, experiments,
-                        and wonderfully weird stuff.
-                    </p>
-
-
-                    <a
-                        href="#"
-                        onclick="openInProxy('https://itch.io'); return false;"
-                    >
-                        Open itch.io →
-                    </a>
-
-                </div>
-
+                    That's it. Fern builds the cards automatically.
+                    =====================================================
+                -->
 
             </div>
 
@@ -1951,6 +1904,95 @@ const jokes = [
 
 
 /* ============================================================
+   GAMES DATA
+   ============================================================ */
+
+const games = [
+
+    {
+        name: "now.gg",
+        description: "Cloud gaming. Because apparently your computer wasn't invited.",
+        link: "https://nowgg.fun"
+    },
+
+    {
+        name: "itch.io",
+        description: "Indie games, experiments, and wonderfully weird stuff.",
+        link: "https://itch.io"
+    }
+
+];
+
+
+/* ============================================================
+   GAME CARD BUILDER
+   ============================================================ */
+
+function renderGames() {
+
+    const grid = document.getElementById("gamesGrid");
+
+    if (!grid) {
+        return;
+    }
+
+    grid.innerHTML = "";
+
+    games.forEach((game, index) => {
+
+        const card = document.createElement("div");
+        card.className = "game-card";
+
+        const icon = document.createElement("div");
+        icon.className = "game-icon";
+        icon.textContent = "🎮";
+
+        const title = document.createElement("h3");
+        title.textContent = game.name;
+
+        const description = document.createElement("p");
+        description.textContent = game.description;
+
+        const link = document.createElement("a");
+        link.href = game.link;
+        link.textContent = "Open " + game.name + " →";
+        link.dataset.gameIndex = index;
+
+        link.addEventListener("click", event => {
+            event.preventDefault();
+            openGame(game.link);
+        });
+
+        card.appendChild(icon);
+        card.appendChild(title);
+        card.appendChild(description);
+        card.appendChild(link);
+
+        grid.appendChild(card);
+    });
+}
+
+
+/* ============================================================
+   GAME LAUNCHER
+   ============================================================ */
+
+function openGame(targetURL) {
+
+    const proxyButton =
+        document.querySelector(
+            '.nav-button[data-page="proxy"]'
+        );
+
+    if (proxyButton) {
+        proxyButton.click();
+    }
+
+    launchURL(targetURL);
+}
+
+
+/* ============================================================
    RANDOM JOKES
    ============================================================ */
 
@@ -2005,6 +2047,8 @@ function randomJoke() {
 
 }
 
+
+renderGames();
 
 setInterval(
     randomJoke,
