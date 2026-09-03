@@ -571,6 +571,92 @@
 
 
         /* =====================================================
+           PROXY WINDOW POP-IN ANIMATION
+           ===================================================== */
+
+        .iframe-container.window-pop {
+            animation: fernWindowPop .42s cubic-bezier(.2,.85,.25,1) both;
+        }
+
+
+        .iframe-container.window-pop #iframeWindow {
+            animation: fernIframeReveal .42s ease-out both;
+        }
+
+
+        .proxy-opening-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 15;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            opacity: 0;
+            background: rgba(1,4,2,.72);
+        }
+
+
+        .proxy-opening-overlay.show {
+            animation: fernOverlay .5s ease-out both;
+        }
+
+
+        .proxy-opening-text {
+            padding: 12px 18px;
+            border: 1px solid var(--border-bright);
+            background: #020602;
+            color: var(--green);
+            font-family: monospace;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            box-shadow: 0 0 24px rgba(0,255,102,.12);
+        }
+
+
+        @keyframes fernWindowPop {
+            0% {
+                transform: scale(.94);
+                opacity: .45;
+            }
+            55% {
+                transform: scale(1.012);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+
+        @keyframes fernIframeReveal {
+            0% {
+                transform: scale(.985);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+
+        @keyframes fernOverlay {
+            0% {
+                opacity: 1;
+            }
+            65% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+
+
+        /* =====================================================
            IFRAME TOOLBAR
            ===================================================== */
 
@@ -976,7 +1062,11 @@
             </div>
 
 
-            <div class="iframe-container">
+            <div class="iframe-container" id="iframeContainer">
+
+                <div class="proxy-opening-overlay" id="proxyOpeningOverlay">
+                    <div class="proxy-opening-text">OPENING WINDOW...</div>
+                </div>
 
                 <div class="iframe-toolbar">
 
@@ -1395,9 +1485,22 @@ const iframeWindow =
     );
 
 
-function launchURL() {
+const iframeContainer =
+    document.getElementById(
+        "iframeContainer"
+    );
+
+
+const proxyOpeningOverlay =
+    document.getElementById(
+        "proxyOpeningOverlay"
+    );
+
+
+function launchURL(targetURL = null) {
 
     let url =
+        targetURL ||
         urlInput.value.trim();
 
 
@@ -1420,11 +1523,31 @@ function launchURL() {
 
 
     /*
+     * Play the Fern window pop-in animation
+     * every time a new page is launched.
+     */
+
+    if (iframeContainer) {
+
+        iframeContainer.classList.remove("window-pop");
+        void iframeContainer.offsetWidth;
+        iframeContainer.classList.add("window-pop");
+
+    }
+
+
+    if (proxyOpeningOverlay) {
+
+        proxyOpeningOverlay.classList.remove("show");
+        void proxyOpeningOverlay.offsetWidth;
+        proxyOpeningOverlay.classList.add("show");
+
+    }
+
+
+    /*
      * Use the existing UV configuration
      * when it is available.
-     *
-     * This is retained as part of the existing
-     * Fern project architecture.
      */
 
     if (
@@ -1453,13 +1576,10 @@ function launchURL() {
     }
 
 
-    /*
-     * Basic fallback.
-     */
-
     iframeWindow.src = url;
 
 }
+
 
 
 
