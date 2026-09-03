@@ -6,6 +6,8 @@
 
     <title>Fern</title>
 
+    <meta name="fern-version" content="1.0.3">
+
     <!-- UV -->
     <script src="/uv/uv.bundle.js"></script>
     <script src="/uv/uv.config.js"></script>
@@ -865,6 +867,26 @@
 
 
         /* =====================================================
+           VERSION INDICATOR
+           ===================================================== */
+
+        .version-indicator {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            color: var(--muted);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: .6px;
+            white-space: nowrap;
+        }
+
+        .version-indicator span {
+            color: var(--green);
+        }
+
+
+        /* =====================================================
            MOBILE
            ===================================================== */
 
@@ -876,6 +898,10 @@
 
             .online {
                 display: none;
+            }
+
+            .version-indicator {
+                font-size: 9px;
             }
 
             .page {
@@ -1011,6 +1037,10 @@
 
             SYSTEM ONLINE
 
+        </div>
+
+        <div class="version-indicator" title="Fern build version">
+            BUILD <span id="fernVersion">v1.0.3</span>
         </div>
 
     </header>
@@ -1497,6 +1527,18 @@ const proxyOpeningOverlay =
     );
 
 
+const FERN_VERSION =
+    document.querySelector('meta[name="fern-version"]')?.content ||
+    "unknown";
+
+const versionDisplay =
+    document.getElementById("fernVersion");
+
+if (versionDisplay) {
+    versionDisplay.textContent = "v" + FERN_VERSION;
+}
+
+
 function launchURL(targetURL = null) {
 
     let url =
@@ -1541,6 +1583,26 @@ function launchURL(targetURL = null) {
         proxyOpeningOverlay.classList.remove("show");
         void proxyOpeningOverlay.offsetWidth;
         proxyOpeningOverlay.classList.add("show");
+
+    }
+
+
+    /*
+     * Launches triggered directly by a click are allowed to request
+     * fullscreen as part of that same browser user gesture.
+     */
+    if (
+        iframeContainer &&
+        !document.fullscreenElement &&
+        typeof iframeContainer.requestFullscreen === "function"
+    ) {
+
+        iframeContainer.requestFullscreen().catch(error => {
+            console.warn(
+                "Automatic fullscreen unavailable:",
+                error
+            );
+        });
 
     }
 
