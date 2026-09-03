@@ -12,18 +12,22 @@
 
     <style>
         :root {
-            --bg: #050805;
-            --bg2: #080d09;
-            --panel: #0b120d;
-            --panel2: #0e1711;
+            --bg: #030603;
+            --bg-light: #071008;
+            --panel: #09110b;
+            --panel-hover: #0d180f;
+
             --green: #00ff66;
-            --green2: #00c94f;
-            --green3: #65ff9c;
-            --text: #e4ffe9;
-            --muted: #78917e;
-            --border: rgba(0, 255, 102, 0.18);
-            --danger: #ff4d6d;
-            --shadow: 0 0 35px rgba(0, 255, 102, 0.08);
+            --green-dark: #00b84a;
+            --green-soft: #75ffa5;
+
+            --text: #eaffef;
+            --muted: #72877a;
+
+            --border: rgba(0, 255, 102, 0.16);
+            --border-bright: rgba(0, 255, 102, 0.4);
+
+            --red: #ff526f;
         }
 
         * {
@@ -32,189 +36,266 @@
 
         html,
         body {
-            margin: 0;
             width: 100%;
             height: 100%;
-            background:
-                radial-gradient(circle at 20% 10%, rgba(0,255,102,.06), transparent 30%),
-                radial-gradient(circle at 80% 90%, rgba(0,255,102,.04), transparent 30%),
-                var(--bg);
+            margin: 0;
+        }
+
+        body {
+            overflow: hidden;
+
             color: var(--text);
+
             font-family:
                 Inter,
-                ui-sans-serif,
                 system-ui,
                 -apple-system,
                 BlinkMacSystemFont,
                 "Segoe UI",
                 sans-serif;
+
+            background:
+                radial-gradient(
+                    circle at 10% 10%,
+                    rgba(0,255,102,.055),
+                    transparent 28%
+                ),
+                radial-gradient(
+                    circle at 90% 90%,
+                    rgba(0,255,102,.04),
+                    transparent 30%
+                ),
+                var(--bg);
         }
 
-        body {
-            overflow: hidden;
-        }
 
-        /* =========================
+        /* =====================================================
            LOGIN
-           ========================= */
+           ===================================================== */
 
         #loginScreen {
             position: fixed;
             inset: 0;
-            z-index: 9999;
+
+            z-index: 10000;
 
             display: flex;
             align-items: center;
             justify-content: center;
 
+            padding: 20px;
+
             background:
-                linear-gradient(rgba(0,255,102,.025) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0,255,102,.025) 1px, transparent 1px),
+                linear-gradient(
+                    rgba(0,255,102,.025) 1px,
+                    transparent 1px
+                ),
+                linear-gradient(
+                    90deg,
+                    rgba(0,255,102,.025) 1px,
+                    transparent 1px
+                ),
                 var(--bg);
 
-            background-size: 40px 40px;
+            background-size: 42px 42px;
         }
 
+
         .login-box {
-            width: min(430px, calc(100% - 32px));
+            width: min(430px, 100%);
+
             padding: 36px;
 
-            background: rgba(8, 15, 10, .92);
+            background: rgba(7, 14, 9, .95);
+
             border: 1px solid var(--border);
+
             border-radius: 18px;
 
             box-shadow:
-                0 0 80px rgba(0,255,102,.08),
-                inset 0 0 30px rgba(0,255,102,.015);
+                0 0 80px rgba(0,255,102,.07),
+                inset 0 0 35px rgba(0,255,102,.015);
 
-            backdrop-filter: blur(14px);
+            backdrop-filter: blur(15px);
         }
 
-        .logo {
+
+        .fern-logo {
             display: flex;
             align-items: center;
-            gap: 13px;
+
+            gap: 12px;
+
             margin-bottom: 8px;
         }
 
-        .logo-icon {
-            width: 42px;
-            height: 42px;
+
+        .fern-icon {
+            width: 44px;
+            height: 44px;
 
             display: flex;
             align-items: center;
             justify-content: center;
 
-            border: 1px solid rgba(0,255,102,.35);
+            color: var(--green);
+
+            border: 1px solid var(--border-bright);
             border-radius: 12px;
 
-            color: var(--green);
-            font-size: 22px;
+            font-size: 23px;
 
-            box-shadow: 0 0 20px rgba(0,255,102,.1);
+            box-shadow:
+                0 0 20px rgba(0,255,102,.08);
         }
 
-        .logo h1 {
+
+        .fern-logo h1 {
             margin: 0;
-            font-size: 30px;
-            letter-spacing: -1px;
+
+            font-size: 31px;
+
+            letter-spacing: -1.5px;
         }
 
-        .logo h1 span {
+
+        .fern-logo h1 span {
             color: var(--green);
+
+            text-shadow:
+                0 0 15px rgba(0,255,102,.35);
         }
+
 
         .login-subtitle {
             margin: 0 0 28px;
+
             color: var(--muted);
-            font-size: 14px;
+
+            font-size: 13px;
         }
 
-        .field {
-            margin-bottom: 14px;
-        }
 
-        .field label {
+        .field-label {
             display: block;
+
             margin-bottom: 7px;
 
             color: var(--muted);
-            font-size: 12px;
-            font-weight: 700;
+
+            font-size: 11px;
+            font-weight: 800;
+
+            letter-spacing: .13em;
+
             text-transform: uppercase;
-            letter-spacing: .12em;
         }
 
-        input {
+
+        #passwordInput {
             width: 100%;
+
             padding: 13px 14px;
 
             color: var(--text);
-            background: #050a06;
 
-            border: 1px solid rgba(0,255,102,.16);
+            background: #030703;
+
+            border: 1px solid var(--border);
+
             border-radius: 10px;
 
             outline: none;
+
             transition: .2s;
         }
 
-        input:focus {
-            border-color: rgba(0,255,102,.6);
-            box-shadow: 0 0 0 3px rgba(0,255,102,.07);
+
+        #passwordInput:focus {
+            border-color: var(--border-bright);
+
+            box-shadow:
+                0 0 0 3px rgba(0,255,102,.06);
         }
+
 
         #loginButton {
             width: 100%;
+
+            margin-top: 14px;
+
             padding: 13px;
-            margin-top: 5px;
 
-            border: 1px solid rgba(0,255,102,.45);
-            border-radius: 10px;
+            color: #001b08;
 
-            color: #001b09;
             background: var(--green);
 
+            border: 0;
+
+            border-radius: 10px;
+
             font-weight: 900;
+
             cursor: pointer;
 
             transition: .2s;
         }
 
+
         #loginButton:hover {
             transform: translateY(-1px);
-            box-shadow: 0 0 25px rgba(0,255,102,.22);
+
+            box-shadow:
+                0 0 25px rgba(0,255,102,.2);
         }
+
+
+        #loginButton:active {
+            transform: translateY(0);
+        }
+
 
         #loginError {
             min-height: 20px;
+
             margin-top: 12px;
 
-            color: var(--danger);
-            font-size: 13px;
+            color: var(--red);
+
+            font-size: 12px;
+
             text-align: center;
         }
+
 
         .login-joke {
-            margin-top: 25px;
-            padding-top: 18px;
+            margin-top: 22px;
+            padding-top: 17px;
 
-            border-top: 1px solid rgba(255,255,255,.05);
+            border-top:
+                1px solid rgba(255,255,255,.05);
 
             color: var(--muted);
+
             font-size: 12px;
+
             text-align: center;
+
+            line-height: 1.5;
         }
 
-        /* =========================
-           APP
-           ========================= */
+
+        /* =====================================================
+           APPLICATION
+           ===================================================== */
 
         #app {
             display: none;
+
             width: 100%;
             height: 100%;
         }
+
 
         .topbar {
             height: 64px;
@@ -225,228 +306,336 @@
 
             padding: 0 20px;
 
-            background: rgba(5,10,6,.9);
-            border-bottom: 1px solid var(--border);
+            background:
+                rgba(3,8,4,.92);
 
-            backdrop-filter: blur(15px);
+            border-bottom:
+                1px solid var(--border);
+
+            backdrop-filter: blur(14px);
         }
+
 
         .brand {
             display: flex;
             align-items: center;
-            gap: 10px;
+
+            gap: 9px;
 
             font-size: 20px;
             font-weight: 900;
         }
 
-        .brand-mark {
+
+        .brand-icon {
             color: var(--green);
-            text-shadow: 0 0 14px rgba(0,255,102,.5);
+
+            text-shadow:
+                0 0 14px rgba(0,255,102,.5);
         }
+
 
         .nav {
             display: flex;
-            gap: 6px;
+            gap: 5px;
         }
 
+
         .nav button {
-            padding: 9px 13px;
+            padding: 9px 14px;
 
             color: var(--muted);
+
             background: transparent;
 
             border: 1px solid transparent;
+
             border-radius: 8px;
 
+            font-weight: 750;
+
             cursor: pointer;
-            font-weight: 700;
+
+            transition: .18s;
         }
+
 
         .nav button:hover,
         .nav button.active {
             color: var(--green);
-            background: rgba(0,255,102,.055);
-            border-color: var(--border);
+
+            background:
+                rgba(0,255,102,.055);
+
+            border-color:
+                var(--border);
         }
 
-        .status {
+
+        .online {
             display: flex;
             align-items: center;
+
             gap: 8px;
 
             color: var(--muted);
-            font-size: 12px;
+
+            font-size: 11px;
+            font-weight: 700;
         }
 
-        .status-dot {
+
+        .online-dot {
             width: 7px;
             height: 7px;
 
-            border-radius: 50%;
             background: var(--green);
 
-            box-shadow: 0 0 12px var(--green);
+            border-radius: 50%;
+
+            box-shadow:
+                0 0 12px var(--green);
         }
 
-        /* =========================
+
+        /* =====================================================
            CONTENT
-           ========================= */
+           ===================================================== */
 
         .content {
+            width: 100%;
             height: calc(100% - 64px);
+
             overflow: auto;
         }
 
+
         .page {
             display: none;
+
             width: min(1200px, 100%);
+
             margin: auto;
+
             padding: 28px;
         }
+
 
         .page.active {
             display: block;
         }
 
+
+        /* =====================================================
+           PROXY
+           ===================================================== */
+
         .hero {
             padding: 30px;
-
-            border: 1px solid var(--border);
-            border-radius: 18px;
 
             background:
                 linear-gradient(
                     135deg,
                     rgba(0,255,102,.055),
-                    transparent 50%
+                    transparent 55%
                 ),
                 var(--panel);
 
-            box-shadow: var(--shadow);
+            border:
+                1px solid var(--border);
+
+            border-radius: 18px;
         }
 
-        .hero h2 {
-            margin: 0 0 8px;
 
-            font-size: clamp(28px, 5vw, 48px);
+        .hero h2 {
+            margin: 0 0 7px;
+
+            font-size: clamp(28px, 5vw, 46px);
+
             letter-spacing: -2px;
         }
 
+
         .hero h2 span {
             color: var(--green);
+
+            text-shadow:
+                0 0 20px rgba(0,255,102,.25);
         }
+
 
         .hero p {
             margin: 0;
+
             color: var(--muted);
+
+            font-size: 13px;
         }
 
-        .proxy-box {
-            margin-top: 20px;
 
+        .proxy-controls {
             display: flex;
-            gap: 10px;
+
+            gap: 9px;
+
+            margin-top: 21px;
         }
 
-        .proxy-box input {
+
+        #urlInput {
             flex: 1;
-        }
 
-        .proxy-box button {
-            padding: 0 22px;
+            min-width: 0;
 
-            border: 1px solid rgba(0,255,102,.4);
+            padding: 13px 14px;
+
+            color: var(--text);
+
+            background: #030703;
+
+            border:
+                1px solid var(--border);
+
             border-radius: 10px;
 
-            background: rgba(0,255,102,.08);
+            outline: none;
+        }
+
+
+        #urlInput:focus {
+            border-color: var(--border-bright);
+
+            box-shadow:
+                0 0 0 3px rgba(0,255,102,.05);
+        }
+
+
+        #searchButton {
+            padding: 0 22px;
+
             color: var(--green);
 
-            font-weight: 800;
+            background:
+                rgba(0,255,102,.06);
+
+            border:
+                1px solid var(--border-bright);
+
+            border-radius: 10px;
+
+            font-weight: 850;
+
             cursor: pointer;
+
+            transition: .2s;
         }
 
-        .proxy-box button:hover {
-            background: rgba(0,255,102,.14);
+
+        #searchButton:hover {
+            background:
+                rgba(0,255,102,.12);
+
+            box-shadow:
+                0 0 20px rgba(0,255,102,.07);
         }
 
-        /* =========================
-           IFRAME
-           ========================= */
 
-        .proxy-frame {
-            position: relative;
+        .iframe-container {
+            width: 100%;
 
-            height: calc(100vh - 185px);
+            height: calc(100vh - 192px);
+
             min-height: 400px;
 
             margin-top: 18px;
 
             overflow: hidden;
 
-            border: 1px solid var(--border);
-            border-radius: 14px;
-
             background: #020402;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 14px;
         }
+
 
         #iframeWindow {
             width: 100%;
             height: 100%;
 
             border: 0;
+
             background: white;
         }
 
-        /* =========================
-           GAMES
-           ========================= */
 
-        .section-title {
+        /* =====================================================
+           GAMES
+           ===================================================== */
+
+        .section-header {
             margin-bottom: 20px;
         }
 
-        .section-title h2 {
+
+        .section-header h2 {
             margin: 0 0 5px;
+
+            font-size: 29px;
         }
 
-        .section-title p {
+
+        .section-header p {
             margin: 0;
+
             color: var(--muted);
+
+            font-size: 13px;
         }
+
 
         .games-grid {
             display: grid;
+
             grid-template-columns:
                 repeat(auto-fill, minmax(220px, 1fr));
 
             gap: 15px;
         }
 
+
         .game-card {
             padding: 20px;
 
-            border: 1px solid var(--border);
-            border-radius: 15px;
-
             background: var(--panel);
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 15px;
 
             transition: .2s;
         }
 
+
         .game-card:hover {
             transform: translateY(-3px);
 
-            border-color: rgba(0,255,102,.38);
+            background: var(--panel-hover);
+
+            border-color:
+                var(--border-bright);
 
             box-shadow:
-                0 10px 30px rgba(0,0,0,.25),
-                0 0 25px rgba(0,255,102,.05);
+                0 15px 35px rgba(0,0,0,.25);
         }
 
+
         .game-icon {
-            width: 44px;
-            height: 44px;
+            width: 45px;
+            height: 45px;
 
             display: flex;
             align-items: center;
@@ -455,24 +644,36 @@
             margin-bottom: 15px;
 
             color: var(--green);
-            background: rgba(0,255,102,.07);
 
-            border: 1px solid rgba(0,255,102,.16);
+            background:
+                rgba(0,255,102,.055);
+
+            border:
+                1px solid var(--border);
+
             border-radius: 11px;
 
-            font-size: 19px;
+            font-size: 20px;
         }
 
+
         .game-card h3 {
-            margin: 0 0 5px;
+            margin: 0 0 6px;
+
+            font-size: 17px;
         }
+
 
         .game-card p {
             margin: 0 0 17px;
 
             color: var(--muted);
-            font-size: 13px;
+
+            font-size: 12px;
+
+            line-height: 1.5;
         }
+
 
         .game-card a {
             display: block;
@@ -480,47 +681,67 @@
             padding: 10px;
 
             color: var(--green);
-            background: rgba(0,255,102,.05);
 
-            border: 1px solid rgba(0,255,102,.16);
+            background:
+                rgba(0,255,102,.045);
+
+            border:
+                1px solid var(--border);
+
             border-radius: 8px;
 
             text-align: center;
+
             text-decoration: none;
-            font-weight: 800;
+
+            font-size: 12px;
+            font-weight: 850;
+
+            transition: .2s;
         }
+
 
         .game-card a:hover {
-            background: rgba(0,255,102,.1);
+            background:
+                rgba(0,255,102,.1);
+
+            border-color:
+                var(--border-bright);
         }
 
-        /* =========================
-           JOKES
-           ========================= */
 
         .joke-card {
             margin-top: 18px;
-            padding: 18px;
 
-            border: 1px solid rgba(0,255,102,.12);
+            padding: 17px;
+
+            color: var(--green-soft);
+
+            background:
+                rgba(0,255,102,.025);
+
+            border:
+                1px solid var(--border);
+
             border-radius: 12px;
 
-            color: var(--green3);
-            background: rgba(0,255,102,.025);
+            font-size: 12px;
 
-            font-size: 13px;
+            text-align: center;
         }
 
-        /* =========================
+
+        /* =====================================================
            MOBILE
-           ========================= */
+           ===================================================== */
 
         @media (max-width: 700px) {
+
             .topbar {
                 padding: 0 12px;
             }
 
-            .status {
+            .online {
                 display: none;
             }
 
@@ -529,63 +750,84 @@
             }
 
             .hero {
-                padding: 20px;
+                padding: 21px;
             }
 
-            .proxy-box {
+            .proxy-controls {
                 flex-direction: column;
             }
 
-            .proxy-box button {
+            #searchButton {
                 padding: 12px;
             }
 
-            .proxy-frame {
+            .iframe-container {
                 height: calc(100vh - 265px);
             }
+
         }
     </style>
 </head>
 
+
 <body>
 
-<!-- =========================
-     LOGIN
-     ========================= -->
+
+<!-- =========================================================
+     LOGIN SCREEN
+     ========================================================= -->
 
 <div id="loginScreen">
 
     <div class="login-box">
 
-        <div class="logo">
-            <div class="logo-icon">🌿</div>
+        <div class="fern-logo">
 
-            <h1>Fern<span>.</span></h1>
+            <div class="fern-icon">
+                🌿
+            </div>
+
+            <h1>
+                Fern<span>.</span>
+            </h1>
+
         </div>
+
 
         <p class="login-subtitle">
-            Local workspace // authentication required
+            Welcome back, mysterious internet person.
         </p>
 
-        <div class="field">
-            <label for="passwordInput">Passcode</label>
 
-            <input
-                type="password"
-                id="passwordInput"
-                placeholder="Enter passcode..."
-                autocomplete="current-password"
-            >
-        </div>
+        <label
+            class="field-label"
+            for="passwordInput"
+        >
+            Authentication
+        </label>
+
+
+        <input
+            type="password"
+            id="passwordInput"
+            placeholder="Enter passcode..."
+            autocomplete="current-password"
+        >
+
 
         <button id="loginButton">
-            Authenticate
+            Enter Fern
         </button>
+
 
         <div id="loginError"></div>
 
-        <div class="login-joke" id="loginJoke">
-            Initializing Fern...
+
+        <div
+            class="login-joke"
+            id="loginJoke"
+        >
+            The fern is judging your password.
         </div>
 
     </div>
@@ -593,24 +835,29 @@
 </div>
 
 
-<!-- =========================
-     APP
-     ========================= -->
+
+<!-- =========================================================
+     MAIN APPLICATION
+     ========================================================= -->
 
 <div id="app">
+
+
+    <!-- TOP BAR -->
 
     <header class="topbar">
 
         <div class="brand">
-            <span class="brand-mark">🌿</span>
+            <span class="brand-icon">🌿</span>
             Fern
         </div>
+
 
         <nav class="nav">
 
             <button
                 class="nav-button active"
-                data-page="home"
+                data-page="proxy"
             >
                 Proxy
             </button>
@@ -624,23 +871,31 @@
 
         </nav>
 
-        <div class="status">
-            <span class="status-dot"></span>
-            Fern online
+
+        <div class="online">
+
+            <span class="online-dot"></span>
+
+            SYSTEM ONLINE
+
         </div>
 
     </header>
 
 
+
+    <!-- CONTENT -->
+
     <main class="content">
 
-        <!-- =========================
+
+        <!-- =================================================
              PROXY PAGE
-             ========================= -->
+             ================================================= -->
 
         <section
-            id="homePage"
             class="page active"
+            id="proxyPage"
         >
 
             <div class="hero">
@@ -649,11 +904,13 @@
                     Welcome to <span>Fern</span>
                 </h2>
 
+
                 <p id="welcomeJoke">
-                    The plants are thriving. The servers are pretending.
+                    Loading questionable technology...
                 </p>
 
-                <div class="proxy-box">
+
+                <div class="proxy-controls">
 
                     <input
                         type="text"
@@ -661,6 +918,7 @@
                         placeholder="Enter URL here..."
                         autocomplete="off"
                     >
+
 
                     <button id="searchButton">
                         Launch
@@ -670,12 +928,12 @@
 
             </div>
 
-            <div class="proxy-frame">
+
+            <div class="iframe-container">
 
                 <iframe
                     id="iframeWindow"
-                    class="iframeWindow"
-                    title="Fern Workspace"
+                    title="Fern"
                 ></iframe>
 
             </div>
@@ -683,21 +941,24 @@
         </section>
 
 
-        <!-- =========================
+
+        <!-- =================================================
              GAMES PAGE
-             ========================= -->
+             ================================================= -->
 
         <section
-            id="gamesPage"
             class="page"
+            id="gamesPage"
         >
 
-            <div class="section-title">
+            <div class="section-header">
 
-                <h2>Games</h2>
+                <h2>
+                    Games
+                </h2>
 
                 <p>
-                    Fern's totally legitimate collection of buttons.
+                    A completely reasonable collection of buttons.
                 </p>
 
             </div>
@@ -705,17 +966,27 @@
 
             <div class="games-grid">
 
+
+                <!-- now.gg -->
+
                 <div class="game-card">
 
                     <div class="game-icon">
                         🎮
                     </div>
 
-                    <h3>now.gg</h3>
+
+                    <h3>
+                        now.gg
+                    </h3>
+
 
                     <p>
-                        Cloud gaming platform.
+                        Cloud gaming.
+                        Because apparently your computer
+                        wasn't invited.
                     </p>
+
 
                     <a
                         href="https://nowgg.fun"
@@ -727,11 +998,16 @@
 
                 </div>
 
+
             </div>
 
 
-            <div class="joke-card" id="gameJoke">
-                Loading highly sophisticated gaming technology...
+            <div
+                class="joke-card"
+                id="gameJoke"
+            >
+                Fern is calculating how many games
+                you can procrastinate with.
             </div>
 
         </section>
@@ -741,35 +1017,23 @@
 </div>
 
 
+
 <script>
+
+/* ============================================================
+   FERN CONFIGURATION
+   ============================================================ */
+
+
 /*
- * ============================================================
- * FERN AUTHENTICATION
- * ============================================================
- *
- * Base64 value:
- *
- * S1gmaGyat
- *
- * This is intentionally a lightweight client-side gate.
- * It is NOT cryptographic security.
- * ============================================================
+ * Plaintext authentication password.
  */
 
-const ENCODED_PASSWORD = "UzFnYW1HeWF0";
-
-/*
- * The requested value "S1gmaGyat" is treated as the
- * Base64-encoded password.
- *
- * Decode it at runtime rather than storing the plaintext
- * password directly.
- */
-const CORRECT_PASSWORD = atob(ENCODED_PASSWORD);
+const CORRECT_PASSWORD = "S1gmaGyat";
 
 
 /*
- * Persistent authentication key.
+ * Storage identifiers.
  */
 
 const AUTH_KEY = "fern_authenticated";
@@ -777,20 +1041,22 @@ const AUTH_KEY = "fern_authenticated";
 const COOKIE_NAME = "FernAuth";
 
 
-/*
- * ============================================================
- * COOKIE HELPERS
- * ============================================================
- */
+
+/* ============================================================
+   COOKIE AUTHENTICATION
+   ============================================================ */
 
 function setAuthCookie() {
 
     /*
-     * Max-Age is intentionally extremely large.
-     * Browsers may impose their own maximum lifetime.
+     * Roughly 20 years.
+     *
+     * Browsers can impose their own limits.
      */
 
-    const maxAge = 60 * 60 * 24 * 365 * 20;
+    const maxAge =
+        60 * 60 * 24 * 365 * 20;
+
 
     document.cookie =
         COOKIE_NAME +
@@ -802,48 +1068,50 @@ function setAuthCookie() {
 }
 
 
-/*
- * Read the Fern authentication cookie.
- */
 
 function hasAuthCookie() {
 
     return document.cookie
         .split(";")
         .some(cookie => {
+
             return cookie.trim() ===
                 COOKIE_NAME + "=authenticated";
+
         });
 
 }
 
 
+
+/* ============================================================
+   LOCAL STORAGE FALLBACK
+   ============================================================ */
+
 /*
- * ============================================================
- * LOCAL FILE FALLBACK
- * ============================================================
- *
- * file:// pages can have inconsistent cookie behavior.
- *
- * localStorage provides persistence when running the HTML
- * directly from disk.
- * ============================================================
+ * This is particularly useful when opening
+ * index.html directly with file://
  */
 
 function saveLocalAuthentication() {
 
     try {
+
         localStorage.setItem(
             AUTH_KEY,
             "authenticated"
         );
+
     } catch (error) {
+
         console.warn(
-            "Fern local authentication storage unavailable."
+            "Fern could not save local authentication."
         );
+
     }
 
 }
+
 
 
 function hasLocalAuthentication() {
@@ -862,11 +1130,10 @@ function hasLocalAuthentication() {
 }
 
 
-/*
- * ============================================================
- * AUTH STATE
- * ============================================================
- */
+
+/* ============================================================
+   AUTH STATE
+   ============================================================ */
 
 function isAuthenticated() {
 
@@ -878,45 +1145,59 @@ function isAuthenticated() {
 }
 
 
+
 function showApplication() {
 
-    document.getElementById("loginScreen")
-        .style.display = "none";
+    document.getElementById(
+        "loginScreen"
+    ).style.display = "none";
 
-    document.getElementById("app")
-        .style.display = "block";
+
+    document.getElementById(
+        "app"
+    ).style.display = "block";
 
 }
+
 
 
 function showLogin() {
 
-    document.getElementById("loginScreen")
-        .style.display = "flex";
+    document.getElementById(
+        "loginScreen"
+    ).style.display = "flex";
 
-    document.getElementById("app")
-        .style.display = "none";
+
+    document.getElementById(
+        "app"
+    ).style.display = "none";
 
 }
 
 
-/*
- * ============================================================
- * LOGIN
- * ============================================================
- */
+
+/* ============================================================
+   LOGIN
+   ============================================================ */
 
 function authenticate() {
 
     const input =
-        document.getElementById("passwordInput");
+        document.getElementById(
+            "passwordInput"
+        );
+
 
     const error =
-        document.getElementById("loginError");
+        document.getElementById(
+            "loginError"
+        );
+
 
     if (input.value === CORRECT_PASSWORD) {
 
         setAuthCookie();
+
         saveLocalAuthentication();
 
         error.textContent = "";
@@ -928,9 +1209,10 @@ function authenticate() {
     } else {
 
         error.textContent =
-            "Authentication failed. Fern has notified the plants.";
+            "Wrong password. The fern has lost respect for you.";
 
         input.value = "";
+
         input.focus();
 
     }
@@ -938,79 +1220,108 @@ function authenticate() {
 }
 
 
-/*
- * Enter key support.
- */
-
-document
-    .getElementById("passwordInput")
-    .addEventListener("keydown", event => {
-
-        if (event.key === "Enter") {
-            authenticate();
-        }
-
-    });
-
 
 document
     .getElementById("loginButton")
-    .addEventListener("click", authenticate);
+    .addEventListener(
+        "click",
+        authenticate
+    );
 
 
-/*
- * ============================================================
- * NAVIGATION
- * ============================================================
- */
+
+document
+    .getElementById("passwordInput")
+    .addEventListener(
+        "keydown",
+        event => {
+
+            if (event.key === "Enter") {
+
+                authenticate();
+
+            }
+
+        }
+    );
+
+
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
 
 const navButtons =
-    document.querySelectorAll(".nav-button");
+    document.querySelectorAll(
+        ".nav-button"
+    );
 
 
 navButtons.forEach(button => {
 
-    button.addEventListener("click", () => {
+    button.addEventListener(
+        "click",
+        () => {
 
-        const target =
-            button.dataset.page;
-
-        navButtons.forEach(btn => {
-            btn.classList.remove("active");
-        });
-
-        button.classList.add("active");
+            const target =
+                button.dataset.page;
 
 
-        document
-            .querySelectorAll(".page")
-            .forEach(page => {
+            navButtons.forEach(btn => {
 
-                page.classList.remove("active");
+                btn.classList.remove(
+                    "active"
+                );
 
             });
 
 
-        document
-            .getElementById(target + "Page")
-            .classList.add("active");
+            button.classList.add(
+                "active"
+            );
 
-    });
+
+            document
+                .querySelectorAll(".page")
+                .forEach(page => {
+
+                    page.classList.remove(
+                        "active"
+                    );
+
+                });
+
+
+            document
+                .getElementById(
+                    target + "Page"
+                )
+                .classList.add(
+                    "active"
+                );
+
+        }
+    );
 
 });
 
 
-/*
- * ============================================================
- * URL LAUNCHER
- * ============================================================
- */
+
+/* ============================================================
+   URL LAUNCHER
+   ============================================================ */
 
 const urlInput =
-    document.getElementById("urlInput");
+    document.getElementById(
+        "urlInput"
+    );
+
 
 const iframeWindow =
-    document.getElementById("iframeWindow");
+    document.getElementById(
+        "iframeWindow"
+    );
+
 
 
 function launchURL() {
@@ -1018,33 +1329,34 @@ function launchURL() {
     let url =
         urlInput.value.trim();
 
+
     if (!url) {
+
         return;
+
     }
 
-
-    /*
-     * Automatically add HTTPS when the user enters
-     * a normal domain.
-     */
 
     if (
         !url.startsWith("http://") &&
         !url.startsWith("https://")
     ) {
 
-        url = "https://" + url;
+        url =
+            "https://" + url;
 
     }
 
 
     /*
-     * Keep the existing UV integration.
+     * Use the existing UV configuration
+     * when it is available.
      */
 
     if (
         typeof __uv$config !== "undefined" &&
-        typeof __uv$config.prefix === "string"
+        typeof __uv$config.prefix === "string" &&
+        typeof __uv$config.encodeUrl === "function"
     ) {
 
         try {
@@ -1058,7 +1370,7 @@ function launchURL() {
         } catch (error) {
 
             console.warn(
-                "Fern could not encode the URL with UV.",
+                "UV URL encoding failed:",
                 error
             );
 
@@ -1068,7 +1380,7 @@ function launchURL() {
 
 
     /*
-     * Fallback for environments where UV isn't initialized.
+     * Basic fallback.
      */
 
     iframeWindow.src = url;
@@ -1076,9 +1388,14 @@ function launchURL() {
 }
 
 
+
 document
     .getElementById("searchButton")
-    .addEventListener("click", launchURL);
+    .addEventListener(
+        "click",
+        launchURL
+    );
+
 
 
 urlInput.addEventListener(
@@ -1086,135 +1403,259 @@ urlInput.addEventListener(
     event => {
 
         if (event.key === "Enter") {
+
             launchURL();
+
         }
 
     }
 );
 
 
-/*
- * ============================================================
- * UV SERVICE WORKER
- * ============================================================
- */
+
+/* ============================================================
+   UV SERVICE WORKER
+   ============================================================ */
 
 if ("serviceWorker" in navigator) {
 
-    window.addEventListener("load", () => {
+    window.addEventListener(
+        "load",
+        () => {
 
-        if (
-            typeof __uv$config !== "undefined" &&
-            __uv$config.prefix
-        ) {
+            if (
+                typeof __uv$config !== "undefined" &&
+                __uv$config.prefix
+            ) {
 
-            navigator.serviceWorker
-                .register(
-                    "/uv/sw.js",
-                    {
-                        scope: __uv$config.prefix
-                    }
-                )
-                .catch(error => {
+                navigator.serviceWorker
+                    .register(
+                        "/uv/sw.js",
+                        {
+                            scope:
+                                __uv$config.prefix
+                        }
+                    )
+                    .catch(error => {
 
-                    console.warn(
-                        "Fern service worker registration failed:",
-                        error
-                    );
+                        console.warn(
+                            "UV service worker registration failed:",
+                            error
+                        );
 
-                });
+                    });
+
+            }
 
         }
-
-    });
+    );
 
 }
 
 
-/*
- * ============================================================
- * FERN JOKES
- * ============================================================
- */
+
+/* ============================================================
+   FERN JOKE DATABASE
+   ============================================================ */
 
 const jokes = [
 
-    "Fern.exe has stopped photosynthesizing.",
-    "The plants are thriving. The servers are pretending.",
-    "404: Productivity not found.",
-    "Fern recommends touching grass. Fern is grass.",
-    "Initializing absolutely necessary nonsense...",
-    "The cyberpunk fern has entered the building.",
-    "Loading... please water your computer.",
-    "System status: suspiciously leafy.",
-    "Your browser has been photosynthesized.",
-    "Fern has 99 problems and they're all JavaScript.",
-    "Deploying tactical chlorophyll.",
-    "The terminal said 'sudo water fern'.",
-    "No plants were harmed during initialization.",
-    "Cybersecurity, but make it botanical.",
-    "Fern OS: Powered by questionable decisions.",
-    "The green LEDs are legally classified as vibes.",
-    "Compiling leaves...",
-    "Kernel panic? More like plant panic.",
-    "Maximum chlorophyll achieved.",
-    "Fern is watching. Fern is always watching.",
-    "Please remain calm. The fern knows what it's doing.",
-    "Loading premium vegetation...",
-    "This workspace contains approximately 73% more fern.",
-    "Congratulations. You have successfully opened a website.",
+    "Fern has detected a severe case of having nothing better to do.",
+
+    "404: Productivity not found. We weren't looking very hard.",
+
+    "The fern has been watered. Unfortunately, your grades haven't.",
+
+    "Please wait while Fern pretends this is a highly advanced system.",
+
+    "System status: green. Brain status: questionable.",
+
+    "Fern.exe is running entirely on chlorophyll and bad decisions.",
+
+    "Congratulations! You have successfully avoided doing something productive.",
+
+    "The FBI called. They want their loading screen back.",
+
+    "Loading premium procrastination technology...", 
+
+    "Your computer has been legally declared a plant.",
+
+    "Fern has 16 GB of RAM and absolutely no idea what to do with it.",
+
+    "Deploying tactical leaves.",
+
+    "The server room is just one guy named Steve with a watering can.",
+
+    "Warning: excessive levels of silliness detected.",
+
+    "Fern recommends touching grass. Fern IS grass.",
+
+    "Compiling... 3%. Compiling... 3%. Compiling... 3%.",
+
+    "The website is loading because the hamster powering the server fell asleep.",
+
     "Somewhere, a developer just forgot a semicolon.",
-    "Have you tried turning the fern off and on again?"
+
+    "Achievement unlocked: You clicked a button.",
+
+    "Initializing unnecessary amounts of green.",
+
+    "Cyberpunk, but the cyberpunk is a houseplant.",
+
+    "Fern has entered maximum leaf mode.",
+
+    "Your browser called in sick. Fern is covering its shift.",
+
+    "The internet is made of tubes. Fern is made of leaves. This is science.",
+
+    "Please do not feed the JavaScript.",
+
+    "Fern has successfully connected to the internet. The fern is now unstoppable.",
+
+    "Breaking news: local plant discovers Wi-Fi.",
+
+    "If this doesn't work, simply blame DNS. Nobody knows what DNS does anyway.",
+
+    "Loading... because apparently computers enjoy suspense.",
+
+    "The green glow makes it 73% faster. This is definitely real.",
+
+    "Fern's security system consists of one extremely angry squirrel.",
+
+    "Authentication successful. The plant council has approved you.",
+
+    "Fern has reviewed your browsing history. Fern is disappointed.",
+
+    "Please remain calm. The leaves are under control.",
+
+    "Running advanced calculations... 2 + 2 = probably 5.",
+
+    "This interface was designed by someone who really likes rectangles.",
+
+    "Fern is currently negotiating with the CPU.",
+
+    "No pixels were harmed in the making of this website.",
+
+    "The matrix has been contacted. They asked us to stop calling.",
+
+    "Congratulations, you've reached the part of the internet with more plants.",
+
+    "Fern's GPU is just a leaf taped to the motherboard.",
+
+    "Your session has been photosynthesized.",
+
+    "Downloading more RAM... please hold.",
+
+    "The Wi-Fi signal is strong because Fern believes in you.",
+
+    "Fern has achieved sentience. Fern wants snacks.",
+
+    "ERROR 418: I'm a teapot. Fern is a plant.",
+
+    "Installing update: absolutely nothing.",
+
+    "The fern knows where you live. It is a plant, so it probably forgot.",
+
+    "Please enjoy the cyberpunk aesthetic while we accomplish absolutely nothing.",
+
+    "Fern OS: 99% vibes, 1% functional code.",
+
+    "Server uptime: yes.",
+
+    "Have you tried turning the fern off and on again?",
+
+    "Your browser has entered the leafy dimension.",
+
+    "The password was correct. The fern is proud of you.",
+
+    "One does not simply walk into Fern.",
+
+    "Fern has calculated your gaming session will last approximately forever.",
+
+    "Productivity has left the chat.",
+
+    "This website contains trace amounts of responsibility.",
+
+    "Warning: Fern may spontaneously become cooler.",
+
+    "The plants have unionized. Please direct all complaints to management.",
+
+    "Fern has no idea what it's doing, but it looks cool doing it."
 
 ];
 
+
+
+/* ============================================================
+   RANDOM JOKES
+   ============================================================ */
 
 function randomJoke() {
 
     const joke =
         jokes[
             Math.floor(
-                Math.random() * jokes.length
+                Math.random() *
+                jokes.length
             )
         ];
 
 
     const welcome =
-        document.getElementById("welcomeJoke");
+        document.getElementById(
+            "welcomeJoke"
+        );
+
 
     const login =
-        document.getElementById("loginJoke");
+        document.getElementById(
+            "loginJoke"
+        );
+
 
     const game =
-        document.getElementById("gameJoke");
+        document.getElementById(
+            "gameJoke"
+        );
 
 
     if (welcome) {
+
         welcome.textContent = joke;
+
     }
+
 
     if (login) {
+
         login.textContent = joke;
+
     }
 
+
     if (game) {
+
         game.textContent = joke;
+
     }
 
 }
 
 
+/*
+ * Change the joke every 8 seconds.
+ */
+
 setInterval(
     randomJoke,
-    9000
+    8000
 );
 
 
-/*
- * ============================================================
- * STARTUP
- * ============================================================
- */
+
+/* ============================================================
+   START FERN
+   ============================================================ */
 
 if (isAuthenticated()) {
 
