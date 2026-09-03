@@ -1,1292 +1,1122 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-```
-<title>Fern</title>
+    <title>Fern</title>
 
-<style>
-    :root {
-        --bg: #020402;
-        --bg2: #050a06;
-        --panel: #071008;
-        --panel2: #0a150c;
+    <!-- UV -->
+    <script src="/uv/uv.bundle.js"></script>
+    <script src="/uv/uv.config.js"></script>
 
-        --green: #00ff66;
-        --green-dark: #00b84a;
-        --green-soft: #75ffa5;
+    <style>
+        :root {
+            --bg: #030603;
+            --bg-light: #071008;
+            --panel: #09110b;
+            --panel-hover: #0d180f;
 
-        --text: #eaffef;
-        --muted: #718278;
+            --green: #00ff66;
+            --green-dark: #00b84a;
+            --green-soft: #75ffa5;
 
-        --border: rgba(0,255,102,.18);
-        --border-bright: rgba(0,255,102,.55);
+            --text: #eaffef;
+            --muted: #72877a;
 
-        --red: #ff526f;
-        --yellow: #dfff62;
-    }
+            --border: rgba(0, 255, 102, 0.16);
+            --border-bright: rgba(0, 255, 102, 0.4);
 
-    * {
-        box-sizing: border-box;
-    }
-
-    html,
-    body {
-        width: 100%;
-        height: 100%;
-        margin: 0;
-    }
-
-    body {
-        overflow: hidden;
-
-        color: var(--text);
-
-        font-family:
-            Inter,
-            system-ui,
-            -apple-system,
-            BlinkMacSystemFont,
-            "Segoe UI",
-            sans-serif;
-
-        background:
-            radial-gradient(
-                circle at 15% 10%,
-                rgba(0,255,102,.06),
-                transparent 30%
-            ),
-            radial-gradient(
-                circle at 85% 90%,
-                rgba(0,255,102,.035),
-                transparent 30%
-            ),
-            var(--bg);
-    }
-
-    button,
-    input {
-        font: inherit;
-    }
-
-    button {
-        cursor: pointer;
-    }
-
-    /* =====================================================
-       GLOBAL CYBERPUNK EFFECT
-       ===================================================== */
-
-    body::after {
-        content: "";
-        position: fixed;
-        inset: 0;
-
-        pointer-events: none;
-
-        z-index: 99999;
-
-        opacity: .16;
-
-        background:
-            repeating-linear-gradient(
-                0deg,
-                transparent 0,
-                transparent 3px,
-                rgba(0,255,102,.018) 4px
-            );
-
-        mix-blend-mode: screen;
-    }
-
-    /* =====================================================
-       LOGIN
-       ===================================================== */
-
-    #loginScreen {
-        position: fixed;
-        inset: 0;
-
-        z-index: 10000;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        padding: 20px;
-
-        background:
-            linear-gradient(
-                rgba(0,255,102,.025) 1px,
-                transparent 1px
-            ),
-            linear-gradient(
-                90deg,
-                rgba(0,255,102,.025) 1px,
-                transparent 1px
-            ),
-            var(--bg);
-
-        background-size: 42px 42px;
-    }
-
-    .login-box {
-        width: min(430px, 100%);
-
-        padding: 36px;
-
-        background:
-            linear-gradient(
-                135deg,
-                rgba(0,255,102,.035),
-                transparent 60%
-            ),
-            rgba(5,12,7,.97);
-
-        border: 1px solid var(--border-bright);
-
-        border-radius: 0;
-
-        box-shadow:
-            0 0 60px rgba(0,255,102,.07),
-            inset 0 0 30px rgba(0,255,102,.015);
-
-        position: relative;
-    }
-
-    .login-box::before,
-    .login-box::after {
-        content: "";
-
-        position: absolute;
-
-        width: 12px;
-        height: 12px;
-
-        border-color: var(--green);
-
-        pointer-events: none;
-    }
-
-    .login-box::before {
-        top: -1px;
-        left: -1px;
-
-        border-top: 2px solid var(--green);
-        border-left: 2px solid var(--green);
-    }
-
-    .login-box::after {
-        right: -1px;
-        bottom: -1px;
-
-        border-right: 2px solid var(--green);
-        border-bottom: 2px solid var(--green);
-    }
-
-    .fern-logo {
-        display: flex;
-        align-items: center;
-
-        gap: 12px;
-
-        margin-bottom: 8px;
-    }
-
-    .fern-icon {
-        width: 44px;
-        height: 44px;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        color: var(--green);
-
-        border: 1px solid var(--border-bright);
-
-        border-radius: 0;
-
-        font-size: 23px;
-
-        box-shadow:
-            0 0 20px rgba(0,255,102,.08);
-    }
-
-    .fern-logo h1 {
-        margin: 0;
-
-        font-size: 31px;
-
-        letter-spacing: -1.5px;
-    }
-
-    .fern-logo h1 span {
-        color: var(--green);
-
-        text-shadow:
-            0 0 15px rgba(0,255,102,.35);
-    }
-
-    .login-subtitle {
-        margin: 0 0 28px;
-
-        color: var(--muted);
-
-        font-size: 13px;
-    }
-
-    .field-label {
-        display: block;
-
-        margin-bottom: 7px;
-
-        color: var(--muted);
-
-        font-size: 11px;
-        font-weight: 800;
-
-        letter-spacing: .13em;
-
-        text-transform: uppercase;
-    }
-
-    #passwordInput {
-        width: 100%;
-
-        padding: 13px 14px;
-
-        color: var(--text);
-
-        background: #020502;
-
-        border: 1px solid var(--border);
-
-        border-radius: 0;
-
-        outline: none;
-    }
-
-    #passwordInput:focus {
-        border-color: var(--green);
-
-        box-shadow:
-            0 0 0 2px rgba(0,255,102,.06),
-            0 0 20px rgba(0,255,102,.05);
-    }
-
-    #loginButton {
-        width: 100%;
-
-        margin-top: 14px;
-
-        padding: 13px;
-
-        color: #001b08;
-
-        background: var(--green);
-
-        border: 0;
-
-        border-radius: 0;
-
-        font-weight: 900;
-
-        cursor: pointer;
-
-        transition: .18s;
-    }
-
-    #loginButton:hover {
-        background: #4dff91;
-
-        box-shadow:
-            0 0 25px rgba(0,255,102,.2);
-    }
-
-    #loginButton:active {
-        transform: translateY(1px);
-    }
-
-    #loginError {
-        min-height: 20px;
-
-        margin-top: 12px;
-
-        color: var(--red);
-
-        font-size: 12px;
-
-        text-align: center;
-    }
-
-    .login-joke {
-        margin-top: 22px;
-        padding-top: 17px;
-
-        border-top:
-            1px solid rgba(255,255,255,.05);
-
-        color: var(--muted);
-
-        font-size: 12px;
-
-        text-align: center;
-
-        line-height: 1.5;
-    }
-
-    /* =====================================================
-       APPLICATION
-       ===================================================== */
-
-    #app {
-        display: none;
-
-        width: 100%;
-        height: 100%;
-    }
-
-    .topbar {
-        height: 64px;
-
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-
-        padding: 0 20px;
-
-        background:
-            rgba(3,8,4,.96);
-
-        border-bottom:
-            1px solid var(--border);
-
-        position: relative;
-        z-index: 10;
-    }
-
-    .brand {
-        display: flex;
-        align-items: center;
-
-        gap: 9px;
-
-        font-size: 20px;
-        font-weight: 900;
-    }
-
-    .brand-icon {
-        color: var(--green);
-
-        text-shadow:
-            0 0 14px rgba(0,255,102,.5);
-    }
-
-    .nav {
-        display: flex;
-        gap: 5px;
-    }
-
-    .nav button {
-        padding: 9px 14px;
-
-        color: var(--muted);
-
-        background: transparent;
-
-        border: 1px solid transparent;
-
-        border-radius: 0;
-
-        font-weight: 750;
-
-        cursor: pointer;
-
-        transition: .18s;
-    }
-
-    .nav button:hover,
-    .nav button.active {
-        color: var(--green);
-
-        background:
-            rgba(0,255,102,.055);
-
-        border-color:
-            var(--border-bright);
-
-        box-shadow:
-            inset 0 -2px 0 var(--green);
-    }
-
-    .online {
-        display: flex;
-        align-items: center;
-
-        gap: 8px;
-
-        color: var(--muted);
-
-        font-size: 11px;
-        font-weight: 700;
-    }
-
-    .online-dot {
-        width: 7px;
-        height: 7px;
-
-        background: var(--green);
-
-        border-radius: 0;
-
-        box-shadow:
-            0 0 12px var(--green);
-    }
-
-    /* =====================================================
-       CONTENT
-       ===================================================== */
-
-    .content {
-        width: 100%;
-        height: calc(100% - 64px);
-
-        overflow: auto;
-    }
-
-    .page {
-        display: none;
-
-        width: min(1400px, 100%);
-
-        margin: auto;
-
-        padding: 28px;
-    }
-
-    .page.active {
-        display: block;
-    }
-
-    /* =====================================================
-       HERO
-       ===================================================== */
-
-    .hero {
-        padding: 30px;
-
-        background:
-            linear-gradient(
-                135deg,
-                rgba(0,255,102,.055),
-                transparent 55%
-            ),
-            var(--panel);
-
-        border:
-            1px solid var(--border);
-
-        border-radius: 0;
-
-        position: relative;
-    }
-
-    .hero::before {
-        content: "FERN // TERMINAL";
-
-        position: absolute;
-
-        top: 10px;
-        right: 15px;
-
-        color: rgba(0,255,102,.35);
-
-        font-size: 9px;
-        font-weight: 900;
-
-        letter-spacing: .18em;
-    }
-
-    .hero h2 {
-        margin: 0 0 7px;
-
-        font-size: clamp(28px, 5vw, 46px);
-
-        letter-spacing: -2px;
-    }
-
-    .hero h2 span {
-        color: var(--green);
-
-        text-shadow:
-            0 0 20px rgba(0,255,102,.25);
-    }
-
-    .hero p {
-        margin: 0;
-
-        color: var(--muted);
-
-        font-size: 13px;
-    }
-
-    /* =====================================================
-       PROXY CONTROLS
-       ===================================================== */
-
-    .proxy-controls {
-        display: grid;
-
-        grid-template-columns: 1fr auto;
-
-        gap: 9px;
-
-        margin-top: 21px;
-    }
-
-    #urlInput {
-        min-width: 0;
-
-        padding: 13px 14px;
-
-        color: var(--text);
-
-        background: #030703;
-
-        border:
-            1px solid var(--border);
-
-        border-radius: 0;
-
-        outline: none;
-    }
-
-    #urlInput:focus {
-        border-color: var(--border-bright);
-
-        box-shadow:
-            0 0 0 2px rgba(0,255,102,.05);
-    }
-
-    #searchButton {
-        padding: 0 22px;
-
-        color: #001b08;
-
-        background: var(--green);
-
-        border:
-            1px solid var(--green);
-
-        border-radius: 0;
-
-        font-weight: 900;
-
-        cursor: pointer;
-    }
-
-    #searchButton:hover {
-        background: #57ff98;
-    }
-
-    /* =====================================================
-       PROXY WINDOW
-       ===================================================== */
-
-    .iframe-container {
-        width: 100%;
-
-        height: calc(100vh - 224px);
-
-        min-height: 420px;
-
-        margin-top: 18px;
-
-        overflow: hidden;
-
-        background: #020402;
-
-        border:
-            1px solid var(--border-bright);
-
-        border-radius: 0;
-
-        position: relative;
-
-        display: flex;
-        flex-direction: column;
-    }
-
-    .proxy-toolbar {
-        height: 42px;
-
-        flex: 0 0 42px;
-
-        display: flex;
-        align-items: center;
-
-        gap: 6px;
-
-        padding: 0 8px;
-
-        background:
-            #050b06;
-
-        border-bottom:
-            1px solid var(--border);
-
-        user-select: none;
-    }
-
-    .proxy-title {
-        margin-right: auto;
-
-        color: var(--green);
-
-        font-size: 10px;
-        font-weight: 900;
-
-        letter-spacing: .13em;
-    }
-
-    .proxy-status {
-        display: flex;
-        align-items: center;
-
-        gap: 6px;
-
-        margin-right: 8px;
-
-        color: var(--muted);
-
-        font-size: 9px;
-        font-weight: 800;
-    }
-
-    .status-dot {
-        width: 6px;
-        height: 6px;
-
-        background: var(--green);
-
-        box-shadow:
-            0 0 9px var(--green);
-    }
-
-    .proxy-button {
-        height: 27px;
-
-        padding: 0 10px;
-
-        color: var(--muted);
-
-        background: #071008;
-
-        border:
-            1px solid var(--border);
-
-        border-radius: 0;
-
-        font-size: 11px;
-        font-weight: 800;
-
-        transition: .15s;
-    }
-
-    .proxy-button:hover {
-        color: var(--green);
-
-        border-color:
-            var(--border-bright);
-
-        background:
-            rgba(0,255,102,.07);
-    }
-
-    #fullscreenButton {
-        color: var(--green);
-
-        border-color:
-            var(--border-bright);
-    }
-
-    #iframeWindow {
-        width: 100%;
-        height: 100%;
-
-        flex: 1;
-
-        border: 0;
-
-        background: white;
-    }
-
-    /* Fullscreen state */
-
-    .iframe-container:fullscreen {
-        width: 100vw;
-        height: 100vh;
-
-        margin: 0;
-
-        border: 0;
-    }
-
-    .iframe-container:fullscreen .proxy-toolbar {
-        height: 44px;
-        flex-basis: 44px;
-    }
-
-    /* =====================================================
-       GAMES
-       ===================================================== */
-
-    .section-header {
-        margin-bottom: 20px;
-    }
-
-    .section-header h2 {
-        margin: 0 0 5px;
-
-        font-size: 29px;
-    }
-
-    .section-header p {
-        margin: 0;
-
-        color: var(--muted);
-
-        font-size: 13px;
-    }
-
-    .games-tools {
-        display: flex;
-
-        gap: 9px;
-
-        margin-bottom: 18px;
-    }
-
-    #gameSearch {
-        flex: 1;
-
-        min-width: 0;
-
-        padding: 12px 14px;
-
-        color: var(--text);
-
-        background: #030703;
-
-        border: 1px solid var(--border);
-
-        border-radius: 0;
-
-        outline: none;
-    }
-
-    #gameSearch:focus {
-        border-color: var(--border-bright);
-    }
-
-    .game-count {
-        display: flex;
-        align-items: center;
-
-        padding: 0 14px;
-
-        color: var(--green);
-
-        border: 1px solid var(--border);
-
-        font-size: 11px;
-        font-weight: 900;
-    }
-
-    .games-grid {
-        display: grid;
-
-        grid-template-columns:
-            repeat(auto-fill, minmax(220px, 1fr));
-
-        gap: 12px;
-    }
-
-    .game-card {
-        padding: 18px;
-
-        background: var(--panel);
-
-        border:
-            1px solid var(--border);
-
-        border-radius: 0;
-
-        transition: .18s;
-
-        position: relative;
-    }
-
-    .game-card:hover {
-        transform: translateY(-2px);
-
-        background: var(--panel2);
-
-        border-color:
-            var(--border-bright);
-
-        box-shadow:
-            0 12px 30px rgba(0,0,0,.3);
-    }
-
-    .game-icon {
-        width: 42px;
-        height: 42px;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        margin-bottom: 13px;
-
-        color: var(--green);
-
-        background:
-            rgba(0,255,102,.055);
-
-        border:
-            1px solid var(--border);
-
-        border-radius: 0;
-
-        font-size: 19px;
-    }
-
-    .game-card h3 {
-        margin: 0 0 6px;
-
-        font-size: 16px;
-    }
-
-    .game-card p {
-        min-height: 36px;
-
-        margin: 0 0 15px;
-
-        color: var(--muted);
-
-        font-size: 11px;
-
-        line-height: 1.5;
-    }
-
-    .game-card button {
-        width: 100%;
-
-        padding: 10px;
-
-        color: var(--green);
-
-        background:
-            rgba(0,255,102,.045);
-
-        border:
-            1px solid var(--border);
-
-        border-radius: 0;
-
-        font-size: 11px;
-        font-weight: 900;
-
-        transition: .15s;
-    }
-
-    .game-card button:hover {
-        background:
-            rgba(0,255,102,.1);
-
-        border-color:
-            var(--border-bright);
-
-        box-shadow:
-            inset 3px 0 0 var(--green);
-    }
-
-    .joke-card {
-        margin-top: 18px;
-
-        padding: 17px;
-
-        color: var(--green-soft);
-
-        background:
-            rgba(0,255,102,.025);
-
-        border:
-            1px solid var(--border);
-
-        border-radius: 0;
-
-        font-size: 12px;
-
-        text-align: center;
-    }
-
-    /* =====================================================
-       EMPTY STATE
-       ===================================================== */
-
-    .empty-state {
-        grid-column: 1 / -1;
-
-        padding: 45px;
-
-        text-align: center;
-
-        color: var(--muted);
-
-        border:
-            1px dashed var(--border);
-    }
-
-    .empty-state strong {
-        display: block;
-
-        margin-bottom: 7px;
-
-        color: var(--green);
-    }
-
-    /* =====================================================
-       MOBILE
-       ===================================================== */
-
-    @media (max-width: 700px) {
-
-        .topbar {
-            padding: 0 12px;
+            --red: #ff526f;
         }
 
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
+            overflow: hidden;
+
+            color: var(--text);
+
+            font-family:
+                Inter,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            background:
+                radial-gradient(
+                    circle at 10% 10%,
+                    rgba(0,255,102,.055),
+                    transparent 28%
+                ),
+                radial-gradient(
+                    circle at 90% 90%,
+                    rgba(0,255,102,.04),
+                    transparent 30%
+                ),
+                var(--bg);
+        }
+
+
+        /* =====================================================
+           LOGIN
+           ===================================================== */
+
+        #loginScreen {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 20px;
+
+            background:
+                linear-gradient(
+                    rgba(0,255,102,.025) 1px,
+                    transparent 1px
+                ),
+                linear-gradient(
+                    90deg,
+                    rgba(0,255,102,.025) 1px,
+                    transparent 1px
+                ),
+                var(--bg);
+
+            background-size: 42px 42px;
+        }
+
+
+        .login-box {
+            width: min(430px, 100%);
+            padding: 36px;
+
+            background: rgba(7,14,9,.95);
+
+            border: 1px solid var(--border);
+
+            /* Sharp cyberpunk corners */
+            border-radius: 0;
+
+            box-shadow:
+                0 0 80px rgba(0,255,102,.07),
+                inset 0 0 35px rgba(0,255,102,.015);
+
+            backdrop-filter: blur(15px);
+        }
+
+
+        .fern-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+
+        .fern-icon {
+            width: 44px;
+            height: 44px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            color: var(--green);
+
+            border: 1px solid var(--border-bright);
+
+            border-radius: 0;
+
+            font-size: 23px;
+
+            box-shadow:
+                0 0 20px rgba(0,255,102,.08);
+        }
+
+
+        .fern-logo h1 {
+            margin: 0;
+
+            font-size: 31px;
+            letter-spacing: -1.5px;
+        }
+
+
+        .fern-logo h1 span {
+            color: var(--green);
+
+            text-shadow:
+                0 0 15px rgba(0,255,102,.35);
+        }
+
+
+        .login-subtitle {
+            margin: 0 0 28px;
+
+            color: var(--muted);
+
+            font-size: 13px;
+        }
+
+
+        .field-label {
+            display: block;
+
+            margin-bottom: 7px;
+
+            color: var(--muted);
+
+            font-size: 11px;
+            font-weight: 800;
+
+            letter-spacing: .13em;
+
+            text-transform: uppercase;
+        }
+
+
+        #passwordInput {
+            width: 100%;
+
+            padding: 13px 14px;
+
+            color: var(--text);
+
+            background: #030703;
+
+            border: 1px solid var(--border);
+
+            border-radius: 0;
+
+            outline: none;
+
+            transition: .2s;
+        }
+
+
+        #passwordInput:focus {
+            border-color: var(--border-bright);
+
+            box-shadow:
+                0 0 0 3px rgba(0,255,102,.06);
+        }
+
+
+        #loginButton {
+            width: 100%;
+
+            margin-top: 14px;
+
+            padding: 13px;
+
+            color: #001b08;
+
+            background: var(--green);
+
+            border: 0;
+
+            border-radius: 0;
+
+            font-weight: 900;
+
+            cursor: pointer;
+
+            transition: .2s;
+        }
+
+
+        #loginButton:hover {
+            transform: translateY(-1px);
+
+            box-shadow:
+                0 0 25px rgba(0,255,102,.2);
+        }
+
+
+        #loginButton:active {
+            transform: translateY(0);
+        }
+
+
+        #loginError {
+            min-height: 20px;
+
+            margin-top: 12px;
+
+            color: var(--red);
+
+            font-size: 12px;
+
+            text-align: center;
+        }
+
+
+        .login-joke {
+            margin-top: 22px;
+            padding-top: 17px;
+
+            border-top:
+                1px solid rgba(255,255,255,.05);
+
+            color: var(--muted);
+
+            font-size: 12px;
+
+            text-align: center;
+
+            line-height: 1.5;
+        }
+
+
+        /* =====================================================
+           APPLICATION
+           ===================================================== */
+
+        #app {
+            display: none;
+
+            width: 100%;
+            height: 100%;
+        }
+
+
+        .topbar {
+            height: 64px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 20px;
+
+            background:
+                rgba(3,8,4,.92);
+
+            border-bottom:
+                1px solid var(--border);
+
+            backdrop-filter: blur(14px);
+        }
+
+
         .brand {
+            display: flex;
+            align-items: center;
+
+            gap: 9px;
+
+            font-size: 20px;
+            font-weight: 900;
+        }
+
+
+        .brand-icon {
+            color: var(--green);
+
+            text-shadow:
+                0 0 14px rgba(0,255,102,.5);
+        }
+
+
+        .nav {
+            display: flex;
+            gap: 5px;
+        }
+
+
+        .nav button {
+            padding: 9px 14px;
+
+            color: var(--muted);
+
+            background: transparent;
+
+            border: 1px solid transparent;
+
+            border-radius: 0;
+
+            font-weight: 750;
+
+            cursor: pointer;
+
+            transition: .18s;
+        }
+
+
+        .nav button:hover,
+        .nav button.active {
+            color: var(--green);
+
+            background:
+                rgba(0,255,102,.055);
+
+            border-color:
+                var(--border);
+        }
+
+
+        .online {
+            display: flex;
+            align-items: center;
+
+            gap: 8px;
+
+            color: var(--muted);
+
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+
+        .online-dot {
+            width: 7px;
+            height: 7px;
+
+            background: var(--green);
+
+            border-radius: 50%;
+
+            box-shadow:
+                0 0 12px var(--green);
+        }
+
+
+        /* =====================================================
+           CONTENT
+           ===================================================== */
+
+        .content {
+            width: 100%;
+            height: calc(100% - 64px);
+
+            overflow: auto;
+        }
+
+
+        .page {
+            display: none;
+
+            width: min(1200px, 100%);
+
+            margin: auto;
+
+            padding: 28px;
+        }
+
+
+        .page.active {
+            display: block;
+        }
+
+
+        /* =====================================================
+           PROXY
+           ===================================================== */
+
+        .hero {
+            padding: 30px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(0,255,102,.055),
+                    transparent 55%
+                ),
+                var(--panel);
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 0;
+        }
+
+
+        .hero h2 {
+            margin: 0 0 7px;
+
+            font-size: clamp(28px, 5vw, 46px);
+
+            letter-spacing: -2px;
+        }
+
+
+        .hero h2 span {
+            color: var(--green);
+
+            text-shadow:
+                0 0 20px rgba(0,255,102,.25);
+        }
+
+
+        .hero p {
+            margin: 0;
+
+            color: var(--muted);
+
+            font-size: 13px;
+        }
+
+
+        .proxy-controls {
+            display: flex;
+
+            gap: 9px;
+
+            margin-top: 21px;
+        }
+
+
+        #urlInput {
+            flex: 1;
+
+            min-width: 0;
+
+            padding: 13px 14px;
+
+            color: var(--text);
+
+            background: #030703;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 0;
+
+            outline: none;
+        }
+
+
+        #urlInput:focus {
+            border-color: var(--border-bright);
+
+            box-shadow:
+                0 0 0 3px rgba(0,255,102,.05);
+        }
+
+
+        #searchButton {
+            padding: 0 22px;
+
+            color: var(--green);
+
+            background:
+                rgba(0,255,102,.06);
+
+            border:
+                1px solid var(--border-bright);
+
+            border-radius: 0;
+
+            font-weight: 850;
+
+            cursor: pointer;
+
+            transition: .2s;
+        }
+
+
+        #searchButton:hover {
+            background:
+                rgba(0,255,102,.12);
+
+            box-shadow:
+                0 0 20px rgba(0,255,102,.07);
+        }
+
+
+        .iframe-container {
+            position: relative;
+
+            width: 100%;
+
+            height: calc(100vh - 192px);
+
+            min-height: 400px;
+
+            margin-top: 18px;
+
+            overflow: hidden;
+
+            background: #020402;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 0;
+        }
+
+
+        #iframeWindow {
+            width: 100%;
+            height: 100%;
+
+            border: 0;
+
+            background: white;
+        }
+
+
+        /* =====================================================
+           IFRAME TOOLBAR
+           ===================================================== */
+
+        .iframe-toolbar {
+            position: absolute;
+
+            top: 8px;
+            right: 8px;
+
+            z-index: 20;
+
+            display: flex;
+
+            gap: 5px;
+        }
+
+
+        .iframe-toolbar button {
+            width: 34px;
+            height: 30px;
+
+            color: var(--green);
+
+            background: rgba(3,8,4,.92);
+
+            border:
+                1px solid var(--border-bright);
+
+            border-radius: 0;
+
+            cursor: pointer;
+
+            font-size: 14px;
+
+            transition: .18s;
+        }
+
+
+        .iframe-toolbar button:hover {
+            background:
+                rgba(0,255,102,.12);
+
+            box-shadow:
+                0 0 15px rgba(0,255,102,.12);
+        }
+
+
+        /* =====================================================
+           GAMES
+           ===================================================== */
+
+        .section-header {
+            margin-bottom: 20px;
+        }
+
+
+        .section-header h2 {
+            margin: 0 0 5px;
+
+            font-size: 29px;
+        }
+
+
+        .section-header p {
+            margin: 0;
+
+            color: var(--muted);
+
+            font-size: 13px;
+        }
+
+
+        .games-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fill, minmax(220px, 1fr));
+
+            gap: 15px;
+        }
+
+
+        .game-card {
+            padding: 20px;
+
+            background: var(--panel);
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 0;
+
+            transition: .2s;
+        }
+
+
+        .game-card:hover {
+            transform: translateY(-3px);
+
+            background: var(--panel-hover);
+
+            border-color:
+                var(--border-bright);
+
+            box-shadow:
+                0 15px 35px rgba(0,0,0,.25);
+        }
+
+
+        .game-icon {
+            width: 45px;
+            height: 45px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            margin-bottom: 15px;
+
+            color: var(--green);
+
+            background:
+                rgba(0,255,102,.055);
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 0;
+
+            font-size: 20px;
+        }
+
+
+        .game-card h3 {
+            margin: 0 0 6px;
+
             font-size: 17px;
         }
 
-        .online {
-            display: none;
+
+        .game-card p {
+            margin: 0 0 17px;
+
+            color: var(--muted);
+
+            font-size: 12px;
+
+            line-height: 1.5;
         }
 
-        .nav button {
-            padding: 8px 10px;
+
+        .game-card a {
+            display: block;
+
+            padding: 10px;
+
+            color: var(--green);
+
+            background:
+                rgba(0,255,102,.045);
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 0;
+
+            text-align: center;
+
+            text-decoration: none;
+
+            font-size: 12px;
+            font-weight: 850;
+
+            transition: .2s;
         }
 
-        .page {
-            padding: 14px;
+
+        .game-card a:hover {
+            background:
+                rgba(0,255,102,.1);
+
+            border-color:
+                var(--border-bright);
         }
 
-        .hero {
-            padding: 21px;
+
+        .joke-card {
+            margin-top: 18px;
+
+            padding: 17px;
+
+            color: var(--green-soft);
+
+            background:
+                rgba(0,255,102,.025);
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 0;
+
+            font-size: 12px;
+
+            text-align: center;
         }
 
-        .proxy-controls {
-            grid-template-columns: 1fr;
-        }
 
-        #searchButton {
-            padding: 12px;
-        }
+        /* =====================================================
+           MOBILE
+           ===================================================== */
 
-        .iframe-container {
-            height: calc(100vh - 310px);
-        }
+        @media (max-width: 700px) {
 
-        .proxy-status {
-            display: none;
-        }
+            .topbar {
+                padding: 0 12px;
+            }
 
-        .proxy-button {
-            padding: 0 7px;
-        }
+            .online {
+                display: none;
+            }
 
-        .games-tools {
-            flex-direction: column;
-        }
+            .page {
+                padding: 14px;
+            }
 
-        .game-count {
-            min-height: 38px;
-            justify-content: center;
-        }
-    }
-</style>
-```
+            .hero {
+                padding: 21px;
+            }
 
+            .proxy-controls {
+                flex-direction: column;
+            }
+
+            #searchButton {
+                padding: 12px;
+            }
+
+            .iframe-container {
+                height: calc(100vh - 265px);
+            }
+
+        }
+    </style>
 </head>
+
 
 <body>
 
+
 <!-- =========================================================
-     LOGIN
+     LOGIN SCREEN
      ========================================================= -->
 
 <div id="loginScreen">
 
-```
-<div class="login-box">
+    <div class="login-box">
 
-    <div class="fern-logo">
+        <div class="fern-logo">
 
-        <div class="fern-icon">🌿</div>
+            <div class="fern-icon">
+                🌿
+            </div>
 
-        <h1>
-            Fern<span>.</span>
-        </h1>
+            <h1>
+                Fern<span>.</span>
+            </h1>
+
+        </div>
+
+
+        <p class="login-subtitle">
+            Welcome back, mysterious internet person.
+        </p>
+
+
+        <label
+            class="field-label"
+            for="passwordInput"
+        >
+            Authentication
+        </label>
+
+
+        <input
+            type="password"
+            id="passwordInput"
+            placeholder="Enter passcode..."
+            autocomplete="current-password"
+        >
+
+
+        <button id="loginButton">
+            Enter Fern
+        </button>
+
+
+        <div id="loginError"></div>
+
+
+        <div
+            class="login-joke"
+            id="loginJoke"
+        >
+            The fern is judging your password.
+        </div>
 
     </div>
 
-    <p class="login-subtitle">
-        Welcome back, mysterious internet person.
-    </p>
-
-    <label class="field-label" for="passwordInput">
-        Authentication
-    </label>
-
-    <input
-        type="password"
-        id="passwordInput"
-        placeholder="Enter passcode..."
-        autocomplete="current-password"
-    >
-
-    <button id="loginButton">
-        ENTER FERN
-    </button>
-
-    <div id="loginError"></div>
-
-    <div class="login-joke" id="loginJoke">
-        The fern is judging your password.
-    </div>
-
 </div>
-```
 
-</div>
+
 
 <!-- =========================================================
-     APPLICATION
+     MAIN APPLICATION
      ========================================================= -->
 
 <div id="app">
 
-```
-<header class="topbar">
 
-    <div class="brand">
-        <span class="brand-icon">🌿</span>
-        FERN
-    </div>
+    <!-- TOP BAR -->
 
-    <nav class="nav">
+    <header class="topbar">
 
-        <button
-            class="nav-button active"
-            data-page="proxy"
-        >
-            PROXY
-        </button>
-
-        <button
-            class="nav-button"
-            data-page="games"
-        >
-            GAMES
-        </button>
-
-    </nav>
-
-    <div class="online">
-
-        <span class="online-dot"></span>
-
-        SYSTEM ONLINE
-
-    </div>
-
-</header>
-
-
-<main class="content">
-
-    <!-- =================================================
-         PROXY
-         ================================================= -->
-
-    <section
-        class="page active"
-        id="proxyPage"
-    >
-
-        <div class="hero">
-
-            <h2>
-                Welcome to <span>Fern</span>
-            </h2>
-
-            <p id="welcomeJoke">
-                Loading questionable technology...
-            </p>
-
-            <div class="proxy-controls">
-
-                <input
-                    type="text"
-                    id="urlInput"
-                    placeholder="Enter URL here..."
-                    autocomplete="off"
-                    spellcheck="false"
-                >
-
-                <button id="searchButton">
-                    LAUNCH
-                </button>
-
-            </div>
-
+        <div class="brand">
+            <span class="brand-icon">🌿</span>
+            Fern
         </div>
 
 
-        <div
-            class="iframe-container"
-            id="proxyContainer"
-        >
+        <nav class="nav">
 
-            <div class="proxy-toolbar">
-
-                <span class="proxy-title">
-                    FERN // BROWSER
-                </span>
-
-                <span class="proxy-status">
-                    <span class="status-dot"></span>
-                    READY
-                </span>
-
-                <button
-                    class="proxy-button"
-                    id="backButton"
-                    title="Go back"
-                >
-                    ◀
-                </button>
-
-                <button
-                    class="proxy-button"
-                    id="forwardButton"
-                    title="Go forward"
-                >
-                    ▶
-                </button>
-
-                <button
-                    class="proxy-button"
-                    id="reloadButton"
-                    title="Reload"
-                >
-                    ↻
-                </button>
-
-                <button
-                    class="proxy-button"
-                    id="homeButton"
-                    title="Clear browser"
-                >
-                    HOME
-                </button>
-
-                <button
-                    class="proxy-button"
-                    id="fullscreenButton"
-                    title="Fullscreen"
-                >
-                    ⛶ FULLSCREEN
-                </button>
-
-            </div>
-
-            <iframe
-                id="iframeWindow"
-                title="Fern Browser"
-                allow="fullscreen; autoplay"
-                allowfullscreen
-            ></iframe>
-
-        </div>
-
-    </section>
-
-
-    <!-- =================================================
-         GAMES
-         ================================================= -->
-
-    <section
-        class="page"
-        id="gamesPage"
-    >
-
-        <div class="section-header">
-
-            <h2>Games</h2>
-
-            <p>
-                A completely reasonable collection of buttons.
-            </p>
-
-        </div>
-
-
-        <div class="games-tools">
-
-            <input
-                type="search"
-                id="gameSearch"
-                placeholder="Search games..."
-                autocomplete="off"
+            <button
+                class="nav-button active"
+                data-page="proxy"
             >
+                Proxy
+            </button>
+
+            <button
+                class="nav-button"
+                data-page="games"
+            >
+                Games
+            </button>
+
+        </nav>
+
+
+        <div class="online">
+
+            <span class="online-dot"></span>
+
+            SYSTEM ONLINE
+
+        </div>
+
+    </header>
+
+
+
+    <!-- CONTENT -->
+
+    <main class="content">
+
+
+        <!-- =================================================
+             PROXY PAGE
+             ================================================= -->
+
+        <section
+            class="page active"
+            id="proxyPage"
+        >
+
+            <div class="hero">
+
+                <h2>
+                    Welcome to <span>Fern</span>
+                </h2>
+
+
+                <p id="welcomeJoke">
+                    Loading questionable technology...
+                </p>
+
+
+                <div class="proxy-controls">
+
+                    <input
+                        type="text"
+                        id="urlInput"
+                        placeholder="Enter URL here..."
+                        autocomplete="off"
+                    >
+
+
+                    <button id="searchButton">
+                        Launch
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="iframe-container">
+
+                <div class="iframe-toolbar">
+
+                    <button
+                        id="fullscreenButton"
+                        title="Fullscreen"
+                    >
+                        ⛶
+                    </button>
+
+                    <button
+                        id="reloadButton"
+                        title="Reload"
+                    >
+                        ↻
+                    </button>
+
+                </div>
+
+
+                <iframe
+                    id="iframeWindow"
+                    title="Fern"
+                    allow="fullscreen"
+                    allowfullscreen
+                ></iframe>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             GAMES PAGE
+             ================================================= -->
+
+        <section
+            class="page"
+            id="gamesPage"
+        >
+
+            <div class="section-header">
+
+                <h2>
+                    Games
+                </h2>
+
+                <p>
+                    A completely reasonable collection of buttons.
+                </p>
+
+            </div>
+
+
+            <div class="games-grid">
+
+
+                <!-- now.gg -->
+
+                <div class="game-card">
+
+                    <div class="game-icon">
+                        🎮
+                    </div>
+
+
+                    <h3>
+                        now.gg
+                    </h3>
+
+
+                    <p>
+                        Cloud gaming.
+                        Because apparently your computer
+                        wasn't invited.
+                    </p>
+
+
+                    <a
+                        href="https://nowgg.fun"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Open now.gg →
+                    </a>
+
+                </div>
+
+
+
+                <!-- itch.io -->
+
+                <div class="game-card">
+
+                    <div class="game-icon">
+                        🕹️
+                    </div>
+
+
+                    <h3>
+                        itch.io
+                    </h3>
+
+
+                    <p>
+                        Indie games, experiments,
+                        and wonderfully weird stuff.
+                    </p>
+
+
+                    <a
+                        href="https://itch.io"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Open itch.io →
+                    </a>
+
+                </div>
+
+
+            </div>
+
 
             <div
-                class="game-count"
-                id="gameCount"
+                class="joke-card"
+                id="gameJoke"
             >
-                1 GAME
+                Fern is calculating how many games
+                you can procrastinate with.
             </div>
 
-        </div>
+        </section>
 
-
-        <div
-            class="games-grid"
-            id="gamesGrid"
-        ></div>
-
-
-        <div
-            class="joke-card"
-            id="gameJoke"
-        >
-            Fern is calculating how many games you can procrastinate with.
-        </div>
-
-    </section>
-
-</main>
-```
+    </main>
 
 </div>
+
+
 
 <script>
 
@@ -1301,13 +1131,15 @@ const AUTH_KEY = "fern_authenticated";
 const COOKIE_NAME = "FernAuth";
 
 
+
 /* ============================================================
-   AUTHENTICATION
+   COOKIE AUTHENTICATION
    ============================================================ */
 
 function setAuthCookie() {
 
-    const maxAge = 60 * 60 * 24 * 365 * 20;
+    const maxAge =
+        60 * 60 * 24 * 365 * 20;
 
     document.cookie =
         COOKIE_NAME +
@@ -1322,12 +1154,20 @@ function hasAuthCookie() {
 
     return document.cookie
         .split(";")
-        .some(cookie =>
-            cookie.trim() ===
-            COOKIE_NAME + "=authenticated"
-        );
+        .some(cookie => {
+
+            return cookie.trim() ===
+                COOKIE_NAME + "=authenticated";
+
+        });
+
 }
 
+
+
+/* ============================================================
+   LOCAL STORAGE
+   ============================================================ */
 
 function saveLocalAuthentication() {
 
@@ -1345,6 +1185,7 @@ function saveLocalAuthentication() {
         );
 
     }
+
 }
 
 
@@ -1360,8 +1201,14 @@ function hasLocalAuthentication() {
         return false;
 
     }
+
 }
 
+
+
+/* ============================================================
+   AUTH STATE
+   ============================================================ */
 
 function isAuthenticated() {
 
@@ -1379,6 +1226,7 @@ function showApplication() {
         "loginScreen"
     ).style.display = "none";
 
+
     document.getElementById(
         "app"
     ).style.display = "block";
@@ -1392,6 +1240,7 @@ function showLogin() {
         "loginScreen"
     ).style.display = "flex";
 
+
     document.getElementById(
         "app"
     ).style.display = "none";
@@ -1399,12 +1248,18 @@ function showLogin() {
 }
 
 
+
+/* ============================================================
+   LOGIN
+   ============================================================ */
+
 function authenticate() {
 
     const input =
         document.getElementById(
             "passwordInput"
         );
+
 
     const error =
         document.getElementById(
@@ -1438,12 +1293,14 @@ function authenticate() {
 }
 
 
+
 document
     .getElementById("loginButton")
     .addEventListener(
         "click",
         authenticate
     );
+
 
 
 document
@@ -1453,11 +1310,14 @@ document
         event => {
 
             if (event.key === "Enter") {
+
                 authenticate();
+
             }
 
         }
     );
+
 
 
 /* ============================================================
@@ -1519,8 +1379,9 @@ navButtons.forEach(button => {
 });
 
 
+
 /* ============================================================
-   BROWSER / IFRAME
+   URL LAUNCHER
    ============================================================ */
 
 const urlInput =
@@ -1535,24 +1396,22 @@ const iframeWindow =
     );
 
 
-const proxyContainer =
-    document.getElementById(
-        "proxyContainer"
-    );
+function launchURL() {
 
+    let url =
+        urlInput.value.trim();
 
-function normalizeURL(value) {
-
-    let url = value.trim();
 
     if (!url) {
-        return null;
+
+        return;
+
     }
+
 
     if (
         !url.startsWith("http://") &&
-        !url.startsWith("https://") &&
-        !url.startsWith("file://")
+        !url.startsWith("https://")
     ) {
 
         url =
@@ -1560,26 +1419,49 @@ function normalizeURL(value) {
 
     }
 
-    return url;
-}
 
+    /*
+     * Use the existing UV configuration
+     * when it is available.
+     *
+     * This is retained as part of the existing
+     * Fern project architecture.
+     */
 
-function launchURL() {
+    if (
+        typeof __uv$config !== "undefined" &&
+        typeof __uv$config.prefix === "string" &&
+        typeof __uv$config.encodeUrl === "function"
+    ) {
 
-    const url =
-        normalizeURL(
-            urlInput.value
-        );
+        try {
 
+            iframeWindow.src =
+                __uv$config.prefix +
+                __uv$config.encodeUrl(url);
 
-    if (!url) {
-        return;
+            return;
+
+        } catch (error) {
+
+            console.warn(
+                "UV URL encoding failed:",
+                error
+            );
+
+        }
+
     }
 
+
+    /*
+     * Basic fallback.
+     */
 
     iframeWindow.src = url;
 
 }
+
 
 
 document
@@ -1595,15 +1477,18 @@ urlInput.addEventListener(
     event => {
 
         if (event.key === "Enter") {
+
             launchURL();
+
         }
 
     }
 );
 
 
+
 /* ============================================================
-   PROXY BUTTONS
+   IFRAME RELOAD
    ============================================================ */
 
 document
@@ -1612,141 +1497,78 @@ document
         "click",
         () => {
 
-            try {
+            if (iframeWindow.src) {
 
                 iframeWindow.contentWindow.location.reload();
 
-            } catch {
-
-                iframeWindow.src =
-                    iframeWindow.src;
-
             }
 
         }
     );
 
-
-document
-    .getElementById("backButton")
-    .addEventListener(
-        "click",
-        () => {
-
-            try {
-
-                iframeWindow.contentWindow.history.back();
-
-            } catch {
-
-                console.warn(
-                    "Back navigation is unavailable."
-                );
-
-            }
-
-        }
-    );
-
-
-document
-    .getElementById("forwardButton")
-    .addEventListener(
-        "click",
-        () => {
-
-            try {
-
-                iframeWindow.contentWindow.history.forward();
-
-            } catch {
-
-                console.warn(
-                    "Forward navigation is unavailable."
-                );
-
-            }
-
-        }
-    );
-
-
-document
-    .getElementById("homeButton")
-    .addEventListener(
-        "click",
-        () => {
-
-            iframeWindow.src =
-                "about:blank";
-
-            urlInput.value = "";
-
-        }
-    );
 
 
 /* ============================================================
    FULLSCREEN
    ============================================================ */
 
-const fullscreenButton =
-    document.getElementById(
-        "fullscreenButton"
-    );
+document
+    .getElementById("fullscreenButton")
+    .addEventListener(
+        "click",
+        async () => {
+
+            const container =
+                document.querySelector(
+                    ".iframe-container"
+                );
 
 
-async function toggleFullscreen() {
+            try {
 
-    try {
+                if (!document.fullscreenElement) {
 
-        if (document.fullscreenElement) {
+                    await container.requestFullscreen();
 
-            await document.exitFullscreen();
+                } else {
 
-            return;
+                    await document.exitFullscreen();
+
+                }
+
+            } catch (error) {
+
+                console.warn(
+                    "Fullscreen unavailable:",
+                    error
+                );
+
+            }
 
         }
+    );
 
-
-        await proxyContainer.requestFullscreen({
-            navigationUI: "hide"
-        });
-
-    } catch (error) {
-
-        console.error(
-            "Fern fullscreen error:",
-            error
-        );
-
-    }
-
-}
-
-
-fullscreenButton.addEventListener(
-    "click",
-    toggleFullscreen
-);
 
 
 document.addEventListener(
     "fullscreenchange",
     () => {
 
-        if (
-            document.fullscreenElement ===
-            proxyContainer
-        ) {
+        const button =
+            document.getElementById(
+                "fullscreenButton"
+            );
 
-            fullscreenButton.textContent =
-                "✕ EXIT FULLSCREEN";
+
+        if (document.fullscreenElement) {
+
+            button.textContent = "✕";
+            button.title = "Exit fullscreen";
 
         } else {
 
-            fullscreenButton.textContent =
-                "⛶ FULLSCREEN";
+            button.textContent = "⛶";
+            button.title = "Fullscreen";
 
         }
 
@@ -1754,232 +1576,61 @@ document.addEventListener(
 );
 
 
+
 /* ============================================================
-   KEYBOARD SHORTCUT
+   UV SERVICE WORKER
    ============================================================ */
 
-document.addEventListener(
-    "keydown",
-    event => {
+if ("serviceWorker" in navigator) {
 
-        if (
-            event.key === "F11" &&
-            document.activeElement !== urlInput &&
-            document.activeElement !==
-                document.getElementById("gameSearch")
-        ) {
+    window.addEventListener(
+        "load",
+        () => {
 
-            event.preventDefault();
+            if (
+                typeof __uv$config !== "undefined" &&
+                __uv$config.prefix
+            ) {
 
-            toggleFullscreen();
+                navigator.serviceWorker
+                    .register(
+                        "/uv/sw.js",
+                        {
+                            scope:
+                                __uv$config.prefix
+                        }
+                    )
+                    .catch(error => {
+
+                        console.warn(
+                            "UV service worker registration failed:",
+                            error
+                        );
+
+                    });
+
+            }
 
         }
-
-    }
-);
-
-
-/* ============================================================
-   GAMES
-   ============================================================ */
-
-/*
- * These are example entries intended for games you host
- * yourself or are authorized to embed.
- *
- * Replace the URLs with your permitted game locations.
- */
-
-const games = [
-
-    {
-        name: "Neon Runner",
-        icon: "🏃",
-        description: "Fast arcade running.",
-        url: "./games/neon-runner/index.html"
-    },
-
-    {
-        name: "Block Lab",
-        icon: "🧱",
-        description: "Build and experiment.",
-        url: "./games/block-lab/index.html"
-    },
-
-    {
-        name: "Pixel Quest",
-        icon: "⚔️",
-        description: "A tiny pixel adventure.",
-        url: "./games/pixel-quest/index.html"
-    },
-
-    {
-        name: "Space Drift",
-        icon: "🚀",
-        description: "Pilot through deep space.",
-        url: "./games/space-drift/index.html"
-    },
-
-    {
-        name: "Circuit Rush",
-        icon: "⚡",
-        description: "Race through neon circuits.",
-        url: "./games/circuit-rush/index.html"
-    },
-
-    {
-        name: "Fern Chess",
-        icon: "♟️",
-        description: "Strategic plant-powered chess.",
-        url: "./games/fern-chess/index.html"
-    }
-
-];
-
-
-/* ============================================================
-   GAME RENDERING
-   ============================================================ */
-
-const gamesGrid =
-    document.getElementById(
-        "gamesGrid"
     );
-
-
-const gameSearch =
-    document.getElementById(
-        "gameSearch"
-    );
-
-
-const gameCount =
-    document.getElementById(
-        "gameCount"
-    );
-
-
-function openGame(game) {
-
-    iframeWindow.src = game.url;
-
-    urlInput.value = game.url;
-
-
-    document
-        .querySelector(
-            '[data-page="proxy"]'
-        )
-        .click();
 
 }
 
 
-function renderGames() {
-
-    const query =
-        gameSearch.value
-            .trim()
-            .toLowerCase();
-
-
-    const filtered =
-        games.filter(game =>
-            game.name
-                .toLowerCase()
-                .includes(query)
-        );
-
-
-    gameCount.textContent =
-        filtered.length +
-        (filtered.length === 1
-            ? " GAME"
-            : " GAMES");
-
-
-    gamesGrid.innerHTML = "";
-
-
-    if (!filtered.length) {
-
-        gamesGrid.innerHTML = `
-            <div class="empty-state">
-                <strong>NO MATCHES</strong>
-                Fern couldn't find that game.
-            </div>
-        `;
-
-        return;
-
-    }
-
-
-    filtered.forEach(game => {
-
-        const card =
-            document.createElement(
-                "div"
-            );
-
-        card.className =
-            "game-card";
-
-
-        card.innerHTML = `
-            <div class="game-icon">
-                ${game.icon}
-            </div>
-
-            <h3>
-                ${game.name}
-            </h3>
-
-            <p>
-                ${game.description}
-            </p>
-
-            <button>
-                OPEN IN FERN →
-            </button>
-        `;
-
-
-        card
-            .querySelector("button")
-            .addEventListener(
-                "click",
-                () => openGame(game)
-            );
-
-
-        gamesGrid.appendChild(card);
-
-    });
-
-}
-
-
-gameSearch.addEventListener(
-    "input",
-    renderGames
-);
-
-
-renderGames();
-
 
 /* ============================================================
-   JOKES
+   FERN JOKE DATABASE
    ============================================================ */
 
 const jokes = [
 
     "Fern has detected a severe case of having nothing better to do.",
 
-    "404: Productivity not found.",
+    "404: Productivity not found. We weren't looking very hard.",
 
     "The fern has been watered. Unfortunately, your grades haven't.",
+
+    "Please wait while Fern pretends this is a highly advanced system.",
 
     "System status: green. Brain status: questionable.",
 
@@ -1987,29 +1638,89 @@ const jokes = [
 
     "Congratulations! You have successfully avoided doing something productive.",
 
-    "Initializing unnecessary amounts of green.",
+    "The FBI called. They want their loading screen back.",
+
+    "Loading premium procrastination technology...",
+
+    "Your computer has been legally declared a plant.",
+
+    "Fern has 16 GB of RAM and absolutely no idea what to do with it.",
 
     "Deploying tactical leaves.",
+
+    "The server room is just one guy named Steve with a watering can.",
 
     "Warning: excessive levels of silliness detected.",
 
     "Fern recommends touching grass. Fern IS grass.",
 
-    "The server room is just one guy named Steve with a watering can.",
+    "Compiling... 3%. Compiling... 3%. Compiling... 3%.",
+
+    "The website is loading because the hamster powering the server fell asleep.",
 
     "Somewhere, a developer just forgot a semicolon.",
 
     "Achievement unlocked: You clicked a button.",
 
-    "Please do not feed the JavaScript.",
+    "Initializing unnecessary amounts of green.",
 
-    "Breaking news: local plant discovers Wi-Fi.",
-
-    "Loading... because apparently computers enjoy suspense.",
+    "Cyberpunk, but the cyberpunk is a houseplant.",
 
     "Fern has entered maximum leaf mode.",
 
-    "Productivity has left the chat.",
+    "Your browser called in sick. Fern is covering its shift.",
+
+    "The internet is made of tubes. Fern is made of leaves. This is science.",
+
+    "Please do not feed the JavaScript.",
+
+    "Fern has successfully connected to the internet. The fern is now unstoppable.",
+
+    "Breaking news: local plant discovers Wi-Fi.",
+
+    "If this doesn't work, simply blame DNS. Nobody knows what DNS does anyway.",
+
+    "Loading... because apparently computers enjoy suspense.",
+
+    "The green glow makes it 73% faster. This is definitely real.",
+
+    "Fern's security system consists of one extremely angry squirrel.",
+
+    "Authentication successful. The plant council has approved you.",
+
+    "Fern has reviewed your browsing history. Fern is disappointed.",
+
+    "Please remain calm. The leaves are under control.",
+
+    "Running advanced calculations... 2 + 2 = probably 5.",
+
+    "This interface was designed by someone who really likes rectangles.",
+
+    "Fern is currently negotiating with the CPU.",
+
+    "No pixels were harmed in the making of this website.",
+
+    "The matrix has been contacted. They asked us to stop calling.",
+
+    "Congratulations, you've reached the part of the internet with more plants.",
+
+    "Fern's GPU is just a leaf taped to the motherboard.",
+
+    "Your session has been photosynthesized.",
+
+    "Downloading more RAM... please hold.",
+
+    "The Wi-Fi signal is strong because Fern believes in you.",
+
+    "Fern has achieved sentience. Fern wants snacks.",
+
+    "ERROR 418: I'm a teapot. Fern is a plant.",
+
+    "Installing update: absolutely nothing.",
+
+    "The fern knows where you live. It is a plant, so it probably forgot.",
+
+    "Please enjoy the cyberpunk aesthetic while we accomplish absolutely nothing.",
 
     "Fern OS: 99% vibes, 1% functional code.",
 
@@ -2017,26 +1728,31 @@ const jokes = [
 
     "Have you tried turning the fern off and on again?",
 
-    "The plants have unionized. Please direct all complaints to management.",
+    "Your browser has entered the leafy dimension.",
+
+    "The password was correct. The fern is proud of you.",
+
+    "One does not simply walk into Fern.",
 
     "Fern has calculated your gaming session will last approximately forever.",
 
-    "The green glow makes it 73% faster. This is definitely real.",
+    "Productivity has left the chat.",
 
-    "Cyberpunk, but the cyberpunk is a houseplant.",
+    "This website contains trace amounts of responsibility.",
 
-    "Fern has achieved sentience. Fern wants snacks.",
+    "Warning: Fern may spontaneously become cooler.",
 
-    "Installing update: absolutely nothing.",
+    "The plants have unionized. Please direct all complaints to management.",
 
-    "Your browser has entered the leafy dimension.",
-
-    "Fern is currently negotiating with the CPU.",
-
-    "The matrix has been contacted. They asked us to stop calling."
+    "Fern has no idea what it's doing, but it looks cool doing it."
 
 ];
 
+
+
+/* ============================================================
+   RANDOM JOKES
+   ============================================================ */
 
 function randomJoke() {
 
@@ -2068,17 +1784,23 @@ function randomJoke() {
 
 
     if (welcome) {
+
         welcome.textContent = joke;
+
     }
 
 
     if (login) {
+
         login.textContent = joke;
+
     }
 
 
     if (game) {
+
         game.textContent = joke;
+
     }
 
 }
@@ -2090,8 +1812,9 @@ setInterval(
 );
 
 
+
 /* ============================================================
-   START
+   START FERN
    ============================================================ */
 
 if (isAuthenticated()) {
