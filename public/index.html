@@ -6,7 +6,7 @@
 
     <title>Fern</title>
 
-    <meta name="fern-version" content="1.0.3">
+    <meta name="fern-version" content="1.0.4">
 
     <!-- UV -->
     <script src="/uv/uv.bundle.js"></script>
@@ -1040,7 +1040,7 @@
         </div>
 
         <div class="version-indicator" title="Fern build version">
-            BUILD <span id="fernVersion">v1.0.3</span>
+            BUILD <span id="fernVersion">v1.0.4</span>
         </div>
 
     </header>
@@ -1210,7 +1210,7 @@
 
                     <a
                         href="#"
-                        onclick="launchURL('https://itch.io'); return false;"
+                        onclick="openInProxy('https://itch.io'); return false;"
                     >
                         Open itch.io →
                     </a>
@@ -1497,6 +1497,25 @@ navButtons.forEach(button => {
 
 });
 
+
+
+/* ============================================================
+   GAME / SITE SHORTCUTS
+   ============================================================ */
+
+function openInProxy(targetURL) {
+
+    const proxyButton =
+        document.querySelector(
+            '.nav-button[data-page="proxy"]'
+        );
+
+    if (proxyButton) {
+        proxyButton.click();
+    }
+
+    launchURL(targetURL);
+}
 
 
 /* ============================================================
