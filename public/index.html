@@ -6,7 +6,7 @@
 
     <title>Fern</title>
 
-    <meta name="fern-version" content="1.1.2">
+    <meta name="fern-version" content="1.1.3">
 
     <!-- UV -->
     <script src="/uv/uv.bundle.js"></script>
@@ -1621,6 +1621,233 @@
             }
         }
 
+
+        /* =====================================================
+           FERN 1.1.3 THEME NORMALIZATION
+           Make every major surface actually follow the selected
+           palette instead of retaining Fern-green hardcoded panels.
+           ===================================================== */
+
+        body[data-theme="midnight"],
+        body[data-theme="amber"],
+        body[data-theme="ice"],
+        body[data-theme="violet"],
+        body[data-theme="rose"],
+        body[data-theme="mono"],
+        body[data-theme="cyan"],
+        body[data-theme="light"],
+        body[data-theme="cyberpunk"] {
+            color-scheme: dark;
+        }
+
+        body[data-theme="light"] {
+            color-scheme: light;
+        }
+
+        body {
+            background:
+                radial-gradient(
+                    circle at 10% 10%,
+                    color-mix(in srgb, var(--green) 7%, transparent),
+                    transparent 28%
+                ),
+                radial-gradient(
+                    circle at 90% 90%,
+                    color-mix(in srgb, var(--green) 5%, transparent),
+                    transparent 30%
+                ),
+                var(--bg);
+        }
+
+        #loginScreen {
+            background:
+                linear-gradient(
+                    color-mix(in srgb, var(--green) 4%, transparent) 1px,
+                    transparent 1px
+                ),
+                linear-gradient(
+                    90deg,
+                    color-mix(in srgb, var(--green) 4%, transparent) 1px,
+                    transparent 1px
+                ),
+                var(--bg);
+        }
+
+        .login-box,
+        .settings-section {
+            background: color-mix(in srgb, var(--panel) 92%, transparent) !important;
+        }
+
+        #passwordInput,
+        #urlInput {
+            color: var(--text);
+            background: var(--bg) !important;
+        }
+
+        #loginButton,
+        .proxy-controls button {
+            color: var(--bg);
+            background: var(--green) !important;
+        }
+
+        .topbar {
+            background: color-mix(in srgb, var(--panel) 94%, transparent) !important;
+            border-color: var(--border) !important;
+        }
+
+        .nav {
+            background: color-mix(in srgb, var(--panel) 78%, transparent) !important;
+            border-color: var(--border) !important;
+        }
+
+        .nav button {
+            color: var(--muted);
+        }
+
+        .nav button:hover,
+        .nav button.active {
+            color: var(--green);
+            background: color-mix(in srgb, var(--green) 9%, var(--panel)) !important;
+            border-color: var(--border-bright) !important;
+        }
+
+        .online {
+            color: var(--muted);
+            background: color-mix(in srgb, var(--panel) 78%, transparent) !important;
+            border-color: var(--border) !important;
+        }
+
+        .hero {
+            background:
+                linear-gradient(
+                    135deg,
+                    color-mix(in srgb, var(--green) 7%, transparent),
+                    transparent 50%
+                ),
+                var(--panel) !important;
+            border-color: var(--border) !important;
+        }
+
+        .iframe-container {
+            background: var(--bg) !important;
+            border-color: var(--border) !important;
+        }
+
+        .iframe-container:fullscreen {
+            background: var(--bg) !important;
+        }
+
+        .iframe-toolbar button {
+            color: var(--green);
+            background: color-mix(in srgb, var(--panel) 94%, transparent) !important;
+            border-color: var(--border) !important;
+        }
+
+        .iframe-toolbar button:hover,
+        .iframe-toolbar button.holding {
+            color: var(--green);
+            background: var(--panel-hover) !important;
+            border-color: var(--border-bright) !important;
+        }
+
+        .proxy-opening-overlay {
+            background: color-mix(in srgb, var(--bg) 78%, transparent) !important;
+        }
+
+        .proxy-opening-text {
+            background: var(--panel) !important;
+            color: var(--green) !important;
+            border-color: var(--border) !important;
+        }
+
+        .theme-card {
+            color: var(--text) !important;
+            background: var(--bg) !important;
+            border-color: var(--border) !important;
+        }
+
+        .theme-card:hover,
+        .theme-card.active {
+            background: var(--panel-hover) !important;
+            border-color: var(--border-bright) !important;
+        }
+
+        .settings-toggle {
+            background: var(--bg) !important;
+            border-color: var(--border) !important;
+        }
+
+        .settings-toggle:hover {
+            background: var(--panel-hover) !important;
+            border-color: var(--border-bright) !important;
+        }
+
+        .settings-toggle select {
+            color: var(--text) !important;
+            background: var(--panel) !important;
+            border-color: var(--border) !important;
+        }
+
+        .game-card {
+            background: var(--panel) !important;
+            border-color: var(--border) !important;
+        }
+
+        .game-card:hover {
+            background: var(--panel-hover) !important;
+            border-color: var(--border-bright) !important;
+        }
+
+        .game-icon {
+            color: var(--green);
+            background: color-mix(in srgb, var(--green) 7%, var(--panel)) !important;
+        }
+
+        .game-card a {
+            color: var(--green);
+        }
+
+        .joke-card {
+            color: var(--green-soft);
+            background: color-mix(in srgb, var(--green) 5%, var(--panel)) !important;
+            border-color: var(--border) !important;
+        }
+
+        .version-indicator span,
+        .hero h2 span,
+        .fern-logo h1 span,
+        .fern-icon {
+            color: var(--green) !important;
+        }
+
+        /* Light mode needs explicit contrast for the few original
+           hardcoded dark surfaces. */
+        body[data-theme="light"] .login-box,
+        body[data-theme="light"] .settings-section,
+        body[data-theme="light"] .hero {
+            box-shadow: 0 10px 35px rgba(0,0,0,.06);
+        }
+
+        body[data-theme="light"] #loginButton,
+        body[data-theme="light"] .proxy-controls button {
+            color: #ffffff !important;
+        }
+
+        body[data-theme="light"] .iframe-toolbar button {
+            background: rgba(255,255,255,.9) !important;
+        }
+
+        body[data-theme="light"] .theme-card,
+        body[data-theme="light"] .settings-toggle {
+            background: #ffffff !important;
+        }
+
+        body[data-theme="light"] .theme-card:hover,
+        body[data-theme="light"] .theme-card.active,
+        body[data-theme="light"] .settings-toggle:hover {
+            background: #edf3ef !important;
+        }
+
     </style>
 </head>
 
@@ -1743,7 +1970,7 @@
         </div>
 
         <div class="version-indicator" title="Fern build version">
-            BUILD <span id="fernVersion">v1.1.2</span>
+            BUILD <span id="fernVersion">v1.1.3</span>
         </div>
 
     </header>
@@ -1940,7 +2167,7 @@
                 <div class="settings-section settings-about">
                     <div>
                         <h3>About Fern</h3>
-                        <p>Fern build <span id="settingsVersion">v1.1.2</span></p>
+                        <p>Fern build <span id="settingsVersion">v1.1.3</span></p>
                     </div>
                 </div>
 
@@ -2036,29 +2263,43 @@ function storageAvailable() {
 
 function setAuthCookie() {
     /*
-     * Cookie persistence is best-effort. Browsers do not guarantee
-     * normal cookie behavior for pages opened directly with file://.
+     * Cookies are reliable on HTTP/HTTPS origins, but browsers do not
+     * guarantee cookie/localStorage behavior for file:// documents.
+     * Fern therefore treats localStorage as the primary client-side
+     * login state and uses a cookie as an additional HTTP/HTTPS backup.
      */
     try {
+        if (location.protocol !== "http:" &&
+            location.protocol !== "https:") {
+            return false;
+        }
+
         const maxAge = 60 * 60 * 24 * 365 * 20;
+        const secure = location.protocol === "https:" ? ";Secure" : "";
 
         document.cookie =
             COOKIE_NAME +
             "=authenticated;" +
             "Max-Age=" + maxAge + ";" +
             "Path=/;" +
-            "SameSite=Lax";
-    } catch (_) {}
+            "SameSite=Lax" +
+            secure;
+
+        return hasAuthCookie();
+    } catch (_) {
+        return false;
+    }
 }
 
 function hasAuthCookie() {
     try {
         return document.cookie
             .split(";")
-            .some(cookie =>
-                cookie.trim() ===
-                COOKIE_NAME + "=authenticated"
-            );
+            .some(cookie => {
+                const parts = cookie.trim().split("=");
+                return parts[0] === COOKIE_NAME &&
+                       parts.slice(1).join("=") === "authenticated";
+            });
     } catch (_) {
         return false;
     }
@@ -2070,7 +2311,7 @@ function saveLocalAuthentication() {
             AUTH_KEY,
             "authenticated"
         );
-        return true;
+        return localStorage.getItem(AUTH_KEY) === "authenticated";
     } catch (error) {
         console.warn(
             "Fern could not persist authentication with localStorage:",
@@ -2082,8 +2323,7 @@ function saveLocalAuthentication() {
 
 function hasLocalAuthentication() {
     try {
-        return localStorage.getItem(AUTH_KEY)
-            === "authenticated";
+        return localStorage.getItem(AUTH_KEY) === "authenticated";
     } catch (_) {
         return false;
     }
@@ -2096,15 +2336,16 @@ function clearLocalAuthentication() {
 }
 
 function isAuthenticated() {
-    /*
-     * localStorage is the primary persistent mechanism.
-     * The cookie is retained as a secondary mechanism for
-     * normal HTTP/HTTPS deployments.
-     */
-    return (
-        hasLocalAuthentication() ||
-        hasAuthCookie()
-    );
+    if (hasLocalAuthentication()) {
+        return true;
+    }
+
+    if (location.protocol === "http:" ||
+        location.protocol === "https:") {
+        return hasAuthCookie();
+    }
+
+    return false;
 }
 
 function showApplication() {
@@ -2175,33 +2416,43 @@ function authenticate() {
     }
 }
 
-const loginButton =
-    document.getElementById("loginButton");
+function bindAuthenticationUI() {
+    const loginButton =
+        document.getElementById("loginButton");
 
-if (loginButton) {
-    loginButton.addEventListener(
-        "click",
-        authenticate
-    );
+    if (loginButton && !loginButton.dataset.fernAuthBound) {
+        loginButton.dataset.fernAuthBound = "1";
+        loginButton.addEventListener(
+            "click",
+            authenticate
+        );
+    }
+
+    const passwordInput =
+        document.getElementById("passwordInput");
+
+    if (passwordInput && !passwordInput.dataset.fernAuthBound) {
+        passwordInput.dataset.fernAuthBound = "1";
+        passwordInput.addEventListener(
+            "keydown",
+            event => {
+                if (event.key === "Enter") {
+                    authenticate();
+                }
+            }
+        );
+    }
 }
 
-const passwordInput =
-    document.getElementById("passwordInput");
-
-if (passwordInput) {
-    passwordInput.addEventListener(
-        "keydown",
-        event => {
-            if (event.key === "Enter") {
-                authenticate();
-            }
-        }
-    );
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", bindAuthenticationUI, { once: true });
+} else {
+    bindAuthenticationUI();
 }
 
 
 /* Migrate a previously saved Fern cookie into localStorage. */
-if (hasAuthCookie() && !hasLocalAuthentication()) {
+if ((location.protocol === "http:" || location.protocol === "https:") && hasAuthCookie() && !hasLocalAuthentication()) {
     saveLocalAuthentication();
 }
 
@@ -2981,7 +3232,11 @@ function loadFernSettings() {
     }
 }
 
-loadFernSettings();
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", loadFernSettings, { once: true });
+} else {
+    loadFernSettings();
+}
 
 
 /* ============================================================
