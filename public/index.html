@@ -3151,6 +3151,13 @@ async function initializeUVServiceWorker() {
         }
 
         if (typeof __uv$config === "undefined") {
+            const error = new Error("UV config object (__uv$config) is missing");
+            window.fernUVRegistrationError = {
+                name: error.name,
+                message: error.message,
+                workerPath: "/uv/uv.sw.js",
+                scope: "/service/"
+            };
             console.warn("Fern: UV config was not loaded.");
             return null;
         }
@@ -3199,6 +3206,12 @@ async function initializeUVServiceWorker() {
                 "Fern: UV service worker registration failed:",
                 error
             );
+            window.fernUVRegistrationError = {
+                name: error && error.name ? error.name : "Error",
+                message: error && error.message ? error.message : String(error),
+                workerPath,
+                scope
+            };
             return null;
         }
     })();
@@ -3272,6 +3285,35 @@ async function runFernDiagnostics() {
         uvExists
     );
 
+    // Test the actual deployed UV files from inside the page.
+    // This lets managed browsers report HTTP failures without DevTools.
+    const uvFiles = [
+        ["UV config file", "/uv/uv.config.js"],
+        ["UV worker file", "/uv/uv.sw.js"],
+        ["UV bundle file", "/uv/uv.bundle.js"]
+    ];
+
+    for (const [label, fileURL] of uvFiles) {
+        try {
+            const response = await fetch(fileURL, {
+                cache: "no-store",
+                credentials: "same-origin"
+            });
+            const type = response.headers.get("content-type") || "none";
+            setDiagnosticLine(
+                label,
+                `${response.status} ${response.statusText || ""} | ${type}`,
+                response.ok
+            );
+        } catch (error) {
+            setDiagnosticLine(
+                label,
+                `${error && error.name ? error.name + ": " : ""}${error && error.message ? error.message : "request failed"}`,
+                false
+            );
+        }
+    }
+
     if (uvExists) {
         const prefixOK =
             typeof __uv$config.prefix === "string";
@@ -3306,7 +3348,7 @@ async function runFernDiagnostics() {
 
     if (swSupported && https) {
         try {
-            const regs =
+            let regs =
                 await navigator.serviceWorker.getRegistrations();
 
             setDiagnosticLine(
@@ -3318,20 +3360,49 @@ async function runFernDiagnostics() {
             const uvRegistration =
                 await initializeUVServiceWorker();
 
+            // Re-read after initialization because registration is asynchronous.
+            regs = await navigator.serviceWorker.getRegistrations();
+
+            setDiagnosticLine(
+                "Registered service workers after init",
+                String(regs.length),
+                regs.length > 0
+            );
+
             setDiagnosticLine(
                 "UV worker initialization",
                 uvRegistration ? "registered / available" : "failed or unavailable",
                 !!uvRegistration
             );
 
+            if (window.fernUVRegistrationError) {
+                setDiagnosticLine(
+                    "UV registration error",
+                    `${window.fernUVRegistrationError.name}: ${window.fernUVRegistrationError.message}`,
+                    false
+                );
+                setDiagnosticLine(
+                    "UV attempted worker",
+                    window.fernUVRegistrationError.workerPath || "unknown",
+                    null
+                );
+                setDiagnosticLine(
+                    "UV attempted scope",
+                    window.fernUVRegistrationError.scope || "unknown",
+                    null
+                );
+            }
+
             const prefix =
                 uvExists && typeof __uv$config.prefix === "string"
                     ? __uv$config.prefix
-                    : "/uv/service/";
+                    : "/service/";
 
             const matches = regs.filter(reg =>
                 reg.scope.includes(prefix) ||
-                (reg.active && reg.active.scriptURL.includes("uv"))
+                (reg.active && reg.active.scriptURL.includes("uv")) ||
+                (reg.installing && reg.installing.scriptURL.includes("uv")) ||
+                (reg.waiting && reg.waiting.scriptURL.includes("uv"))
             );
 
             setDiagnosticLine(
