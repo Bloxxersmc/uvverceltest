@@ -861,6 +861,12 @@
         .theme-rose { background: linear-gradient(135deg, #110307, #ff6688); }
         .theme-mono { background: linear-gradient(135deg, #050505, #d7d7d7); }
         .theme-cyan { background: linear-gradient(135deg, #02100e, #20ffd4); }
+        .theme-light { background: linear-gradient(135deg, #f3f6f5, #087d3d); }
+        .theme-cyberpunk { background: linear-gradient(135deg, #08050f, #ff2dcc 48%, #00eaff); }
+        .theme-aurora { background: linear-gradient(135deg, #06100f, #63ffd0 52%, #7d8cff); }
+        .theme-sunset { background: linear-gradient(135deg, #12070a, #ff5e62 48%, #ffbd59); }
+        .theme-ocean { background: linear-gradient(135deg, #03101b, #43b8ff 52%, #6b7cff); }
+        .theme-dracula { background: linear-gradient(135deg, #0b0912, #bd93f9 52%, #ff79c6); }
 
         .settings-toggle {
             display: flex;
@@ -1656,7 +1662,365 @@
             }
         }
 
-    </style>
+    
+
+        /* =====================================================
+           FERN 2.0 — GLASS / BENTO UI REFRESH
+           ===================================================== */
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            opacity: .7;
+            background:
+                radial-gradient(circle at 20% 15%, color-mix(in srgb, var(--green) 12%, transparent), transparent 30%),
+                radial-gradient(circle at 82% 75%, color-mix(in srgb, var(--green) 9%, transparent), transparent 34%),
+                linear-gradient(120deg, transparent 0 45%, color-mix(in srgb, var(--green) 2%, transparent) 50%, transparent 55%);
+        }
+
+        .topbar {
+            margin: 12px 14px 0;
+            width: calc(100% - 28px);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            background: color-mix(in srgb, var(--bg) 72%, transparent);
+            box-shadow: 0 14px 45px rgba(0,0,0,.20), inset 0 1px 0 rgba(255,255,255,.035);
+            backdrop-filter: blur(22px) saturate(125%);
+        }
+
+        .nav {
+            border-radius: 14px;
+            padding: 4px;
+            background: color-mix(in srgb, var(--panel) 75%, transparent);
+            border: 1px solid var(--border);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
+        }
+
+        .nav button {
+            border-radius: 11px;
+            transition: transform .2s var(--button-ease), background .2s ease, box-shadow .2s ease;
+        }
+
+        .nav button.active {
+            background: linear-gradient(135deg,
+                color-mix(in srgb, var(--green) 17%, transparent),
+                color-mix(in srgb, var(--green) 6%, transparent));
+            box-shadow: 0 0 22px color-mix(in srgb, var(--green) 10%, transparent);
+        }
+
+        .page {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero,
+        .settings-section,
+        .joke-card {
+            border-radius: 22px !important;
+            background: linear-gradient(145deg,
+                color-mix(in srgb, var(--panel) 92%, transparent),
+                color-mix(in srgb, var(--bg) 70%, transparent)) !important;
+            border: 1px solid var(--border) !important;
+            box-shadow: 0 20px 55px rgba(0,0,0,.16), inset 0 1px 0 rgba(255,255,255,.035);
+            backdrop-filter: blur(18px) saturate(125%);
+        }
+
+        .section-header {
+            padding: 4px 3px 2px;
+        }
+
+        .section-header h2 {
+            font-size: clamp(30px, 4vw, 42px);
+            letter-spacing: -1.8px;
+        }
+
+        .games-grid {
+            grid-template-columns: repeat(auto-fill, minmax(245px, 1fr));
+            gap: 17px;
+        }
+
+        .game-card {
+            position: relative;
+            overflow: hidden;
+            padding: 21px;
+            min-height: 205px;
+            border-radius: 20px !important;
+            background:
+                linear-gradient(145deg,
+                    color-mix(in srgb, var(--panel) 94%, transparent),
+                    color-mix(in srgb, var(--bg-light) 55%, transparent)) !important;
+            box-shadow: 0 12px 35px rgba(0,0,0,.13), inset 0 1px 0 rgba(255,255,255,.025);
+            transition: transform .24s var(--button-ease), border-color .24s ease, box-shadow .24s ease;
+        }
+
+        .game-card::before {
+            content: "";
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            right: -70px;
+            top: -80px;
+            border-radius: 50%;
+            background: var(--green);
+            opacity: .07;
+            filter: blur(4px);
+            transition: transform .3s ease, opacity .3s ease;
+        }
+
+        .game-card:hover {
+            transform: translateY(-7px) scale(1.012);
+            border-color: var(--border-bright) !important;
+            box-shadow: 0 24px 55px rgba(0,0,0,.24), 0 0 28px color-mix(in srgb, var(--green) 7%, transparent);
+        }
+
+        .game-card:hover::before {
+            transform: scale(1.7);
+            opacity: .13;
+        }
+
+        .game-icon {
+            width: 54px;
+            height: 54px;
+            border-radius: 16px !important;
+            background: linear-gradient(145deg,
+                color-mix(in srgb, var(--green) 15%, transparent),
+                color-mix(in srgb, var(--green) 4%, transparent)) !important;
+            box-shadow: 0 8px 22px color-mix(in srgb, var(--green) 8%, transparent);
+        }
+
+        .game-card a {
+            border-radius: 12px !important;
+            background: color-mix(in srgb, var(--green) 8%, transparent) !important;
+            transition: transform .2s ease, background .2s ease, box-shadow .2s ease;
+        }
+
+        .game-card a:hover {
+            transform: translateY(-1px);
+            background: color-mix(in srgb, var(--green) 15%, transparent) !important;
+            box-shadow: 0 8px 24px color-mix(in srgb, var(--green) 9%, transparent);
+        }
+
+        .settings-section {
+            padding: 24px;
+        }
+
+        .theme-grid {
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 13px;
+        }
+
+        .theme-card {
+            position: relative;
+            min-height: 74px;
+            border-radius: 17px !important;
+            overflow: hidden;
+            background: color-mix(in srgb, var(--panel) 72%, transparent) !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.035);
+        }
+
+        .theme-preview {
+            width: 38px;
+            height: 38px;
+            flex-basis: 38px;
+            border-radius: 12px;
+        }
+
+        .theme-card:hover,
+        .theme-card.active {
+            transform: translateY(-3px) !important;
+            box-shadow: 0 14px 30px rgba(0,0,0,.18), 0 0 22px color-mix(in srgb, var(--green) 6%, transparent);
+        }
+
+        .iframe-container {
+            border-radius: 22px !important;
+            border-color: var(--border-bright);
+            box-shadow: 0 25px 65px rgba(0,0,0,.24);
+        }
+
+        .iframe-toolbar button {
+            border-radius: 11px !important;
+            width: 38px;
+            height: 34px;
+            backdrop-filter: blur(12px);
+        }
+
+        .login-box {
+            border-radius: 26px !important;
+            background: linear-gradient(145deg,
+                color-mix(in srgb, var(--panel) 94%, transparent),
+                color-mix(in srgb, var(--bg-light) 60%, transparent)) !important;
+            box-shadow: 0 30px 90px rgba(0,0,0,.30), 0 0 45px color-mix(in srgb, var(--green) 8%, transparent);
+        }
+
+        .fern-icon {
+            border-radius: 15px !important;
+            background: color-mix(in srgb, var(--green) 8%, transparent);
+        }
+
+        /* New atmospheric theme treatments */
+        body[data-theme="aurora"] {
+            background:
+                radial-gradient(circle at 14% 18%, rgba(99,255,208,.16), transparent 27%),
+                radial-gradient(circle at 82% 78%, rgba(125,140,255,.12), transparent 31%),
+                #06100f;
+        }
+
+        body[data-theme="sunset"] {
+            background:
+                radial-gradient(circle at 15% 18%, rgba(255,94,98,.14), transparent 28%),
+                radial-gradient(circle at 84% 78%, rgba(255,189,89,.13), transparent 32%),
+                #12070a;
+        }
+
+        body[data-theme="ocean"] {
+            background:
+                radial-gradient(circle at 16% 16%, rgba(67,184,255,.15), transparent 28%),
+                radial-gradient(circle at 86% 80%, rgba(107,124,255,.13), transparent 33%),
+                #03101b;
+        }
+
+        body[data-theme="dracula"] {
+            background:
+                radial-gradient(circle at 14% 18%, rgba(189,147,249,.14), transparent 28%),
+                radial-gradient(circle at 84% 78%, rgba(255,121,198,.11), transparent 32%),
+                #0b0912;
+        }
+
+        @media (max-width: 700px) {
+            .topbar {
+                margin: 7px 8px 0;
+                width: calc(100% - 16px);
+                border-radius: 14px;
+            }
+
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+
+        /* =====================================================
+           FERN 2.1 — REFERENCE-INSPIRED LIBRARY UI
+           ===================================================== */
+        .topbar {
+            min-height: 78px;
+            margin: 14px 18px 0 !important;
+            width: calc(100% - 36px) !important;
+            display: grid !important;
+            grid-template-columns: 250px 1fr auto;
+            align-items: center;
+            gap: 22px;
+            padding: 8px 16px !important;
+            border-radius: 20px !important;
+            background: rgba(3,7,4,.72) !important;
+            border-color: rgba(255,255,255,.07) !important;
+            box-shadow: 0 20px 60px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.035) !important;
+        }
+        .brand { display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:-.4px; }
+        .brand::after { content:"Workspace"; display:block; margin-left:-3px; margin-top:22px; position:absolute; color:var(--green); font-size:12px; font-weight:700; letter-spacing:.2px; }
+        .brand-icon { font-size:31px !important; filter: drop-shadow(0 0 12px color-mix(in srgb,var(--green) 35%,transparent)); }
+        .nav { justify-self:center; display:flex !important; gap:2px; padding:4px !important; border:0 !important; background:transparent !important; box-shadow:none !important; }
+        .nav button { min-height:44px; padding:0 16px !important; border:1px solid transparent !important; background:transparent !important; color:var(--muted) !important; font-size:13px; font-weight:700; }
+        .nav button:hover { color:var(--text) !important; background:rgba(255,255,255,.035) !important; }
+        .nav button.active { color:var(--text) !important; border-color:var(--border) !important; background:color-mix(in srgb,var(--green) 9%,transparent) !important; box-shadow:0 0 24px color-mix(in srgb,var(--green) 8%,transparent) !important; }
+        .nav-symbol { font-size:18px; margin-right:7px; vertical-align:-2px; color:var(--green); }
+        .online { min-width:150px; padding:11px 15px !important; border:1px solid var(--border) !important; border-radius:14px !important; background:rgba(255,255,255,.035) !important; box-shadow:inset 0 1px 0 rgba(255,255,255,.035); }
+        .version-indicator { display:none !important; }
+
+        .content { max-width:1280px !important; padding:28px 28px 44px !important; }
+        .page { min-height:calc(100vh - 125px); }
+        .page.active { animation:fernPageIn .42s cubic-bezier(.2,.8,.2,1) both; }
+        @keyframes fernPageIn { from{opacity:0;transform:translateY(10px) scale(.995)} to{opacity:1;transform:none} }
+
+        .section-header { display:flex; align-items:flex-end; justify-content:space-between; gap:24px; margin:12px 0 25px !important; }
+        .eyebrow { color:var(--green); font-size:10px; font-weight:900; letter-spacing:.18em; margin-bottom:8px; opacity:.9; }
+        .section-header h2 { font-size:36px !important; letter-spacing:-1.7px; margin:0 0 7px !important; }
+        .heading-spark { color:var(--green); font-size:18px; filter:drop-shadow(0 0 8px color-mix(in srgb,var(--green) 60%,transparent)); }
+        .section-header p { font-size:14px !important; margin:0 !important; }
+
+        /* Normal page headers are stacked. The Library header is the only one
+           that intentionally uses a left/right split for its search controls. */
+        .page > .section-header:not(.library-heading) {
+            display:block !important;
+            text-align:left;
+        }
+        .page > .section-header:not(.library-heading) h2 {
+            display:block;
+            width:100%;
+        }
+        .page > .section-header:not(.library-heading) p {
+            display:block;
+            width:100%;
+        }
+
+        .library-controls { display:flex; align-items:center; gap:8px; }
+        .library-search { height:44px; width:min(300px,35vw); display:flex; align-items:center; gap:8px; padding:0 13px; border:1px solid var(--border); border-radius:12px; background:rgba(0,0,0,.25); backdrop-filter:blur(15px); }
+        .library-search span { color:var(--muted); font-size:21px; }
+        .library-search input { width:100%; border:0; outline:0; background:transparent; color:var(--text); font:inherit; }
+        #gameFilter { height:44px; padding:0 12px; border:1px solid var(--border); border-radius:12px; background:rgba(0,0,0,.25); color:var(--text); outline:0; }
+
+        .games-grid { grid-template-columns:repeat(auto-fill,minmax(225px,1fr)) !important; gap:17px !important; }
+        .game-card { padding:0 !important; min-height:0 !important; border-radius:17px !important; overflow:hidden; background:rgba(5,11,7,.72) !important; border-color:rgba(255,255,255,.075) !important; box-shadow:0 16px 38px rgba(0,0,0,.26), inset 0 1px 0 rgba(255,255,255,.035) !important; }
+        .game-card:hover { transform:translateY(-6px) scale(1.012) !important; border-color:var(--border-bright) !important; box-shadow:0 25px 55px rgba(0,0,0,.34), 0 0 25px color-mix(in srgb,var(--green) 9%,transparent) !important; }
+        .game-media { position:relative; height:148px; overflow:hidden; background:linear-gradient(135deg,var(--panel),var(--bg)); }
+        .game-image { display:block; width:100%; height:100%; object-fit:cover; transition:transform .45s cubic-bezier(.2,.8,.2,1), filter .3s ease; }
+        .game-card:hover .game-image { transform:scale(1.06); filter:saturate(1.08) brightness(1.06); }
+        .game-media::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg,rgba(0,0,0,.02) 35%,rgba(0,0,0,.62)); pointer-events:none; }
+        .game-media-glow { position:absolute; width:120px; height:120px; right:-50px; top:-60px; border-radius:50%; background:var(--green); opacity:.12; filter:blur(25px); pointer-events:none; }
+        .game-card-body { padding:13px 14px 14px; }
+        .game-card-top { display:flex; align-items:center; gap:8px; }
+        .game-card h3 { margin:0 !important; flex:1; font-size:14px !important; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .game-card p { min-height:30px; margin:6px 0 12px !important; font-size:11px !important; color:var(--muted); line-height:1.45; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+        .game-card a { padding:9px 11px !important; border-radius:10px !important; color:var(--text) !important; background:color-mix(in srgb,var(--green) 9%,transparent) !important; border-color:var(--border) !important; text-align:left !important; font-size:11px !important; }
+        .game-card a::after { content:"↗"; float:right; color:var(--green); font-size:14px; }
+        .bookmark-button { width:30px; height:30px; flex:0 0 30px; border:1px solid var(--border); border-radius:9px; background:rgba(255,255,255,.035); color:var(--muted); cursor:pointer; font-size:16px; transition:.2s ease; }
+        .bookmark-button:hover,.bookmark-button.saved { color:var(--green); border-color:var(--border-bright); background:color-mix(in srgb,var(--green) 10%,transparent); }
+        .joke-card { margin-top:20px !important; }
+
+        .bookmarks-panel, .about-grid { border:1px solid var(--border); border-radius:20px; background:rgba(4,9,6,.55); backdrop-filter:blur(18px); padding:20px; box-shadow:0 18px 55px rgba(0,0,0,.2); }
+        .empty-state { min-height:320px; display:grid; place-items:center; align-content:center; text-align:center; gap:8px; }
+        .empty-icon { width:62px; height:62px; display:grid; place-items:center; border-radius:18px; border:1px solid var(--border); color:var(--green); font-size:30px; background:color-mix(in srgb,var(--green) 7%,transparent); }
+        .empty-state h3 { margin:5px 0 0; }
+        .empty-state p { margin:0 0 8px; color:var(--muted); }
+        .empty-action, .bookmark-row button { border:1px solid var(--border); border-radius:10px; background:color-mix(in srgb,var(--green) 9%,transparent); color:var(--text); padding:10px 14px; cursor:pointer; font-weight:800; }
+        .bookmark-row { display:grid; grid-template-columns:92px 1fr auto; gap:14px; align-items:center; padding:10px; border:1px solid var(--border); border-radius:14px; background:rgba(255,255,255,.025); margin-bottom:10px; }
+        .bookmark-row img { width:92px; height:58px; object-fit:cover; border-radius:9px; }
+        .bookmark-row strong,.bookmark-row small { display:block; }
+        .bookmark-row small { color:var(--muted); margin-top:4px; }
+        .about-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+        .about-card { display:flex; align-items:center; gap:14px; min-height:110px; padding:18px; border:1px solid var(--border); border-radius:16px; background:rgba(255,255,255,.025); }
+        .about-icon { width:44px; height:44px; display:grid; place-items:center; border-radius:13px; background:color-mix(in srgb,var(--green) 9%,transparent); color:var(--green); font-size:21px; }
+        .about-card strong,.about-card small { display:block; }
+        .about-card small { color:var(--muted); margin-top:5px; line-height:1.45; }
+
+        /* Extra atmosphere so the particle field remains visible all the way down. */
+        body::after { content:""; position:fixed; inset:0; z-index:0; pointer-events:none; background:radial-gradient(ellipse at 50% 105%, color-mix(in srgb,var(--green) 12%,transparent), transparent 42%), radial-gradient(ellipse at 50% 45%, transparent 45%, rgba(0,0,0,.28) 100%); }
+        #bgCanvas { z-index:0 !important; opacity:.95; }
+        #app, #loginScreen { position:relative; z-index:1; }
+
+        @media (max-width:900px) {
+            .topbar { grid-template-columns:1fr auto; }
+            .nav { grid-column:1/-1; grid-row:2; overflow:auto; justify-self:stretch; justify-content:center; }
+            .online { justify-self:end; }
+            .library-controls { width:100%; }
+            .library-heading { display:flex !important; align-items:stretch; flex-direction:column; }
+            .library-search { flex:1; width:auto; }
+            .about-grid { grid-template-columns:1fr; }
+        }
+        @media (max-width:600px) {
+            .content { padding:20px 14px 32px !important; }
+            .topbar { margin:8px 8px 0 !important; width:calc(100% - 16px) !important; }
+            .brand::after { display:none; }
+            .nav button { padding:0 10px !important; font-size:11px; }
+            .nav-symbol { margin-right:3px; }
+            .online { display:none; }
+            .library-controls { flex-direction:column; }
+            .library-search,#gameFilter { width:100%; }
+        }
+</style>
 </head>
 
 
@@ -1748,25 +2112,24 @@
 
         <nav class="nav">
 
-            <button
-                class="nav-button active"
-                data-page="proxy"
-            >
-                Proxy
+            <button class="nav-button active" data-page="proxy">
+                <span class="nav-symbol">⌁</span><span>Proxy</span>
             </button>
 
-            <button
-                class="nav-button"
-                data-page="games"
-            >
-                Games
+            <button class="nav-button" data-page="games">
+                <span class="nav-symbol">▦</span><span>Library</span>
             </button>
 
-            <button
-                class="nav-button"
-                data-page="settings"
-            >
-                Settings
+            <button class="nav-button" data-page="bookmarks">
+                <span class="nav-symbol">♡</span><span>Bookmarks</span>
+            </button>
+
+            <button class="nav-button" data-page="settings">
+                <span class="nav-symbol">⚙</span><span>Settings</span>
+            </button>
+
+            <button class="nav-button" data-page="about">
+                <span class="nav-symbol">ⓘ</span><span>About</span>
             </button>
 
         </nav>
@@ -1873,6 +2236,42 @@
 
 
         <!-- =================================================
+             BOOKMARKS PAGE
+             ================================================= -->
+        <section class="page" id="bookmarksPage">
+            <div class="section-header">
+                <div class="eyebrow">SAVED FOR LATER</div>
+                <h2>Bookmarks</h2>
+                <p>Your favorite games in one place.</p>
+            </div>
+            <div class="bookmarks-panel" id="bookmarksPanel">
+                <div class="empty-state">
+                    <div class="empty-icon">♡</div>
+                    <h3>No bookmarks yet</h3>
+                    <p>Use the star on a game card to save it here.</p>
+                    <button class="empty-action" data-page-jump="games">Browse library</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- =================================================
+             ABOUT PAGE
+             ================================================= -->
+        <section class="page" id="aboutPage">
+            <div class="section-header">
+                <div class="eyebrow">ABOUT FERN</div>
+                <h2>Fern Workspace</h2>
+                <p>A clean home for your browser tools and game library.</p>
+            </div>
+            <div class="about-grid">
+                <div class="about-card"><span class="about-icon">✦</span><div><strong>Fern</strong><small>Build <span id="aboutVersion">v1.1.5</span></small></div></div>
+                <div class="about-card"><span class="about-icon">⌁</span><div><strong>Proxy</strong><small>Launch URLs through your configured Fern proxy.</small></div></div>
+                <div class="about-card"><span class="about-icon">▦</span><div><strong>Library</strong><small>Game artwork is loaded automatically when available.</small></div></div>
+                <div class="about-card"><span class="about-icon">♡</span><div><strong>Bookmarks</strong><small>Saved locally in this browser.</small></div></div>
+            </div>
+        </section>
+
+        <!-- =================================================
              SETTINGS PAGE
              ================================================= -->
 
@@ -1946,6 +2345,26 @@
                             <span>Cyberpunk</span>
                         </button>
 
+                        <button class="theme-card" data-theme="aurora">
+                            <span class="theme-preview theme-aurora"></span>
+                            <span>Aurora</span>
+                        </button>
+
+                        <button class="theme-card" data-theme="sunset">
+                            <span class="theme-preview theme-sunset"></span>
+                            <span>Sunset</span>
+                        </button>
+
+                        <button class="theme-card" data-theme="ocean">
+                            <span class="theme-preview theme-ocean"></span>
+                            <span>Ocean</span>
+                        </button>
+
+                        <button class="theme-card" data-theme="dracula">
+                            <span class="theme-preview theme-dracula"></span>
+                            <span>Dracula</span>
+                        </button>
+
                     </div>
                 </div>
 
@@ -2011,16 +2430,22 @@
             id="gamesPage"
         >
 
-            <div class="section-header">
-
-                <h2>
-                    Games
-                </h2>
-
-                <p>
-                    A completely reasonable collection of buttons.
-                </p>
-
+            <div class="section-header library-heading">
+                <div>
+                    <div class="eyebrow">FERN LIBRARY</div>
+                    <h2>Game Library <span class="heading-spark">✦</span></h2>
+                    <p>Pick a game and have fun.</p>
+                </div>
+                <div class="library-controls">
+                    <div class="library-search">
+                        <span>⌕</span>
+                        <input id="gameSearch" type="search" placeholder="Search games..." autocomplete="off">
+                    </div>
+                    <select id="gameFilter" aria-label="Filter games">
+                        <option value="all">All Games</option>
+                        <option value="favorites">Favorites</option>
+                    </select>
+                </div>
             </div>
 
 
@@ -2074,9 +2499,9 @@
     const ctx = canvas.getContext('2d');
 
     let particles = [];
-    const particleCount = 75;
-    const maxDistance = 120;
-    const mouseRadius = 120;
+    const particleCount = 175;
+    const maxDistance = 118;
+    const mouseRadius = 135;
 
     const mouse = {
         x: null,
@@ -2105,9 +2530,9 @@
         constructor() {
             this.x = Math.random() * canvas.width;
             this.y = Math.random() * canvas.height;
-            this.size = Math.random() * 1.5 + 1.5;
-            this.vx = (Math.random() - 0.5) * 1.2;
-            this.vy = (Math.random() - 0.5) * 1.2;
+            this.size = Math.random() * 2.1 + 1.45;
+            this.vx = (Math.random() - 0.5) * 0.72;
+            this.vy = (Math.random() - 0.5) * 0.72;
         }
 
         update() {
@@ -2144,8 +2569,38 @@
 
     function init() {
         particles = [];
+
+        // Use a loose jittered grid instead of pure random placement.
+        // This keeps the particle field evenly distributed from top to bottom
+        // and avoids large empty areas or accidental clusters.
+        const cols = Math.max(1, Math.ceil(Math.sqrt(
+            particleCount * (canvas.width / Math.max(canvas.height, 1))
+        )));
+        const rows = Math.max(1, Math.ceil(particleCount / cols));
+        const cellW = canvas.width / cols;
+        const cellH = canvas.height / rows;
+
+        const cells = [];
+        for (let row = 0; row < rows; row++) {
+            for (let col = 0; col < cols; col++) {
+                cells.push({ row, col });
+            }
+        }
+
+        // Shuffle the cells so the distribution stays organic.
+        for (let i = cells.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [cells[i], cells[j]] = [cells[j], cells[i]];
+        }
+
         for (let i = 0; i < particleCount; i++) {
-            particles.push(new Particle());
+            const cell = cells[i];
+            const particle = new Particle();
+
+            particle.x = (cell.col + 0.18 + Math.random() * 0.64) * cellW;
+            particle.y = (cell.row + 0.18 + Math.random() * 0.64) * cellH;
+
+            particles.push(particle);
         }
     }
 
@@ -2158,10 +2613,10 @@
                 let distance = Math.sqrt(dx * dx + dy * dy);
 
                 if (distance < maxDistance) {
-                    let opacity = (1 - (distance / maxDistance)) * 0.25;
+                    let opacity = (1 - (distance / maxDistance)) * 0.48;
                     ctx.strokeStyle = borderBright;
                     ctx.globalAlpha = opacity;
-                    ctx.lineWidth = 1;
+                    ctx.lineWidth = 1.05;
                     ctx.beginPath();
                     ctx.moveTo(particles[a].x, particles[a].y);
                     ctx.lineTo(particles[b].x, particles[b].y);
@@ -3118,50 +3573,153 @@ const games = [
    GAME CARD BUILDER
    ============================================================ */
 
+function getGameImage(game) {
+    if (game.image) return game.image;
+    const query = encodeURIComponent(game.name + " logo");
+    // Bing's thumbnail endpoint gives the browser a query-based first-image style result.
+    // If it is unavailable, the onerror handler falls back to the Fern artwork.
+    return "https://tse1.mm.bing.net/th?q=" + query + "&w=900&h=500&c=7&rs=1";
+}
+
+function gameFallbackDataURL(game) {
+    const accent = getComputedStyle(document.documentElement).getPropertyValue('--green').trim() || '#00ff66';
+    const safe = game.name.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="900" height="500" viewBox="0 0 900 500"><defs><linearGradient id="g" x1="0" x2="1"><stop stop-color="#071009"/><stop offset="1" stop-color="#0b1c11"/></linearGradient></defs><rect width="900" height="500" fill="url(#g)"/><circle cx="760" cy="80" r="170" fill="${accent}" opacity=".08"/><path d="M0 420 L230 300 L390 380 L560 250 L900 410" fill="none" stroke="${accent}" stroke-opacity=".18" stroke-width="3"/><text x="55" y="255" fill="white" font-family="Arial,sans-serif" font-size="64" font-weight="800">${safe}</text><text x="58" y="305" fill="${accent}" font-family="Arial,sans-serif" font-size="20" letter-spacing="5">FERN LIBRARY</text></svg>`;
+    return 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
+}
+
+const FERN_BOOKMARKS_KEY = 'fern_bookmarks_v1';
+function getBookmarks() {
+    try { return JSON.parse(localStorage.getItem(FERN_BOOKMARKS_KEY) || '[]'); } catch (_) { return []; }
+}
+function setBookmarks(items) {
+    try { localStorage.setItem(FERN_BOOKMARKS_KEY, JSON.stringify(items)); } catch (_) {}
+}
+function isBookmarked(index) { return getBookmarks().includes(index); }
+function toggleBookmark(index) {
+    const items = getBookmarks();
+    const pos = items.indexOf(index);
+    if (pos >= 0) items.splice(pos, 1); else items.push(index);
+    setBookmarks(items);
+    renderGames();
+    renderBookmarks();
+}
+
 function renderGames() {
+    const grid = document.getElementById('gamesGrid');
+    if (!grid) return;
 
-    const grid = document.getElementById("gamesGrid");
-
-    if (!grid) {
-        return;
-    }
-
-    grid.innerHTML = "";
+    const search = (document.getElementById('gameSearch')?.value || '').trim().toLowerCase();
+    const filter = document.getElementById('gameFilter')?.value || 'all';
+    const bookmarks = getBookmarks();
+    grid.innerHTML = '';
 
     games.forEach((game, index) => {
+        if (search && !(game.name + ' ' + game.description).toLowerCase().includes(search)) return;
+        if (filter === 'favorites' && !bookmarks.includes(index)) return;
 
-        const card = document.createElement("div");
-        card.className = "game-card";
+        const card = document.createElement('article');
+        card.className = 'game-card';
+        card.dataset.gameIndex = index;
 
-        const icon = document.createElement("div");
-        icon.className = "game-icon";
-        icon.textContent = "🎮";
+        const media = document.createElement('div');
+        media.className = 'game-media';
 
-        const title = document.createElement("h3");
+        const image = document.createElement('img');
+        image.className = 'game-image';
+        image.alt = game.name + ' logo';
+        image.loading = 'lazy';
+        image.src = getGameImage(game);
+        image.onerror = () => {
+            image.onerror = null;
+            image.src = gameFallbackDataURL(game);
+        };
+
+        const mediaGlow = document.createElement('div');
+        mediaGlow.className = 'game-media-glow';
+        media.appendChild(image);
+        media.appendChild(mediaGlow);
+
+        const body = document.createElement('div');
+        body.className = 'game-card-body';
+
+        const top = document.createElement('div');
+        top.className = 'game-card-top';
+
+        const title = document.createElement('h3');
         title.textContent = game.name;
 
-        const description = document.createElement("p");
+        const star = document.createElement('button');
+        star.className = 'bookmark-button' + (isBookmarked(index) ? ' saved' : '');
+        star.type = 'button';
+        star.title = isBookmarked(index) ? 'Remove bookmark' : 'Bookmark game';
+        star.textContent = isBookmarked(index) ? '★' : '☆';
+        star.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); toggleBookmark(index); });
+
+        top.appendChild(title);
+        top.appendChild(star);
+
+        const description = document.createElement('p');
         description.textContent = game.description;
 
-        const link = document.createElement("a");
+        const link = document.createElement('a');
         link.href = game.link;
-        link.textContent = "Open " + game.name + " →";
+        link.textContent = 'Play now';
         link.dataset.gameIndex = index;
-
-        link.addEventListener("click", event => {
+        link.addEventListener('click', event => {
             event.preventDefault();
             event.stopPropagation();
             openGame(game.link);
         });
 
-        card.appendChild(icon);
-        card.appendChild(title);
-        card.appendChild(description);
-        card.appendChild(link);
-
+        body.appendChild(top);
+        body.appendChild(description);
+        body.appendChild(link);
+        card.appendChild(media);
+        card.appendChild(body);
         grid.appendChild(card);
     });
+
+    const joke = document.getElementById('gameJoke');
+    if (joke) joke.textContent = grid.children.length ? `${grid.children.length} games ready to launch.` : 'Nothing matched that search.';
 }
+
+function renderBookmarks() {
+    const panel = document.getElementById('bookmarksPanel');
+    if (!panel) return;
+    const bookmarks = getBookmarks();
+    if (!bookmarks.length) {
+        panel.innerHTML = `<div class="empty-state"><div class="empty-icon">♡</div><h3>No bookmarks yet</h3><p>Use the star on a game card to save it here.</p><button class="empty-action" data-page-jump="games">Browse library</button></div>`;
+        panel.querySelector('[data-page-jump]')?.addEventListener('click', () => document.querySelector('.nav-button[data-page="games"]')?.click());
+        return;
+    }
+    panel.innerHTML = '';
+    bookmarks.forEach(index => {
+        if (!games[index]) return;
+        const game = games[index];
+        const card = document.createElement('div');
+        card.className = 'bookmark-row';
+        const img = document.createElement('img');
+        img.src = getGameImage(game); img.alt = game.name + ' logo';
+        img.onerror = () => { img.onerror=null; img.src=gameFallbackDataURL(game); };
+        const info = document.createElement('div');
+        info.innerHTML = `<strong></strong><small></small>`;
+        info.querySelector('strong').textContent = game.name;
+        info.querySelector('small').textContent = game.description;
+        const play = document.createElement('button');
+        play.textContent = 'Play'; play.addEventListener('click', () => openGame(game.link));
+        card.append(img, info, play);
+        panel.appendChild(card);
+    });
+}
+
+const gameSearch = document.getElementById('gameSearch');
+const gameFilter = document.getElementById('gameFilter');
+if (gameSearch) gameSearch.addEventListener('input', renderGames);
+if (gameFilter) gameFilter.addEventListener('change', renderGames);
+renderGames();
+renderBookmarks();
+
 
 
 /* ============================================================
@@ -3470,6 +4028,26 @@ const FERN_THEMES = {
         bg: "#08050f", bgLight: "#10091b", panel: "rgba(18, 12, 29, 0.85)", panelHover: "#1b1028",
         accent: "#00eaff", accentDark: "#0099a6", accentSoft: "#82f8ff",
         text: "#f2fbff", muted: "#918aa8", border: "rgba(0,240,255,.19)", borderBright: "rgba(255,45,205,.58)"
+    },
+    aurora: {
+        bg: "#06100f", bgLight: "#0a1b19", panel: "rgba(10, 29, 26, 0.82)", panelHover: "#12332e",
+        accent: "#63ffd0", accentDark: "#21b994", accentSoft: "#b1ffe7",
+        text: "#effff9", muted: "#789b91", border: "rgba(99,255,208,.20)", borderBright: "rgba(130,255,226,.58)"
+    },
+    sunset: {
+        bg: "#12070a", bgLight: "#210d10", panel: "rgba(35, 14, 20, 0.84)", panelHover: "#401822",
+        accent: "#ff8a5b", accentDark: "#e3543d", accentSoft: "#ffc0a4",
+        text: "#fff4ef", muted: "#aa7f78", border: "rgba(255,138,91,.20)", borderBright: "rgba(255,167,126,.58)"
+    },
+    ocean: {
+        bg: "#03101b", bgLight: "#061d2d", panel: "rgba(7, 31, 49, 0.84)", panelHover: "#0b3a59",
+        accent: "#43b8ff", accentDark: "#247bc0", accentSoft: "#a4ddff",
+        text: "#effaff", muted: "#7394aa", border: "rgba(67,184,255,.20)", borderBright: "rgba(95,204,255,.58)"
+    },
+    dracula: {
+        bg: "#0b0912", bgLight: "#151021", panel: "rgba(27, 21, 40, 0.86)", panelHover: "#38294f",
+        accent: "#bd93f9", accentDark: "#8b63c7", accentSoft: "#e2ccff",
+        text: "#f8f5ff", muted: "#938aa8", border: "rgba(189,147,249,.20)", borderBright: "rgba(255,121,198,.55)"
     }
 };
 
@@ -3590,9 +4168,19 @@ if (runDiagnosticsButton) {
 runFernDiagnostics();
 
 
+document.querySelectorAll("[data-page-jump]").forEach(el => {
+    el.addEventListener("click", () => {
+        const target = el.dataset.pageJump;
+        document.querySelector(`.nav-button[data-page="${target}"]`)?.click();
+    });
+});
+
 /* ============================================================
    START FERN
    ============================================================ */
+
+const aboutVersion = document.getElementById("aboutVersion");
+if (aboutVersion) aboutVersion.textContent = "v" + FERN_VERSION;
 
 if (isAuthenticated()) {
 
