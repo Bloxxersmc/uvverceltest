@@ -6,7 +6,7 @@
 
     <title>Fern</title>
 
-    <meta name="fern-version" content="1.1.4">
+    <meta name="fern-version" content="1.1.5">
 
     <!-- UV -->
     <script src="/uv/uv.bundle.js"></script>
@@ -1743,7 +1743,7 @@
         </div>
 
         <div class="version-indicator" title="Fern build version">
-            BUILD <span id="fernVersion">v1.1.4</span>
+            BUILD <span id="fernVersion">v1.1.5</span>
         </div>
 
     </header>
@@ -1937,10 +1937,26 @@
                     </label>
                 </div>
 
+
+                <div class="settings-section">
+                    <div>
+                        <h3>Connection Diagnostics</h3>
+                        <p>Check Fern's UV setup without needing Developer Tools.</p>
+                    </div>
+                    <div id="fernDiagnostics"
+                         style="margin-top:18px;padding:14px;border:1px solid var(--border);background:var(--bg);font-family:monospace;font-size:12px;line-height:1.65;">
+                        Checking Fern...
+                    </div>
+                    <button id="runDiagnosticsButton"
+                            style="margin-top:12px;padding:10px 14px;border:1px solid var(--border-bright);background:var(--panel);color:var(--text);cursor:pointer;border-radius:10px;">
+                        Run diagnostics again
+                    </button>
+                </div>
+
                 <div class="settings-section settings-about">
                     <div>
                         <h3>About Fern</h3>
-                        <p>Fern build <span id="settingsVersion">v1.1.4</span></p>
+                        <p>Fern build <span id="settingsVersion">v1.1.5</span></p>
                     </div>
                 </div>
 
@@ -2035,30 +2051,37 @@ function storageAvailable() {
 }
 
 function setAuthCookie() {
-    /*
-     * Cookie persistence is best-effort. Browsers do not guarantee
-     * normal cookie behavior for pages opened directly with file://.
-     */
     try {
+        if (location.protocol !== "http:" &&
+            location.protocol !== "https:") {
+            return false;
+        }
+
         const maxAge = 60 * 60 * 24 * 365 * 20;
+        const secure = location.protocol === "https:" ? ";Secure" : "";
 
         document.cookie =
             COOKIE_NAME +
             "=authenticated;" +
-            "Max-Age=" + maxAge + ";" +
-            "Path=/;" +
-            "SameSite=Lax";
-    } catch (_) {}
+            "Max-Age=" + maxAge +
+            ";Path=/;SameSite=Lax" +
+            secure;
+
+        return hasAuthCookie();
+    } catch (_) {
+        return false;
+    }
 }
 
 function hasAuthCookie() {
     try {
         return document.cookie
             .split(";")
-            .some(cookie =>
-                cookie.trim() ===
-                COOKIE_NAME + "=authenticated"
-            );
+            .some(cookie => {
+                const parts = cookie.trim().split("=");
+                return parts[0] === COOKIE_NAME &&
+                       parts.slice(1).join("=") === "authenticated";
+            });
     } catch (_) {
         return false;
     }
@@ -2066,24 +2089,17 @@ function hasAuthCookie() {
 
 function saveLocalAuthentication() {
     try {
-        localStorage.setItem(
-            AUTH_KEY,
-            "authenticated"
-        );
-        return true;
+        localStorage.setItem(AUTH_KEY, "authenticated");
+        return localStorage.getItem(AUTH_KEY) === "authenticated";
     } catch (error) {
-        console.warn(
-            "Fern could not persist authentication with localStorage:",
-            error
-        );
+        console.warn("Fern could not persist authentication:", error);
         return false;
     }
 }
 
 function hasLocalAuthentication() {
     try {
-        return localStorage.getItem(AUTH_KEY)
-            === "authenticated";
+        return localStorage.getItem(AUTH_KEY) === "authenticated";
     } catch (_) {
         return false;
     }
@@ -2096,15 +2112,14 @@ function clearLocalAuthentication() {
 }
 
 function isAuthenticated() {
-    /*
-     * localStorage is the primary persistent mechanism.
-     * The cookie is retained as a secondary mechanism for
-     * normal HTTP/HTTPS deployments.
-     */
-    return (
-        hasLocalAuthentication() ||
-        hasAuthCookie()
-    );
+    if (hasLocalAuthentication()) return true;
+
+    if (location.protocol === "http:" ||
+        location.protocol === "https:") {
+        return hasAuthCookie();
+    }
+
+    return false;
 }
 
 function showApplication() {
@@ -3107,6 +3122,191 @@ setInterval(
 
 
 
+
+/* ============================================================
+   FERN CONNECTION DIAGNOSTICS
+   ============================================================ */
+
+function setDiagnosticLine(label, value, ok = null) {
+    const el = document.getElementById("fernDiagnostics");
+    if (!el) return;
+
+    const line = document.createElement("div");
+    line.textContent =
+        (ok === true ? "✓ " : ok === false ? "✕ " : "• ") +
+        label + ": " + value;
+
+    if (ok === true) line.style.color = "var(--green)";
+    if (ok === false) line.style.color = "var(--red)";
+    el.appendChild(line);
+}
+
+async function runFernDiagnostics() {
+    const el = document.getElementById("fernDiagnostics");
+    if (!el) return;
+
+    el.innerHTML = "";
+
+    setDiagnosticLine(
+        "Origin",
+        location.origin || location.protocol,
+        true
+    );
+
+    const https = location.protocol === "https:";
+    setDiagnosticLine("HTTPS", https ? "yes" : "no", https);
+
+    let storageOK = false;
+    try {
+        const key = "__fern_diag__";
+        localStorage.setItem(key, "1");
+        storageOK = localStorage.getItem(key) === "1";
+        localStorage.removeItem(key);
+    } catch (_) {}
+
+    setDiagnosticLine(
+        "Local storage",
+        storageOK ? "available" : "blocked",
+        storageOK
+    );
+
+    const webOrigin =
+        location.protocol === "http:" ||
+        location.protocol === "https:";
+
+    setDiagnosticLine(
+        "Cookie-capable origin",
+        webOrigin ? "yes" : "file:// — cookie persistence is not reliable",
+        webOrigin
+    );
+
+    const uvExists = typeof __uv$config !== "undefined";
+    setDiagnosticLine(
+        "UV config object",
+        uvExists ? "loaded" : "missing",
+        uvExists
+    );
+
+    if (uvExists) {
+        const prefixOK =
+            typeof __uv$config.prefix === "string";
+        const encoderOK =
+            typeof __uv$config.encodeUrl === "function";
+
+        setDiagnosticLine(
+            "UV prefix",
+            prefixOK ? __uv$config.prefix : "missing",
+            prefixOK
+        );
+
+        setDiagnosticLine(
+            "UV encoder",
+            encoderOK ? "loaded" : "missing",
+            encoderOK
+        );
+
+        setDiagnosticLine(
+            "UV service-worker script",
+            __uv$config.sw || "(not specified)",
+            typeof __uv$config.sw === "string"
+        );
+    }
+
+    const swSupported = "serviceWorker" in navigator;
+    setDiagnosticLine(
+        "Service Worker API",
+        swSupported ? "supported" : "not supported",
+        swSupported
+    );
+
+    if (swSupported && https) {
+        try {
+            const regs =
+                await navigator.serviceWorker.getRegistrations();
+
+            setDiagnosticLine(
+                "Registered service workers",
+                String(regs.length),
+                regs.length > 0
+            );
+
+            const prefix =
+                uvExists && typeof __uv$config.prefix === "string"
+                    ? __uv$config.prefix
+                    : "/uv/service/";
+
+            const matches = regs.filter(reg =>
+                reg.scope.includes(prefix) ||
+                (reg.active && reg.active.scriptURL.includes("uv"))
+            );
+
+            setDiagnosticLine(
+                "UV worker registration",
+                matches.length ? "found" : "not found",
+                matches.length > 0
+            );
+
+            setDiagnosticLine(
+                "Current page controlled by SW",
+                navigator.serviceWorker.controller
+                    ? navigator.serviceWorker.controller.scriptURL
+                    : "no",
+                !!navigator.serviceWorker.controller
+            );
+        } catch (error) {
+            setDiagnosticLine(
+                "Service-worker check",
+                error && error.message ? error.message : "failed",
+                false
+            );
+        }
+    } else if (swSupported) {
+        setDiagnosticLine(
+            "Service-worker check",
+            "requires HTTPS",
+            null
+        );
+    }
+
+    if (uvExists &&
+        typeof __uv$config.prefix === "string" &&
+        typeof __uv$config.encodeUrl === "function") {
+        try {
+            const testURL = "https://example.com/";
+            const constructed =
+                __uv$config.prefix +
+                __uv$config.encodeUrl(testURL);
+
+            setDiagnosticLine(
+                "UV URL construction",
+                constructed,
+                true
+            );
+        } catch (error) {
+            setDiagnosticLine(
+                "UV URL construction",
+                error && error.message ? error.message : "failed",
+                false
+            );
+        }
+    }
+
+    const localAuth = hasLocalAuthentication();
+    const cookieAuth =
+        webOrigin && hasAuthCookie();
+
+    setDiagnosticLine(
+        "Fern authentication storage",
+        localAuth
+            ? "local authentication saved"
+            : cookieAuth
+                ? "cookie saved"
+                : "not currently saved",
+        localAuth || cookieAuth
+    );
+}
+
+
 /* ============================================================
    SETTINGS
    ============================================================ */
@@ -3271,6 +3471,18 @@ function loadFernSettings() {
 
 loadFernSettings();
 renderGames();
+
+const runDiagnosticsButton =
+    document.getElementById("runDiagnosticsButton");
+
+if (runDiagnosticsButton) {
+    runDiagnosticsButton.addEventListener(
+        "click",
+        runFernDiagnostics
+    );
+}
+
+runFernDiagnostics();
 
 
 /* ============================================================
