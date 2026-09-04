@@ -84,6 +84,17 @@
                 var(--bg);
         }
 
+        /* Interactive Canvas Background */
+        #bgCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
 
         /* =====================================================
            LOGIN
@@ -117,6 +128,8 @@
 
 
         .login-box {
+            position: relative;
+            z-index: 2;
             width: min(430px, 100%);
             padding: 36px;
 
@@ -303,6 +316,8 @@
            ===================================================== */
 
         #app {
+            position: relative;
+            z-index: 2;
             display: none;
 
             width: 100%;
@@ -481,6 +496,8 @@
                 1px solid var(--border);
 
             border-radius: 0;
+
+            backdrop-filter: blur(8px);
         }
 
 
@@ -784,6 +801,7 @@
             background: rgba(7,14,9,.72);
             border: 1px solid var(--border);
             box-shadow: inset 0 0 30px rgba(0,0,0,.12);
+            backdrop-filter: blur(8px);
         }
 
         .settings-section h3 {
@@ -1031,6 +1049,7 @@
             border-radius: 0;
 
             transition: .2s;
+            backdrop-filter: blur(8px);
         }
 
 
@@ -1142,6 +1161,8 @@
             font-size: 12px;
 
             text-align: center;
+
+            backdrop-filter: blur(8px);
         }
 
 
@@ -1473,7 +1494,7 @@
             color: var(--text);
             background: var(--panel);
             border: 1px solid var(--border);
-            border-radius: 99px;
+            border-radius: 999px;
             cursor: pointer;
         }
 
@@ -1486,7 +1507,7 @@
         body[data-theme="light"] {
             --bg: #f3f6f5;
             --bg-light: #ffffff;
-            --panel: #ffffff;
+            --panel: rgba(255, 255, 255, 0.85);
             --panel-hover: #edf3ef;
             --green: #087d3d;
             --green-dark: #056630;
@@ -1531,7 +1552,7 @@
         body[data-theme="cyberpunk"] {
             --bg: #08050f;
             --bg-light: #10091b;
-            --panel: #120c1d;
+            --panel: rgba(18, 12, 29, 0.85);
             --panel-hover: #1b1028;
             --green: #00eaff;
             --green-dark: #0099a6;
@@ -1640,6 +1661,9 @@
 
 
 <body>
+
+<!-- BACKGROUND CANVAS FOR FLOATING PARTICLES -->
+<canvas id="bgCanvas"></canvas>
 
 
 <!-- =========================================================
@@ -2040,6 +2064,130 @@
 
 <script>
 
+/* ============================================================
+   BACKGROUND PARTICLES ANIMATION
+   ============================================================ */
+
+(function initParticles() {
+    const canvas = document.getElementById('bgCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    let particles = [];
+    const particleCount = 75;
+    const maxDistance = 120;
+    const mouseRadius = 120;
+
+    const mouse = {
+        x: null,
+        y: null
+    };
+
+    window.addEventListener('mousemove', (e) => {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+    });
+
+    window.addEventListener('mouseleave', () => {
+        mouse.x = null;
+        mouse.y = null;
+    });
+
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class Particle {
+        constructor() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.size = Math.random() * 1.5 + 1.5;
+            this.vx = (Math.random() - 0.5) * 1.2;
+            this.vy = (Math.random() - 0.5) * 1.2;
+        }
+
+        update() {
+            this.x += this.vx;
+            this.y += this.vy;
+
+            if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+            if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+
+            if (mouse.x !== null && mouse.y !== null) {
+                let dx = mouse.x - this.x;
+                let dy = mouse.y - this.y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < mouseRadius) {
+                    let forceDirectionX = dx / distance;
+                    let forceDirectionY = dy / distance;
+                    let force = (mouseRadius - distance) / mouseRadius;
+
+                    this.x -= forceDirectionX * force * 5;
+                    this.y -= forceDirectionY * force * 5;
+                }
+            }
+        }
+
+        draw() {
+            const greenColor = getComputedStyle(document.documentElement).getPropertyValue('--green').trim() || '#00ff66';
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fillStyle = greenColor;
+            ctx.fill();
+        }
+    }
+
+    function init() {
+        particles = [];
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+        }
+    }
+
+    function connect() {
+        const borderBright = getComputedStyle(document.documentElement).getPropertyValue('--border-bright').trim() || 'rgba(0, 255, 102, 0.4)';
+        for (let a = 0; a < particles.length; a++) {
+            for (let b = a + 1; b < particles.length; b++) {
+                let dx = particles[a].x - particles[b].x;
+                let dy = particles[a].y - particles[b].y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < maxDistance) {
+                    let opacity = (1 - (distance / maxDistance)) * 0.25;
+                    ctx.strokeStyle = borderBright;
+                    ctx.globalAlpha = opacity;
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(particles[a].x, particles[a].y);
+                    ctx.lineTo(particles[b].x, particles[b].y);
+                    ctx.stroke();
+                    ctx.globalAlpha = 1.0;
+                }
+            }
+        }
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (let i = 0; i < particles.length; i++) {
+            particles[i].update();
+            particles[i].draw();
+        }
+
+        connect();
+        requestAnimationFrame(animate);
+    }
+
+    init();
+    animate();
+})();
+
 
 /* ============================================================
    FERN CONFIGURATION
@@ -2048,6 +2196,14 @@
 const CORRECT_PASSWORD = "S1gmaGyat";
 const AUTH_KEY = "fern_authenticated";
 const COOKIE_NAME = "FernAuth";
+
+const jokes = [
+    "Loading questionable technology...",
+    "Reticulating splines...",
+    "Feeding the fern...",
+    "Optimizing procrastination...",
+    "Bypassing quantum barriers..."
+];
 
 /* ============================================================
    AUTHENTICATION / PERSISTENCE
@@ -2178,11 +2334,6 @@ function authenticate() {
     if (!input) return;
 
     if (input.value === CORRECT_PASSWORD) {
-        /*
-         * Authentication itself should not depend on whether the browser
-         * permits persistent storage. Save the state when possible, then
-         * continue into Fern.
-         */
         saveLocalAuthentication();
         setAuthCookie();
 
@@ -2378,11 +2529,6 @@ function launchURL(targetURL = null) {
     }
 
 
-    /*
-     * Play the Fern window pop-in animation
-     * every time a new page is launched.
-     */
-
     if (iframeContainer) {
 
         iframeContainer.classList.remove("window-pop");
@@ -2400,11 +2546,6 @@ function launchURL(targetURL = null) {
 
     }
 
-
-    /*
-     * Use the existing UV configuration
-     * when it is available.
-     */
 
     if (
         typeof __uv$config !== "undefined" &&
@@ -2571,11 +2712,6 @@ function enterFernFullscreen() {
 
     fullscreenRequestPending = true;
 
-    /*
-     * Keep requestFullscreen() directly inside the user-activation
-     * handler. Keyboard Lock is requested immediately after the
-     * fullscreen promise resolves.
-     */
     fullscreenContainer
         .requestFullscreen({
             navigationUI: "hide",
@@ -2586,10 +2722,6 @@ function enterFernFullscreen() {
 
             await lockFullscreenKeyboard();
 
-            /*
-             * If the mouse/touch was released while the browser was
-             * completing the transition, don't leave Fern stuck fullscreen.
-             */
             if (
                 !fullscreenMouseHeld &&
                 !fullscreenTouchHeld &&
@@ -2603,11 +2735,6 @@ function enterFernFullscreen() {
         .catch(error => {
             fullscreenRequestPending = false;
 
-            /*
-             * Some browsers reject the keyboardLock option even though
-             * normal fullscreen is supported. Retry normal fullscreen
-             * from the same original interaction only when possible.
-             */
             console.warn(
                 "Fern fullscreen request failed:",
                 error
@@ -2646,10 +2773,6 @@ if (fullscreenButton) {
     fullscreenButton.addEventListener(
         "click",
         event => {
-            /*
-             * Deliberately prevent click-to-toggle. Fullscreen is a
-             * press-and-hold interaction.
-             */
             event.preventDefault();
             event.stopPropagation();
         }
@@ -2663,10 +2786,6 @@ if (fullscreenButton) {
             fullscreenMouseHeld = false;
             updateFullscreenUI();
 
-            /*
-             * Release exits only if fullscreen was entered by this
-             * hold. The normal Escape exit path remains available.
-             */
             if (fullscreenRequestPending) {
                 return;
             }
@@ -2724,11 +2843,6 @@ if (fullscreenButton) {
     );
 }
 
-/*
- * Keyboard Lock changes normal Escape behavior in supported browsers.
- * Holding Escape is then the browser's escape mechanism for leaving
- * keyboard-locked fullscreen.
- */
 document.addEventListener(
     "keydown",
     event => {
@@ -3001,7 +3115,7 @@ const games = [
 
 
 /* ============================================================
-   GAME CARD BUILDER (WITH AUTO LOGO FETCH)
+   GAME CARD BUILDER
    ============================================================ */
 
 function renderGames() {
@@ -3021,23 +3135,7 @@ function renderGames() {
 
         const icon = document.createElement("div");
         icon.className = "game-icon";
-        icon.style.overflow = "hidden";
-        icon.style.padding = "0";
-
-        const img = document.createElement("img");
-        img.alt = game.name + " logo";
-        img.style.width = "100%";
-        img.style.height = "100%";
-        img.style.objectFit = "cover";
-
-        const cleanDomain = game.link.replace(/^https?:\/\//, '').split('/')[0];
-        img.src = `https://icons.duckduckgo.com/ip3/${cleanDomain}.ico`;
-
-        img.onerror = function() {
-            icon.innerHTML = "🎮";
-        };
-
-        icon.appendChild(img);
+        icon.textContent = "🎮";
 
         const title = document.createElement("h3");
         title.textContent = game.name;
@@ -3064,26 +3162,6 @@ function renderGames() {
         grid.appendChild(card);
     });
 }
-
-
-/* ============================================================
-   GAME LAUNCHER
-   ============================================================ */
-
-function openGame(targetURL) {
-
-    const proxyButton =
-        document.querySelector(
-            '.nav-button[data-page="proxy"]'
-        );
-
-    if (proxyButton) {
-        proxyButton.click();
-    }
-
-    launchURL(targetURL);
-}
-
 
 
 /* ============================================================
@@ -3148,9 +3226,6 @@ setInterval(
     randomJoke,
     8000
 );
-
-
-
 
 
 /* ============================================================
@@ -3347,52 +3422,52 @@ const FERN_BUTTON_STYLE_KEY = "fern_button_style";
 
 const FERN_THEMES = {
     fern: {
-        bg: "#030603", bgLight: "#071007", panel: "#0b120d", panelHover: "#101b13",
+        bg: "#030603", bgLight: "#071007", panel: "rgba(11, 18, 13, 0.85)", panelHover: "#101b13",
         accent: "#00ff66", accentDark: "#00bd4b", accentSoft: "#7affad",
         text: "#e9fff0", muted: "#769180", border: "rgba(0,255,102,.18)", borderBright: "rgba(0,255,102,.48)"
     },
     midnight: {
-        bg: "#050612", bgLight: "#0a0d1d", panel: "#0b0e20", panelHover: "#11152c",
+        bg: "#050612", bgLight: "#0a0d1d", panel: "rgba(11, 14, 32, 0.85)", panelHover: "#11152c",
         accent: "#6f86ff", accentDark: "#4e65df", accentSoft: "#aab8ff",
         text: "#eef1ff", muted: "#7d86a6", border: "rgba(111,134,255,.20)", borderBright: "rgba(111,134,255,.52)"
     },
     amber: {
-        bg: "#0b0702", bgLight: "#160e04", panel: "#171006", panelHover: "#211508",
+        bg: "#0b0702", bgLight: "#160e04", panel: "rgba(23, 16, 6, 0.85)", panelHover: "#211508",
         accent: "#ffb020", accentDark: "#d88d00", accentSoft: "#ffd477",
         text: "#fff5df", muted: "#9d8a6c", border: "rgba(255,176,32,.20)", borderBright: "rgba(255,176,32,.52)"
     },
     ice: {
-        bg: "#031016", bgLight: "#061a22", panel: "#08202a", panelHover: "#0b2b37",
+        bg: "#031016", bgLight: "#061a22", panel: "rgba(8, 32, 42, 0.85)", panelHover: "#0b2b37",
         accent: "#5de7ff", accentDark: "#27b9d3", accentSoft: "#a4f3ff",
         text: "#e9fbff", muted: "#71939c", border: "rgba(93,231,255,.20)", borderBright: "rgba(93,231,255,.52)"
     },
     violet: {
-        bg: "#080311", bgLight: "#11061b", panel: "#160a20", panelHover: "#20102e",
+        bg: "#080311", bgLight: "#11061b", panel: "rgba(22, 10, 32, 0.85)", panelHover: "#20102e",
         accent: "#b36bff", accentDark: "#8644cf", accentSoft: "#d4a9ff",
         text: "#f8efff", muted: "#957fa4", border: "rgba(179,107,255,.20)", borderBright: "rgba(179,107,255,.52)"
     },
     rose: {
-        bg: "#110307", bgLight: "#1b060c", panel: "#210a11", panelHover: "#2b0e17",
+        bg: "#110307", bgLight: "#1b060c", panel: "rgba(33, 10, 17, 0.85)", panelHover: "#2b0e17",
         accent: "#ff6688", accentDark: "#d83f63", accentSoft: "#ffadbd",
         text: "#fff0f4", muted: "#a37b86", border: "rgba(255,102,136,.20)", borderBright: "rgba(255,102,136,.52)"
     },
     mono: {
-        bg: "#050505", bgLight: "#0c0c0c", panel: "#111111", panelHover: "#181818",
+        bg: "#050505", bgLight: "#0c0c0c", panel: "rgba(17, 17, 17, 0.85)", panelHover: "#181818",
         accent: "#d7d7d7", accentDark: "#999999", accentSoft: "#f1f1f1",
         text: "#eeeeee", muted: "#858585", border: "rgba(255,255,255,.16)", borderBright: "rgba(255,255,255,.42)"
     },
     cyan: {
-        bg: "#02100e", bgLight: "#041b18", panel: "#06221e", panelHover: "#0a2d28",
+        bg: "#02100e", bgLight: "#041b18", panel: "rgba(6, 34, 30, 0.85)", panelHover: "#0a2d28",
         accent: "#20ffd4", accentDark: "#10b69a", accentSoft: "#8affea",
         text: "#e8fffb", muted: "#6c9991", border: "rgba(32,255,212,.20)", borderBright: "rgba(32,255,212,.52)"
     },
     light: {
-        bg: "#f3f6f5", bgLight: "#ffffff", panel: "#ffffff", panelHover: "#edf3ef",
+        bg: "#f3f6f5", bgLight: "#ffffff", panel: "rgba(255, 255, 255, 0.85)", panelHover: "#edf3ef",
         accent: "#087d3d", accentDark: "#056630", accentSoft: "#0a7040",
         text: "#132018", muted: "#617067", border: "rgba(8,96,48,.16)", borderBright: "rgba(8,96,48,.38)"
     },
     cyberpunk: {
-        bg: "#08050f", bgLight: "#10091b", panel: "#120c1d", panelHover: "#1b1028",
+        bg: "#08050f", bgLight: "#10091b", panel: "rgba(18, 12, 29, 0.85)", panelHover: "#1b1028",
         accent: "#00eaff", accentDark: "#0099a6", accentSoft: "#82f8ff",
         text: "#f2fbff", muted: "#918aa8", border: "rgba(0,240,255,.19)", borderBright: "rgba(255,45,205,.58)"
     }
