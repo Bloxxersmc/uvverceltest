@@ -6,7 +6,7 @@
 
     <title>Fern</title>
 
-    <meta name="fern-version" content="1.1.5">
+    <meta name="fern-version" content="1.2.9">
 
     <!-- UV -->
     <script src="/uv/uv.bundle.js"></script>
@@ -2020,6 +2020,619 @@
             .library-controls { flex-direction:column; }
             .library-search,#gameFilter { width:100%; }
         }
+
+
+        /* =====================================================
+           FINAL UI POLISH — clean spacing, no squeezed headers
+           ===================================================== */
+        .content { position: relative; z-index: 2; }
+        .page { width: min(1320px, calc(100% - 48px)); padding: 42px 0 80px; }
+
+        .section-header {
+            display: flex !important;
+            align-items: flex-end !important;
+            justify-content: space-between !important;
+            gap: 32px !important;
+            margin: 0 0 28px !important;
+            min-height: 74px;
+        }
+        .section-header > div:first-child { min-width: 0; }
+        .section-header h2 {
+            display: block !important;
+            width: auto !important;
+            margin: 0 0 7px !important;
+            font-size: clamp(30px, 3vw, 40px) !important;
+            line-height: 1.08 !important;
+            white-space: normal !important;
+        }
+        .section-header p {
+            display: block !important;
+            width: auto !important;
+            margin: 0 !important;
+            max-width: 620px;
+            line-height: 1.55 !important;
+        }
+        .eyebrow { line-height: 1.2 !important; white-space: nowrap; }
+
+        .library-heading { align-items: flex-end !important; }
+        .library-controls { flex: 0 0 auto; }
+        .library-search { width: 300px; }
+
+        .games-grid {
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)) !important;
+            gap: 20px !important;
+        }
+        .game-card { min-width: 0; }
+
+        .about-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+            border: 0;
+            padding: 0;
+            background: transparent;
+            box-shadow: none;
+        }
+        .about-card {
+            min-height: 126px;
+            padding: 22px;
+            background: rgba(7,14,9,.66);
+            border: 1px solid var(--border);
+        }
+        .about-card > div { min-width: 0; }
+        .about-card small { line-height: 1.5; }
+
+        .settings-panel { gap: 18px; margin-top: 0; }
+        .settings-section {
+            padding: 26px;
+            border-radius: 18px;
+        }
+        .settings-section > div:first-child { margin-bottom: 4px; }
+        .theme-grid { grid-template-columns: repeat(auto-fit, minmax(165px, 1fr)); gap: 12px; }
+
+        .bookmarks-panel {
+            padding: 8px;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            background: rgba(5,11,7,.52);
+        }
+
+        .topbar {
+            padding: 0 28px;
+            gap: 24px;
+        }
+        .brand { flex: 0 0 auto; }
+        .nav { margin: 0 auto; }
+        .online { flex: 0 0 auto; white-space: nowrap; }
+
+        @media (max-width: 900px) {
+            .page { width: min(100% - 32px, 760px); padding-top: 30px; }
+            .section-header,
+            .library-heading { align-items: flex-start !important; flex-direction: column !important; gap: 18px !important; }
+            .library-controls { width: 100%; }
+            .library-search { flex: 1; width: auto; }
+            .games-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)) !important; }
+            .about-grid { grid-template-columns: 1fr; }
+            .topbar { padding: 10px 16px; }
+            .nav { order: 3; width: 100%; justify-content: center; }
+            .online { display: none; }
+        }
+
+        @media (max-width: 560px) {
+            .page { width: min(100% - 22px, 520px); padding-top: 24px; }
+            .games-grid { grid-template-columns: 1fr !important; }
+            .library-controls { flex-direction: column; align-items: stretch; }
+            .library-search { width: 100%; }
+            #gameFilter { width: 100%; }
+            .section-header h2 { font-size: 30px !important; }
+        }
+
+        /* =====================================================
+           FERN 2.2 — CLEAN REFERENCE LAYOUT
+           ===================================================== */
+        .topbar {
+            position: relative !important;
+            z-index: 20 !important;
+            width: calc(100% - 32px) !important;
+            max-width: 1600px !important;
+            margin: 12px auto 0 !important;
+            min-height: 72px !important;
+            padding: 8px 22px !important;
+            grid-template-columns: 230px minmax(0,1fr) 180px !important;
+            gap: 18px !important;
+            border-radius: 20px !important;
+            background: rgba(7, 9, 18, .78) !important;
+            border: 1px solid rgba(0,255,102,.20) !important;
+            backdrop-filter: blur(22px) saturate(125%);
+        }
+        .brand {
+            position: relative !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 11px !important;
+            min-width: 0 !important;
+            margin: 0 !important;
+        }
+        .brand::after { display: none !important; }
+        .brand-icon {
+            flex: 0 0 40px !important;
+            width: 40px !important;
+            height: 40px !important;
+            display: grid !important;
+            place-items: center !important;
+            font-size: 29px !important;
+            border: 1px solid var(--border) !important;
+            border-radius: 13px !important;
+            background: color-mix(in srgb,var(--green) 8%,transparent) !important;
+        }
+        .brand-copy {
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            line-height: 1 !important;
+            min-width: 0 !important;
+        }
+        .brand-copy strong {
+            color: var(--text) !important;
+            font-size: 19px !important;
+            letter-spacing: -.5px !important;
+        }
+        .brand-copy small {
+            color: var(--green) !important;
+            font-size: 11px !important;
+            font-weight: 800 !important;
+            margin-top: 6px !important;
+            letter-spacing: .2px !important;
+        }
+        .nav {
+            justify-self: center !important;
+            margin: 0 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 4px !important;
+        }
+        .nav button {
+            height: 44px !important;
+            padding: 0 17px !important;
+            border-radius: 13px !important;
+            white-space: nowrap !important;
+        }
+        .online {
+            justify-self: end !important;
+            min-width: 160px !important;
+            text-align: center !important;
+            border-radius: 14px !important;
+        }
+
+        .content {
+            width: 100% !important;
+            max-width: none !important;
+            padding: 34px 46px 70px !important;
+        }
+        .page {
+            width: min(1480px, 100%) !important;
+            min-height: auto !important;
+            margin: 0 auto !important;
+            padding: 20px 0 60px !important;
+        }
+
+        /* Proxy uses the whole available canvas — no giant dead area on the right. */
+        #proxyPage .hero,
+        #proxyPage .iframe-container {
+            width: 100% !important;
+            max-width: none !important;
+        }
+        #proxyPage .hero {
+            padding: 32px !important;
+            border-radius: 22px !important;
+            margin-bottom: 18px !important;
+        }
+        #proxyPage .hero h2 {
+            font-size: clamp(32px, 3.4vw, 48px) !important;
+            margin-bottom: 10px !important;
+        }
+        #proxyPage .proxy-controls {
+            display: grid !important;
+            grid-template-columns: minmax(0,1fr) auto !important;
+            gap: 14px !important;
+            width: 100% !important;
+        }
+        #proxyPage .proxy-controls input { min-width: 0 !important; }
+        #proxyPage .iframe-container {
+            min-height: 500px !important;
+            height: calc(100vh - 275px) !important;
+            border-radius: 22px !important;
+        }
+
+        .library-heading {
+            align-items: flex-end !important;
+            margin-bottom: 24px !important;
+        }
+        .library-heading > div:first-child { flex: 1 1 auto !important; }
+        .library-controls { flex: 0 0 auto !important; }
+        .games-grid {
+            grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+            gap: 18px !important;
+        }
+        .game-card {
+            border-radius: 16px !important;
+            background: rgba(4,9,15,.80) !important;
+        }
+        .game-media { height: 166px !important; }
+        .game-card-body { padding: 12px 13px !important; }
+        .game-card h3 { font-size: 14px !important; }
+        .game-card p { display: none !important; }
+        .game-card a {
+            display: none !important;
+        }
+        .game-card-top::before {
+            content: '▶';
+            color: var(--green);
+            font-size: 10px;
+            margin-right: 2px;
+        }
+        .game-image {
+            object-fit: cover !important;
+            background: var(--bg-light);
+        }
+
+        .section-header {
+            min-height: 0 !important;
+            margin-bottom: 24px !important;
+        }
+        .section-header h2 { font-size: clamp(30px, 3vw, 42px) !important; }
+
+        /* Keep every secondary page from compressing its text into the controls. */
+        #settingsPage .section-header,
+        #aboutPage .section-header,
+        #bookmarksPage .section-header {
+            display: block !important;
+        }
+        #settingsPage .section-header h2,
+        #aboutPage .section-header h2,
+        #bookmarksPage .section-header h2 { margin-bottom: 8px !important; }
+        #settingsPage .settings-panel,
+        #aboutPage .about-grid,
+        #bookmarksPage .bookmarks-panel {
+            width: 100% !important;
+        }
+
+        @media (max-width: 1150px) {
+            .games-grid { grid-template-columns: repeat(4, minmax(0,1fr)) !important; }
+            .topbar { grid-template-columns: 210px minmax(0,1fr) 150px !important; }
+            .nav button { padding: 0 12px !important; }
+        }
+        @media (max-width: 900px) {
+            .topbar { grid-template-columns: 1fr auto !important; }
+            .nav { grid-column: 1 / -1 !important; grid-row: 2 !important; }
+            .content { padding: 26px 20px 55px !important; }
+            .games-grid { grid-template-columns: repeat(3, minmax(0,1fr)) !important; }
+        }
+        @media (max-width: 650px) {
+            .content { padding: 20px 12px 45px !important; }
+            .topbar { width: calc(100% - 16px) !important; margin-top: 8px !important; }
+            .online { display: none !important; }
+            .brand { grid-column: 1 / -1 !important; }
+            .nav { overflow-x: auto !important; justify-content: flex-start !important; width: 100% !important; }
+            .games-grid { grid-template-columns: repeat(2, minmax(0,1fr)) !important; gap: 12px !important; }
+            .game-media { height: 130px !important; }
+            #proxyPage .proxy-controls { grid-template-columns: 1fr !important; }
+            #proxyPage .iframe-container { height: calc(100vh - 330px) !important; min-height: 360px !important; }
+        }
+        @media (max-width: 420px) {
+            .games-grid { grid-template-columns: 1fr !important; }
+        }
+    
+
+        /* =========================================================
+           PERFORMANCE OVERRIDES
+           Keep the reference look without turning every card into
+           an expensive compositor layer.
+           ========================================================= */
+        #bgCanvas { will-change: auto; }
+        .game-card,
+        .nav-button,
+        .theme-card,
+        .hero,
+        .settings-section,
+        .iframe-container { will-change: auto; }
+        .game-card:hover { transform: translateY(-3px) !important; }
+        .game-card:hover .game-image { transform: scale(1.025); }
+        .game-media-glow { filter: blur(16px); opacity: .08; }
+        .game-image { transition: transform .2s ease, filter .2s ease; }
+        @media (prefers-reduced-motion: reduce) {
+            .game-card:hover { transform: none !important; }
+        }
+
+/* Fern performance pass: keep the visual language without costly compositing. */
+#bgCanvas{opacity:.88;}
+.hero,.game-card,.settings-section,.theme-card,.iframe-container,.topbar,.nav,.online,.library-controls{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;}
+.game-media-glow{display:none!important;}
+.game-card{box-shadow:0 7px 22px rgba(0,0,0,.16)!important;}
+.game-card:hover{box-shadow:0 9px 25px rgba(0,0,0,.18)!important;}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
+
+
+/* Proxy frame stays completely hidden until a URL is entered/launched. */
+#iframeContainer {
+    display: none !important;
+}
+
+#iframeContainer.fern-visible {
+    display: block !important;
+}
+
+/* =========================================================
+   FERN ATMOSPHERE — DEEP SPACE MIST + CLEAN CONSTELLATIONS
+   ========================================================= */
+html, body { background:#050611 !important; }
+body {
+    position:relative;
+    isolation:isolate;
+    overflow:hidden;
+    background:
+      radial-gradient(ellipse 70% 55% at 78% 42%, rgba(84,46,135,.24), transparent 68%),
+      radial-gradient(ellipse 55% 45% at 22% 76%, rgba(18,91,116,.16), transparent 70%),
+      linear-gradient(135deg,#04050d 0%,#080716 48%,#100916 100%) !important;
+}
+/* Soft, slow-moving mist. No heavy blur/filter is used. */
+body::before {
+    content:"";
+    position:fixed;
+    inset:-18%;
+    z-index:0;
+    pointer-events:none;
+    background:
+      radial-gradient(ellipse 32% 22% at 76% 27%, rgba(65,146,190,.18), transparent 72%),
+      radial-gradient(ellipse 38% 25% at 84% 63%, rgba(151,62,180,.20), transparent 73%),
+      radial-gradient(ellipse 30% 20% at 31% 73%, rgba(33,129,145,.14), transparent 72%),
+      radial-gradient(ellipse 26% 18% at 57% 48%, rgba(94,65,166,.11), transparent 75%);
+    transform:translate3d(0,0,0) scale(1.08);
+    animation:fernMistDrift 24s ease-in-out infinite alternate;
+}
+body::after {
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+    background:
+      radial-gradient(ellipse at 50% 50%, transparent 35%, rgba(1,2,8,.30) 100%),
+      radial-gradient(circle at 8% 20%, rgba(113,65,172,.10), transparent 28%),
+      radial-gradient(circle at 92% 82%, rgba(0,156,184,.08), transparent 26%);
+}
+@keyframes fernMistDrift {
+    0%   { transform:translate3d(-2%,1%,0) scale(1.08); opacity:.82; }
+    50%  { transform:translate3d(1%,-1%,0) scale(1.12); opacity:1; }
+    100% { transform:translate3d(2%,2%,0) scale(1.09); opacity:.86; }
+}
+#bgCanvas {
+    position:fixed !important;
+    inset:0 !important;
+    width:100% !important;
+    height:100% !important;
+    z-index:1 !important;
+    pointer-events:none !important;
+    opacity:1 !important;
+}
+#app, #loginScreen { position:relative; z-index:2; }
+
+/* Match the reference: broad panels, while using the full available width. */
+.content { width:100% !important; max-width:none !important; }
+.page { width:100% !important; max-width:none !important; }
+#proxyPage .hero,
+#proxyPage .iframe-container { width:100% !important; max-width:none !important; }
+#proxyPage .hero {
+    background:
+      linear-gradient(135deg, rgba(38,220,184,.055), transparent 42%),
+      linear-gradient(115deg, rgba(13,15,32,.92), rgba(7,8,20,.78)) !important;
+    border:1px solid rgba(110,92,176,.34) !important;
+    box-shadow:0 18px 60px rgba(0,0,0,.24) !important;
+}
+#proxyPage .iframe-container {
+    background:rgba(4,6,15,.62) !important;
+    border:1px solid rgba(110,92,176,.30) !important;
+    box-shadow:0 18px 70px rgba(0,0,0,.28) !important;
+}
+.topbar {
+    background:rgba(4,5,14,.72) !important;
+    border:1px solid rgba(105,91,167,.26) !important;
+    box-shadow:0 12px 40px rgba(0,0,0,.18) !important;
+}
+.nav button.active {
+    background:linear-gradient(180deg,rgba(34,238,201,.10),rgba(34,238,201,.025)) !important;
+    border-color:rgba(53,235,205,.28) !important;
+}
+@media (max-width:900px){
+    .content { padding:24px 20px 50px !important; }
+}
+
+</style>
+
+<style id="fern-v28-visual-fix">
+/* =========================================================
+   FERN 2.8 — MATCH REFERENCE COMPOSITION
+   ========================================================= */
+html,body{background:#03050d!important;}
+body{
+  overflow:hidden;
+  background:
+    radial-gradient(ellipse 34% 48% at 78% 34%,var(--mist1),transparent 72%),
+    radial-gradient(ellipse 32% 44% at 86% 72%,var(--mist2),transparent 72%),
+    radial-gradient(ellipse 30% 30% at 22% 75%,var(--mist3),transparent 74%),
+    linear-gradient(125deg,#03050d 0%,#050714 46%,#090817 100%)!important;
+}
+body::before{
+  content:"";position:fixed;inset:-10%;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 20% 12% at 73% 28%,color-mix(in srgb,var(--mist1) 100%,transparent),transparent 75%),
+    radial-gradient(ellipse 22% 15% at 87% 60%,color-mix(in srgb,var(--mist2) 90%,transparent),transparent 75%),
+    radial-gradient(ellipse 18% 11% at 66% 79%,color-mix(in srgb,var(--mist3) 90%,transparent),transparent 75%);
+  filter:blur(22px);opacity:.82;animation:fernNebula 30s ease-in-out infinite alternate;
+}
+body::after{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 50%,transparent 32%,rgba(0,0,0,.38) 100%);
+}
+@keyframes fernNebula{0%{transform:translate3d(-1%,1%,0) scale(1)}50%{transform:translate3d(1%,-1%,0) scale(1.04)}100%{transform:translate3d(2%,1%,0) scale(1.02)}}
+#bgCanvas{z-index:1!important;opacity:1!important;}
+#app,#loginScreen{position:relative;z-index:2;}
+
+.topbar{
+  width:calc(100% - 24px)!important;margin:14px 12px 0!important;height:76px!important;min-height:76px!important;
+  grid-template-columns:250px 1fr 190px!important;padding:7px 14px!important;
+  border-radius:17px!important;background:rgba(3,7,15,.64)!important;
+  border:1px solid rgba(125,145,205,.16)!important;box-shadow:0 12px 38px rgba(0,0,0,.24)!important;
+}
+.brand-icon{font-size:31px!important;}.brand-copy strong{font-size:19px!important}.brand-copy small{font-size:11px!important}
+.nav{gap:2px!important;padding:3px!important}.nav button{height:52px!important;padding:0 18px!important;border-radius:13px!important;font-size:13px!important}
+.nav button.active{background:linear-gradient(180deg,color-mix(in srgb,var(--green) 11%,transparent),color-mix(in srgb,var(--green) 3%,transparent))!important;border-color:color-mix(in srgb,var(--green) 30%,transparent)!important;box-shadow:0 0 25px color-mix(in srgb,var(--green) 7%,transparent)!important}
+.nav-symbol{font-size:19px!important}.online{min-width:174px!important;border-radius:12px!important;background:rgba(255,255,255,.025)!important}
+
+.content{width:100%!important;max-width:none!important;padding:20px 0 50px!important;overflow:hidden!important}
+.page{width:100%!important;max-width:none!important;padding:20px 0 50px!important;margin:0!important}
+#proxyPage{position:relative;padding-left:3.35vw!important;}
+#proxyPage .hero,#proxyPage .iframe-container{width:min(58.5vw,904px)!important;max-width:904px!important;}
+#proxyPage .hero{
+  margin:0 0 20px!important;padding:34px 30px 28px!important;border-radius:18px!important;
+  background:linear-gradient(145deg,rgba(7,9,22,.82),rgba(5,7,17,.62))!important;
+  border:1px solid rgba(115,104,175,.32)!important;box-shadow:0 18px 55px rgba(0,0,0,.25)!important;
+}
+#proxyPage .hero h2{font-size:32px!important;letter-spacing:-1.3px!important;margin:0 0 8px!important}
+#proxyPage .hero p{font-size:14px!important;margin-bottom:22px!important}
+#proxyPage .proxy-controls{display:grid!important;grid-template-columns:minmax(0,1fr) 123px!important;gap:18px!important;margin-top:0!important}
+#proxyPage #urlInput{height:56px!important;border-radius:10px!important;background:rgba(4,6,15,.72)!important;border:1px solid color-mix(in srgb,var(--green) 48%,#31344a)!important;padding:0 17px!important;font-size:14px!important}
+#proxyPage #searchButton{height:56px!important;border-radius:10px!important;background:rgba(5,15,19,.55)!important;color:var(--green)!important;border:1px solid color-mix(in srgb,var(--green) 48%,#3b5360)!important}
+#proxyPage #searchButton:hover{background:color-mix(in srgb,var(--green) 8%,transparent)!important}
+#proxyPage .iframe-container{height:calc(100vh - 285px)!important;min-height:480px!important;margin-top:0!important;border-radius:18px!important;background:rgba(4,6,15,.60)!important;border:1px solid rgba(115,104,175,.28)!important;box-shadow:0 18px 65px rgba(0,0,0,.28)!important}
+#proxyPage .iframe-toolbar{top:15px!important;right:15px!important}.iframe-toolbar button{width:42px!important;height:40px!important;border-radius:11px!important;background:rgba(4,8,18,.72)!important;border:1px solid rgba(140,155,205,.24)!important}
+
+/* Theme controls use variables rather than inline forced backgrounds. */
+.theme-card,.settings-section,.game-card,.bookmarks-panel,.about-grid,.settings-toggle{color:var(--text)!important;border-color:var(--border)!important}
+.theme-card{background:color-mix(in srgb,var(--bg-light) 76%,transparent)!important}
+.settings-section,.bookmarks-panel,.about-grid{background:color-mix(in srgb,var(--panel) 82%,transparent)!important}
+.game-card{background:color-mix(in srgb,var(--panel) 78%,transparent)!important}
+.theme-card.active{background:color-mix(in srgb,var(--green) 10%,var(--bg-light))!important;border-color:var(--border-bright)!important}
+
+@media(max-width:1050px){
+  #proxyPage{padding-left:24px!important;padding-right:24px!important}
+  #proxyPage .hero,#proxyPage .iframe-container{width:min(100%,900px)!important}
+  #proxyPage .hero{margin-left:0!important}
+}
+@media(max-width:650px){
+  .topbar{height:auto!important;min-height:64px!important;grid-template-columns:1fr auto!important}
+  #proxyPage{padding-left:14px!important;padding-right:14px!important}
+  #proxyPage .proxy-controls{grid-template-columns:1fr!important}
+  #proxyPage .iframe-container{height:calc(100vh - 360px)!important;min-height:350px!important}
+}
+
+/* Light theme gets its own readable surface instead of inheriting the space backdrop. */
+body[data-theme="light"]{
+  background:
+    radial-gradient(ellipse 34% 48% at 78% 34%,rgba(70,150,115,.12),transparent 72%),
+    radial-gradient(ellipse 32% 44% at 86% 72%,rgba(90,130,180,.09),transparent 72%),
+    linear-gradient(125deg,#edf3f0 0%,#f7faf9 52%,#e8efec 100%)!important;
+}
+body[data-theme="light"]::before{opacity:.35}
+body[data-theme="light"]::after{background:radial-gradient(ellipse at 50% 50%,transparent 32%,rgba(20,45,35,.07) 100%)}
+body[data-theme="light"] .topbar{background:rgba(255,255,255,.78)!important;border-color:rgba(20,70,50,.15)!important}
+body[data-theme="light"] #proxyPage .hero,body[data-theme="light"] #proxyPage .iframe-container{background:rgba(255,255,255,.76)!important;border-color:rgba(20,100,65,.20)!important}
+body[data-theme="light"] #proxyPage #urlInput{background:rgba(245,249,247,.92)!important;color:var(--text)!important}
+</style>
+
+<style id="fern-v29-atmosphere">
+/* =========================================================
+   FERN 2.9 — MORE STARS + LARGE MOVING MIST + PERFORMANCE
+   ========================================================= */
+html,body{background:var(--bg,#050611)!important;}
+body{position:relative;isolation:isolate;overflow:hidden!important;}
+
+/* The cloud sits behind the UI and particles. It is intentionally made from
+   radial gradients rather than filter:blur(), which is much cheaper. */
+.fern-nebula{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+    overflow:hidden;
+    opacity:1;
+    background:
+      radial-gradient(ellipse 54% 44% at 84% 47%,var(--mist1,rgba(70,150,210,.15)),transparent 69%),
+      radial-gradient(ellipse 48% 42% at 91% 70%,var(--mist2,rgba(135,65,190,.13)),transparent 72%),
+      radial-gradient(ellipse 34% 32% at 69% 82%,var(--mist3,rgba(40,125,155,.10)),transparent 73%);
+}
+.fern-nebula-cloud{position:absolute;inset:-18%;will-change:transform;}
+.cloud-a{
+    background:
+      radial-gradient(ellipse 31% 23% at 78% 31%,color-mix(in srgb,var(--mist1,rgba(65,146,190,.18)) 100%,transparent),transparent 73%),
+      radial-gradient(ellipse 39% 27% at 88% 57%,color-mix(in srgb,var(--mist2,rgba(151,62,180,.18)) 100%,transparent),transparent 75%),
+      radial-gradient(ellipse 27% 20% at 71% 76%,color-mix(in srgb,var(--mist3,rgba(33,129,145,.14)) 100%,transparent),transparent 74%);
+    animation:fernCloudDriftA 46s ease-in-out infinite alternate;
+}
+.cloud-b{
+    background:
+      radial-gradient(ellipse 24% 15% at 82% 43%,rgba(75,170,220,.11),transparent 72%),
+      radial-gradient(ellipse 28% 18% at 91% 65%,rgba(184,83,210,.10),transparent 74%),
+      radial-gradient(ellipse 20% 14% at 70% 63%,rgba(45,140,180,.08),transparent 75%);
+    animation:fernCloudDriftB 61s ease-in-out infinite alternate;
+}
+.cloud-c{
+    background:
+      radial-gradient(ellipse 38% 12% at 83% 54%,rgba(110,150,220,.065),transparent 76%),
+      radial-gradient(ellipse 33% 13% at 78% 69%,rgba(155,75,200,.06),transparent 78%);
+    animation:fernCloudDriftC 73s ease-in-out infinite alternate;
+}
+@keyframes fernCloudDriftA{
+    0%{transform:translate3d(-1.5%,.7%,0) scale(1.02)}
+    50%{transform:translate3d(1.2%,-1%,0) scale(1.06)}
+    100%{transform:translate3d(2%,1.1%,0) scale(1.03)}
+}
+@keyframes fernCloudDriftB{
+    0%{transform:translate3d(1%,0,0) scale(1.02)}
+    100%{transform:translate3d(-1.4%,-.8%,0) scale(1.07)}
+}
+@keyframes fernCloudDriftC{
+    0%{transform:translate3d(-.7%,.4%,0)}
+    100%{transform:translate3d(1.1%,-.6%,0)}
+}
+
+/* Keep the theme system alive: earlier visual passes hard-coded the body
+   background, which is why switching themes appeared broken. */
+body[data-theme="cyberpunk"] .fern-nebula,
+body[data-theme="sunset"] .fern-nebula,
+body[data-theme="ocean"] .fern-nebula,
+body[data-theme="dracula"] .fern-nebula,
+body[data-theme="aurora"] .fern-nebula,
+body .fern-nebula{mix-blend-mode:normal;}
+
+/* UI stays above the atmosphere. */
+#app,#loginScreen{position:relative;z-index:2;}
+#bgCanvas{position:fixed!important;inset:0!important;width:100%!important;height:100%!important;z-index:1!important;opacity:1!important;}
+
+/* Final reference composition: left content, open atmospheric space on right. */
+#proxyPage{padding-left:3.35vw!important;padding-right:0!important;}
+#proxyPage .hero,#proxyPage .iframe-container{width:min(58.5vw,904px)!important;max-width:904px!important;}
+
+/* Theme-aware surfaces. These override the older reference hard-codes. */
+.topbar,.nav,.online{background:color-mix(in srgb,var(--panel) 78%,transparent)!important;border-color:var(--border)!important;color:var(--text)!important;}
+#proxyPage .hero{background:color-mix(in srgb,var(--panel) 86%,transparent)!important;border-color:var(--border)!important;color:var(--text)!important;}
+#proxyPage .iframe-container{background:color-mix(in srgb,var(--panel) 62%,transparent)!important;border-color:var(--border)!important;}
+.nav button{color:var(--muted)!important;}
+.nav button.active{color:var(--text)!important;background:color-mix(in srgb,var(--green) 10%,transparent)!important;border-color:var(--border-bright)!important;}
+#proxyPage #urlInput{background:color-mix(in srgb,var(--bg) 82%,transparent)!important;color:var(--text)!important;border-color:var(--border-bright)!important;}
+#proxyPage #searchButton{background:color-mix(in srgb,var(--panel) 70%,transparent)!important;color:var(--green)!important;border-color:var(--border-bright)!important;}
+
+@media(max-width:1050px){
+  #proxyPage{padding-left:24px!important;padding-right:24px!important;}
+  #proxyPage .hero,#proxyPage .iframe-container{width:min(100%,900px)!important;}
+}
+@media(max-width:650px){
+  #proxyPage{padding-left:14px!important;padding-right:14px!important;}
+}
+
+/* Respect the animation setting. */
+body.no-animations .fern-nebula-cloud{animation:none!important;}
+@media(prefers-reduced-motion:reduce){.fern-nebula-cloud{animation:none!important;}}
 </style>
 </head>
 
@@ -2028,6 +2641,14 @@
 
 <!-- BACKGROUND CANVAS FOR FLOATING PARTICLES -->
 <canvas id="bgCanvas"></canvas>
+
+<!-- Lightweight atmospheric nebula layers. CSS gradients are used instead of
+     animated canvas blur so the cloud stays soft without hammering the GPU. -->
+<div class="fern-nebula" aria-hidden="true">
+    <div class="fern-nebula-cloud cloud-a"></div>
+    <div class="fern-nebula-cloud cloud-b"></div>
+    <div class="fern-nebula-cloud cloud-c"></div>
+</div>
 
 
 <!-- =========================================================
@@ -2106,7 +2727,10 @@
 
         <div class="brand">
             <span class="brand-icon">🌿</span>
-            Fern
+            <div class="brand-copy">
+                <strong>Fern</strong>
+                <small>Workspace</small>
+            </div>
         </div>
 
 
@@ -2488,162 +3112,151 @@
 
 
 <script>
+/* ============================================================
+   BACKGROUND — TARGET-STYLE STARS + SUBTLE CONSTELLATIONS
+   ============================================================ */
+(function initParticles(){
+    const canvas=document.getElementById('bgCanvas');
+    if(!canvas) return;
+    const ctx=canvas.getContext('2d',{alpha:true,desynchronized:true});
+    if(!ctx) return;
+
+    const mouse={x:-9999,y:-9999};
+    let stars=[],grid=new Map(),w=0,h=0,dpr=1;
+    let lastFrame=0,lastAccent='';
+
+    const FRAME_MS=42;          // ~24 FPS: enough for a smooth background, much cheaper than 60 FPS
+    const LINK_DISTANCE=112;
+    const LINK_DISTANCE2=LINK_DISTANCE*LINK_DISTANCE;
+    const MOUSE_RADIUS=145;
+    const CELL=LINK_DISTANCE;
+
+    const getAccent=()=>getComputedStyle(document.documentElement).getPropertyValue('--green').trim()||'#36f6d0';
+
+    addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY},{passive:true});
+    addEventListener('mouseleave',()=>{mouse.x=mouse.y=-9999},{passive:true});
+    addEventListener('resize',resize,{passive:true});
+
+    function resize(){
+        w=innerWidth; h=innerHeight;
+        dpr=1; // Deliberately capped at 1x. This background should never eat a 2x/3x canvas.
+        canvas.width=Math.max(1,Math.floor(w*dpr));
+        canvas.height=Math.max(1,Math.floor(h*dpr));
+        canvas.style.width=w+'px';
+        canvas.style.height=h+'px';
+        ctx.setTransform(dpr,0,0,dpr,0,0);
+
+        // More visible stars than v2.8, but still bounded on ultrawide displays.
+        const count=Math.max(150,Math.min(260,Math.floor(w*h/7200)));
+        stars=new Array(count);
+        for(let i=0;i<count;i++){
+            stars[i]={
+                x:Math.random()*w,
+                y:Math.random()*h,
+                vx:(Math.random()-.5)*0.018,
+                vy:(Math.random()-.5)*0.018,
+                r:.38+Math.random()*1.12,
+                a:.32+Math.random()*.58,
+                phase:Math.random()*Math.PI*2,
+                tw:.35+Math.random()*.8
+            };
+        }
+        rebuildGrid();
+    }
+
+    function cellKey(x,y){return Math.floor(x/CELL)+','+Math.floor(y/CELL);}
+
+    function rebuildGrid(){
+        grid.clear();
+        for(let i=0;i<stars.length;i++){
+            const p=stars[i],key=cellKey(p.x,p.y);
+            let bucket=grid.get(key);
+            if(!bucket){bucket=[];grid.set(key,bucket);}
+            bucket.push(i);
+        }
+    }
+
+    function draw(t){
+        requestAnimationFrame(draw);
+        if(document.hidden) return;
+        if(t-lastFrame<FRAME_MS) return;
+        lastFrame=t;
+
+        const dt=.042;
+        const accent=getAccent();
+        if(accent!==lastAccent) lastAccent=accent;
+        ctx.clearRect(0,0,w,h);
+
+        for(const p of stars){
+            p.x+=p.vx*60*dt;
+            p.y+=p.vy*60*dt;
+            if(p.x<-4)p.x=w+4; else if(p.x>w+4)p.x=-4;
+            if(p.y<-4)p.y=h+4; else if(p.y>h+4)p.y=-4;
+
+            const dx=p.x-mouse.x,dy=p.y-mouse.y,d2=dx*dx+dy*dy;
+            if(d2<MOUSE_RADIUS*MOUSE_RADIUS && d2>16){
+                const d=Math.sqrt(d2),force=(1-d/MOUSE_RADIUS)*.22;
+                p.x+=(dx/d)*force;
+                p.y+=(dy/d)*force;
+            }
+            p.phase+=dt*p.tw;
+        }
+
+        // Spatial buckets avoid the O(n²) connection loop that caused the lag.
+        rebuildGrid();
+        ctx.strokeStyle=accent;
+        ctx.lineWidth=.55;
+        ctx.globalAlpha=.19;
+        ctx.beginPath();
+
+        for(let i=0;i<stars.length;i++){
+            const p=stars[i];
+            const cx=Math.floor(p.x/CELL),cy=Math.floor(p.y/CELL);
+            let nearest1=-1,nearest2=-1,d1=LINK_DISTANCE2,d2=LINK_DISTANCE2;
+
+            for(let gx=cx-1;gx<=cx+1;gx++){
+                for(let gy=cy-1;gy<=cy+1;gy++){
+                    const bucket=grid.get(gx+','+gy);
+                    if(!bucket) continue;
+                    for(const j of bucket){
+                        if(j<=i) continue;
+                        const q=stars[j],dx=q.x-p.x,dy=q.y-p.y,d=dx*dx+dy*dy;
+                        if(d<d1){d2=d1;nearest2=nearest1;d1=d;nearest1=j;}
+                        else if(d<d2){d2=d;nearest2=j;}
+                    }
+                }
+            }
+            if(nearest1>=0){ctx.moveTo(p.x,p.y);ctx.lineTo(stars[nearest1].x,stars[nearest1].y);}
+            // Only some second-nearest links: keeps the constellation airy instead of turning into polygons.
+            if(nearest2>=0 && ((i&1)===0)){ctx.moveTo(p.x,p.y);ctx.lineTo(stars[nearest2].x,stars[nearest2].y);}
+        }
+        ctx.stroke();
+
+        ctx.fillStyle=accent;
+        for(const p of stars){
+            const pulse=.76+.24*Math.sin(p.phase);
+            ctx.globalAlpha=p.a*pulse;
+            ctx.beginPath();
+            ctx.arc(p.x,p.y,p.r*(.86+.14*pulse),0,Math.PI*2);
+            ctx.fill();
+            if(p.r>1.12){
+                ctx.globalAlpha=.12*p.a;
+                ctx.beginPath();
+                ctx.arc(p.x,p.y,p.r*2.8,0,Math.PI*2);
+                ctx.fill();
+            }
+        }
+        ctx.globalAlpha=1;
+    }
+
+    resize();
+    requestAnimationFrame(draw);
+    document.addEventListener('visibilitychange',()=>{if(!document.hidden)lastFrame=performance.now();});
+})();;
 
 /* ============================================================
-   BACKGROUND PARTICLES ANIMATION
-   ============================================================ */
-
-(function initParticles() {
-    const canvas = document.getElementById('bgCanvas');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-
-    let particles = [];
-    const particleCount = 175;
-    const maxDistance = 118;
-    const mouseRadius = 135;
-
-    const mouse = {
-        x: null,
-        y: null
-    };
-
-    window.addEventListener('mousemove', (e) => {
-        mouse.x = e.clientX;
-        mouse.y = e.clientY;
-    });
-
-    window.addEventListener('mouseleave', () => {
-        mouse.x = null;
-        mouse.y = null;
-    });
-
-    function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
-
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-    class Particle {
-        constructor() {
-            this.x = Math.random() * canvas.width;
-            this.y = Math.random() * canvas.height;
-            this.size = Math.random() * 2.1 + 1.45;
-            this.vx = (Math.random() - 0.5) * 0.72;
-            this.vy = (Math.random() - 0.5) * 0.72;
-        }
-
-        update() {
-            this.x += this.vx;
-            this.y += this.vy;
-
-            if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-            if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
-
-            if (mouse.x !== null && mouse.y !== null) {
-                let dx = mouse.x - this.x;
-                let dy = mouse.y - this.y;
-                let distance = Math.sqrt(dx * dx + dy * dy);
-
-                if (distance < mouseRadius) {
-                    let forceDirectionX = dx / distance;
-                    let forceDirectionY = dy / distance;
-                    let force = (mouseRadius - distance) / mouseRadius;
-
-                    this.x -= forceDirectionX * force * 5;
-                    this.y -= forceDirectionY * force * 5;
-                }
-            }
-        }
-
-        draw() {
-            const greenColor = getComputedStyle(document.documentElement).getPropertyValue('--green').trim() || '#00ff66';
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.fillStyle = greenColor;
-            ctx.fill();
-        }
-    }
-
-    function init() {
-        particles = [];
-
-        // Use a loose jittered grid instead of pure random placement.
-        // This keeps the particle field evenly distributed from top to bottom
-        // and avoids large empty areas or accidental clusters.
-        const cols = Math.max(1, Math.ceil(Math.sqrt(
-            particleCount * (canvas.width / Math.max(canvas.height, 1))
-        )));
-        const rows = Math.max(1, Math.ceil(particleCount / cols));
-        const cellW = canvas.width / cols;
-        const cellH = canvas.height / rows;
-
-        const cells = [];
-        for (let row = 0; row < rows; row++) {
-            for (let col = 0; col < cols; col++) {
-                cells.push({ row, col });
-            }
-        }
-
-        // Shuffle the cells so the distribution stays organic.
-        for (let i = cells.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [cells[i], cells[j]] = [cells[j], cells[i]];
-        }
-
-        for (let i = 0; i < particleCount; i++) {
-            const cell = cells[i];
-            const particle = new Particle();
-
-            particle.x = (cell.col + 0.18 + Math.random() * 0.64) * cellW;
-            particle.y = (cell.row + 0.18 + Math.random() * 0.64) * cellH;
-
-            particles.push(particle);
-        }
-    }
-
-    function connect() {
-        const borderBright = getComputedStyle(document.documentElement).getPropertyValue('--border-bright').trim() || 'rgba(0, 255, 102, 0.4)';
-        for (let a = 0; a < particles.length; a++) {
-            for (let b = a + 1; b < particles.length; b++) {
-                let dx = particles[a].x - particles[b].x;
-                let dy = particles[a].y - particles[b].y;
-                let distance = Math.sqrt(dx * dx + dy * dy);
-
-                if (distance < maxDistance) {
-                    let opacity = (1 - (distance / maxDistance)) * 0.48;
-                    ctx.strokeStyle = borderBright;
-                    ctx.globalAlpha = opacity;
-                    ctx.lineWidth = 1.05;
-                    ctx.beginPath();
-                    ctx.moveTo(particles[a].x, particles[a].y);
-                    ctx.lineTo(particles[b].x, particles[b].y);
-                    ctx.stroke();
-                    ctx.globalAlpha = 1.0;
-                }
-            }
-        }
-    }
-
-    function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        for (let i = 0; i < particles.length; i++) {
-            particles[i].update();
-            particles[i].draw();
-        }
-
-        connect();
-        requestAnimationFrame(animate);
-    }
-
-    init();
-    animate();
-})();
-
-
+   FERN CONFIGURATION
+   ============================================================
 /* ============================================================
    FERN CONFIGURATION
    ============================================================ */
@@ -2941,6 +3554,15 @@ const iframeContainer =
     );
 
 
+function setProxyFrameVisible(visible) {
+    if (!iframeContainer) return;
+    iframeContainer.classList.toggle("fern-visible", !!visible);
+}
+
+// Never show the empty proxy window on startup.
+setProxyFrameVisible(false);
+
+
 const proxyOpeningOverlay =
     document.getElementById(
         "proxyOpeningOverlay"
@@ -2958,6 +3580,15 @@ if (versionDisplay) {
     versionDisplay.textContent = "v" + FERN_VERSION;
 }
 
+
+// Show the proxy window when the user enters a link, but do not load anything
+// until Launch is pressed. Clearing the URL hides the empty window again.
+if (urlInput) {
+    urlInput.addEventListener("input", () => {
+        const value = urlInput.value.trim();
+        setProxyFrameVisible(value.length > 0);
+    });
+}
 
 function launchURL(targetURL = null) {
 
@@ -2983,6 +3614,9 @@ function launchURL(targetURL = null) {
 
     }
 
+
+    // A proxy window should only exist after a URL has actually been entered.
+    setProxyFrameVisible(true);
 
     if (iframeContainer) {
 
@@ -3576,9 +4210,17 @@ const games = [
 function getGameImage(game) {
     if (game.image) return game.image;
     const query = encodeURIComponent(game.name + " logo");
-    // Bing's thumbnail endpoint gives the browser a query-based first-image style result.
-    // If it is unavailable, the onerror handler falls back to the Fern artwork.
+    // Automatic artwork: the query is generated from the game name, so adding a new
+    // game automatically gives it a logo/image without editing the card markup.
     return "https://tse1.mm.bing.net/th?q=" + query + "&w=900&h=500&c=7&rs=1";
+}
+
+function getGameImageCandidates(game) {
+    if (game.image) return [game.image];
+    const q = encodeURIComponent(game.name + " logo");
+    return [
+        "https://tse1.mm.bing.net/th?q=" + q + "&w=900&h=500&c=7&rs=1"
+    ];
 }
 
 function gameFallbackDataURL(game) {
@@ -3629,10 +4271,18 @@ function renderGames() {
         image.className = 'game-image';
         image.alt = game.name + ' logo';
         image.loading = 'lazy';
-        image.src = getGameImage(game);
+        image.referrerPolicy = 'no-referrer';
+        const imageCandidates = getGameImageCandidates(game);
+        let imageCandidateIndex = 0;
+        image.src = imageCandidates[imageCandidateIndex];
         image.onerror = () => {
-            image.onerror = null;
-            image.src = gameFallbackDataURL(game);
+            imageCandidateIndex++;
+            if (imageCandidateIndex < imageCandidates.length) {
+                image.src = imageCandidates[imageCandidateIndex];
+            } else {
+                image.onerror = null;
+                image.src = gameFallbackDataURL(game);
+            }
         };
 
         const mediaGlow = document.createElement('div');
@@ -3777,8 +4427,6 @@ function randomJoke() {
 
 }
 
-
-renderGames();
 
 setInterval(
     randomJoke,
@@ -3982,47 +4630,47 @@ const FERN_THEMES = {
     fern: {
         bg: "#030603", bgLight: "#071007", panel: "rgba(11, 18, 13, 0.85)", panelHover: "#101b13",
         accent: "#00ff66", accentDark: "#00bd4b", accentSoft: "#7affad",
-        text: "#e9fff0", muted: "#769180", border: "rgba(0,255,102,.18)", borderBright: "rgba(0,255,102,.48)"
+        text: "#e9fff0", muted: "#769180", border: "rgba(0,255,102,.18)", borderBright: "rgba(0,255,102,.48)", mist1:"rgba(40,210,190,.18)", mist2:"rgba(80,55,180,.18)", mist3:"rgba(25,110,125,.13)"
     },
     midnight: {
         bg: "#050612", bgLight: "#0a0d1d", panel: "rgba(11, 14, 32, 0.85)", panelHover: "#11152c",
         accent: "#6f86ff", accentDark: "#4e65df", accentSoft: "#aab8ff",
-        text: "#eef1ff", muted: "#7d86a6", border: "rgba(111,134,255,.20)", borderBright: "rgba(111,134,255,.52)"
+        text: "#eef1ff", muted: "#7d86a6", border: "rgba(111,134,255,.20)", borderBright: "rgba(111,134,255,.52)", mist1:"rgba(75,110,255,.18)", mist2:"rgba(130,75,210,.17)", mist3:"rgba(30,80,145,.12)"
     },
     amber: {
         bg: "#0b0702", bgLight: "#160e04", panel: "rgba(23, 16, 6, 0.85)", panelHover: "#211508",
         accent: "#ffb020", accentDark: "#d88d00", accentSoft: "#ffd477",
-        text: "#fff5df", muted: "#9d8a6c", border: "rgba(255,176,32,.20)", borderBright: "rgba(255,176,32,.52)"
+        text: "#fff5df", muted: "#9d8a6c", border: "rgba(255,176,32,.20)", borderBright: "rgba(255,176,32,.52)", mist1:"rgba(255,145,45,.16)", mist2:"rgba(185,65,35,.14)", mist3:"rgba(255,190,70,.10)"
     },
     ice: {
         bg: "#031016", bgLight: "#061a22", panel: "rgba(8, 32, 42, 0.85)", panelHover: "#0b2b37",
         accent: "#5de7ff", accentDark: "#27b9d3", accentSoft: "#a4f3ff",
-        text: "#e9fbff", muted: "#71939c", border: "rgba(93,231,255,.20)", borderBright: "rgba(93,231,255,.52)"
+        text: "#e9fbff", muted: "#71939c", border: "rgba(93,231,255,.20)", borderBright: "rgba(93,231,255,.52)", mist1:"rgba(55,195,255,.18)", mist2:"rgba(65,90,220,.16)", mist3:"rgba(40,145,175,.13)"
     },
     violet: {
         bg: "#080311", bgLight: "#11061b", panel: "rgba(22, 10, 32, 0.85)", panelHover: "#20102e",
         accent: "#b36bff", accentDark: "#8644cf", accentSoft: "#d4a9ff",
-        text: "#f8efff", muted: "#957fa4", border: "rgba(179,107,255,.20)", borderBright: "rgba(179,107,255,.52)"
+        text: "#f8efff", muted: "#957fa4", border: "rgba(179,107,255,.20)", borderBright: "rgba(179,107,255,.52)", mist1:"rgba(125,70,230,.19)", mist2:"rgba(210,70,210,.16)", mist3:"rgba(55,90,180,.11)"
     },
     rose: {
         bg: "#110307", bgLight: "#1b060c", panel: "rgba(33, 10, 17, 0.85)", panelHover: "#2b0e17",
         accent: "#ff6688", accentDark: "#d83f63", accentSoft: "#ffadbd",
-        text: "#fff0f4", muted: "#a37b86", border: "rgba(255,102,136,.20)", borderBright: "rgba(255,102,136,.52)"
+        text: "#fff0f4", muted: "#a37b86", border: "rgba(255,102,136,.20)", borderBright: "rgba(255,102,136,.52)", mist1:"rgba(255,75,125,.17)", mist2:"rgba(190,55,165,.15)", mist3:"rgba(120,55,100,.11)"
     },
     mono: {
         bg: "#050505", bgLight: "#0c0c0c", panel: "rgba(17, 17, 17, 0.85)", panelHover: "#181818",
         accent: "#d7d7d7", accentDark: "#999999", accentSoft: "#f1f1f1",
-        text: "#eeeeee", muted: "#858585", border: "rgba(255,255,255,.16)", borderBright: "rgba(255,255,255,.42)"
+        text: "#eeeeee", muted: "#858585", border: "rgba(255,255,255,.16)", borderBright: "rgba(255,255,255,.42)", mist1:"rgba(255,255,255,.08)", mist2:"rgba(170,170,170,.06)", mist3:"rgba(100,100,100,.05)"
     },
     cyan: {
         bg: "#02100e", bgLight: "#041b18", panel: "rgba(6, 34, 30, 0.85)", panelHover: "#0a2d28",
         accent: "#20ffd4", accentDark: "#10b69a", accentSoft: "#8affea",
-        text: "#e8fffb", muted: "#6c9991", border: "rgba(32,255,212,.20)", borderBright: "rgba(32,255,212,.52)"
+        text: "#e8fffb", muted: "#6c9991", border: "rgba(32,255,212,.20)", borderBright: "rgba(32,255,212,.52)", mist1:"rgba(35,235,210,.18)", mist2:"rgba(45,100,220,.16)", mist3:"rgba(30,145,160,.12)"
     },
     light: {
         bg: "#f3f6f5", bgLight: "#ffffff", panel: "rgba(255, 255, 255, 0.85)", panelHover: "#edf3ef",
         accent: "#087d3d", accentDark: "#056630", accentSoft: "#0a7040",
-        text: "#132018", muted: "#617067", border: "rgba(8,96,48,.16)", borderBright: "rgba(8,96,48,.38)"
+        text: "#132018", muted: "#617067", border: "rgba(8,96,48,.16)", borderBright: "rgba(8,96,48,.38)", mist1:"rgba(30,150,90,.10)", mist2:"rgba(80,120,90,.07)", mist3:"rgba(50,90,70,.05)"
     },
     cyberpunk: {
         bg: "#08050f", bgLight: "#10091b", panel: "rgba(18, 12, 29, 0.85)", panelHover: "#1b1028",
@@ -4032,30 +4680,27 @@ const FERN_THEMES = {
     aurora: {
         bg: "#06100f", bgLight: "#0a1b19", panel: "rgba(10, 29, 26, 0.82)", panelHover: "#12332e",
         accent: "#63ffd0", accentDark: "#21b994", accentSoft: "#b1ffe7",
-        text: "#effff9", muted: "#789b91", border: "rgba(99,255,208,.20)", borderBright: "rgba(130,255,226,.58)"
+        text: "#effff9", muted: "#789b91", border: "rgba(99,255,208,.20)", borderBright: "rgba(130,255,226,.58)", mist1:"rgba(65,255,215,.18)", mist2:"rgba(75,120,255,.15)", mist3:"rgba(55,185,150,.12)"
     },
     sunset: {
         bg: "#12070a", bgLight: "#210d10", panel: "rgba(35, 14, 20, 0.84)", panelHover: "#401822",
         accent: "#ff8a5b", accentDark: "#e3543d", accentSoft: "#ffc0a4",
-        text: "#fff4ef", muted: "#aa7f78", border: "rgba(255,138,91,.20)", borderBright: "rgba(255,167,126,.58)"
+        text: "#fff4ef", muted: "#aa7f78", border: "rgba(255,138,91,.20)", borderBright: "rgba(255,130,90,.17)", mist1:"rgba(255,100,85,.18)", mist2:"rgba(255,175,70,.14)", mist3:"rgba(190,65,95,.11)"
     },
     ocean: {
         bg: "#03101b", bgLight: "#061d2d", panel: "rgba(7, 31, 49, 0.84)", panelHover: "#0b3a59",
         accent: "#43b8ff", accentDark: "#247bc0", accentSoft: "#a4ddff",
-        text: "#effaff", muted: "#7394aa", border: "rgba(67,184,255,.20)", borderBright: "rgba(95,204,255,.58)"
+        text: "#effaff", muted: "#7394aa", border: "rgba(67,184,255,.20)", borderBright: "rgba(95,204,255,.58)", mist1:"rgba(50,185,255,.18)", mist2:"rgba(95,90,230,.15)", mist3:"rgba(40,125,180,.12)"
     },
     dracula: {
         bg: "#0b0912", bgLight: "#151021", panel: "rgba(27, 21, 40, 0.86)", panelHover: "#38294f",
         accent: "#bd93f9", accentDark: "#8b63c7", accentSoft: "#e2ccff",
-        text: "#f8f5ff", muted: "#938aa8", border: "rgba(189,147,249,.20)", borderBright: "rgba(255,121,198,.55)"
+        text: "#f8f5ff", muted: "#938aa8", border: "rgba(189,147,249,.20)", borderBright: "rgba(255,121,198,.55)", mist1:"rgba(170,95,245,.18)", mist2:"rgba(255,85,180,.15)", mist3:"rgba(75,75,180,.11)"
     }
 };
 
 function applyFernTheme(theme) {
-    if (!Object.prototype.hasOwnProperty.call(FERN_THEMES, theme)) {
-        theme = "fern";
-    }
-
+    if (!Object.prototype.hasOwnProperty.call(FERN_THEMES, theme)) theme = "fern";
     const palette = FERN_THEMES[theme];
     const root = document.documentElement;
     const body = document.body;
@@ -4071,36 +4716,20 @@ function applyFernTheme(theme) {
     root.style.setProperty("--muted", palette.muted);
     root.style.setProperty("--border", palette.border);
     root.style.setProperty("--border-bright", palette.borderBright);
+    root.style.setProperty("--mist1", palette.mist1 || "rgba(40,210,190,.16)");
+    root.style.setProperty("--mist2", palette.mist2 || "rgba(80,55,180,.15)");
+    root.style.setProperty("--mist3", palette.mist3 || "rgba(25,110,125,.12)");
 
     body.dataset.theme = theme;
     if (theme === "fern") body.removeAttribute("data-theme");
-
-    body.style.setProperty("background-color", palette.bg, "important");
-    body.style.setProperty("color", palette.text, "important");
+    body.style.removeProperty("background-color");
+    body.style.removeProperty("color");
 
     document.querySelectorAll(".theme-card").forEach(card => {
         card.classList.toggle("active", card.dataset.theme === theme);
     });
 
-    const forcedBackgrounds = document.querySelectorAll(
-        ".topbar, .nav, .online, .hero, .settings-section, .game-card, .theme-card, .settings-toggle, .iframe-container"
-    );
-
-    forcedBackgrounds.forEach(el => {
-        if (el.classList.contains("game-card") || el.classList.contains("hero") || el.classList.contains("settings-section")) {
-            el.style.setProperty("background", palette.panel, "important");
-        } else if (el.classList.contains("theme-card") || el.classList.contains("settings-toggle")) {
-            el.style.setProperty("background", palette.bgLight, "important");
-        } else {
-            el.style.setProperty("background", palette.panel, "important");
-        }
-        el.style.setProperty("color", palette.text, "important");
-        el.style.setProperty("border-color", palette.border, "important");
-    });
-
-    try {
-        localStorage.setItem(FERN_THEME_KEY, theme);
-    } catch (_) {}
+    try { localStorage.setItem(FERN_THEME_KEY, theme); } catch (_) {}
 }
 
 function applyFernAnimations(enabled) {
@@ -4153,7 +4782,6 @@ function loadFernSettings() {
 }
 
 loadFernSettings();
-renderGames();
 
 const runDiagnosticsButton =
     document.getElementById("runDiagnosticsButton");
