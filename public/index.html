@@ -11,6 +11,20 @@
     <!-- UV -->
     <script src="/uv/uv.bundle.js"></script>
     <script src="/uv/uv.config.js"></script>
+<script>
+        // UV legacy-compatible service worker registration (v1.0.5 setup)
+        if ("serviceWorker" in navigator) {
+            window.addEventListener("load", () => {
+                if (typeof __uv$config !== "undefined" && __uv$config.prefix) {
+                    navigator.serviceWorker.register("/uv/sw.js", {
+                        scope: __uv$config.prefix
+                    }).catch(error => {
+                        console.warn("UV service worker registration failed:", error);
+                    });
+                }
+            });
+        }
+    </script>
 
     <style>
         :root {
@@ -2339,7 +2353,7 @@ if (versionDisplay) {
 }
 
 
-async function launchURL(targetURL = null) {
+function launchURL(targetURL = null) {
 
     let url =
         targetURL ||
@@ -2397,8 +2411,6 @@ async function launchURL(targetURL = null) {
         typeof __uv$config.prefix === "string" &&
         typeof __uv$config.encodeUrl === "function"
     ) {
-
-        await initializeUVServiceWorker();
 
         try {
 
@@ -3126,102 +3138,6 @@ setInterval(
 
 
 /* ============================================================
-   UV SERVICE WORKER INITIALIZATION
-   ============================================================ */
-
-let fernUVRegistration = null;
-let fernUVRegistrationPromise = null;
-
-async function initializeUVServiceWorker() {
-    if (fernUVRegistrationPromise) return fernUVRegistrationPromise;
-
-    fernUVRegistrationPromise = (async () => {
-        if (!("serviceWorker" in navigator)) {
-            console.warn("Fern: Service Worker API is unavailable.");
-            return null;
-        }
-
-        if (
-            location.protocol !== "https:" &&
-            location.hostname !== "localhost" &&
-            location.hostname !== "127.0.0.1"
-        ) {
-            console.warn("Fern: Service workers require HTTPS or localhost.");
-            return null;
-        }
-
-        if (typeof __uv$config === "undefined") {
-            const error = new Error("UV config object (__uv$config) is missing");
-            window.fernUVRegistrationError = {
-                name: error.name,
-                message: error.message,
-                workerPath: "/uv/uv.sw.js",
-                scope: "/service/"
-            };
-            console.warn("Fern: UV config was not loaded.");
-            return null;
-        }
-
-        const workerPath =
-            typeof __uv$config.sw === "string" && __uv$config.sw.trim()
-                ? __uv$config.sw.trim()
-                : "/uv/uv.sw.js";
-
-        const scope =
-            typeof __uv$config.prefix === "string" && __uv$config.prefix.trim()
-                ? __uv$config.prefix.trim()
-                : "/service/";
-
-        try {
-            const workerURL = new URL(workerPath, location.href).href;
-            const scopeURL = new URL(scope, location.href).href;
-            const registrations = await navigator.serviceWorker.getRegistrations();
-
-            const existing = registrations.find(registration =>
-                registration.scope === scopeURL ||
-                (registration.active && registration.active.scriptURL === workerURL)
-            );
-
-            if (existing) {
-                fernUVRegistration = existing;
-                try { await existing.update(); } catch (error) {
-                    console.warn("Fern: UV service worker update failed:", error);
-                }
-                return existing;
-            }
-
-            fernUVRegistration = await navigator.serviceWorker.register(
-                workerPath,
-                { scope }
-            );
-
-            console.info(
-                "Fern: UV service worker registered:",
-                fernUVRegistration.scope
-            );
-
-            return fernUVRegistration;
-        } catch (error) {
-            console.error(
-                "Fern: UV service worker registration failed:",
-                error
-            );
-            window.fernUVRegistrationError = {
-                name: error && error.name ? error.name : "Error",
-                message: error && error.message ? error.message : String(error),
-                workerPath,
-                scope
-            };
-            return null;
-        }
-    })();
-
-    return fernUVRegistrationPromise;
-}
-
-initializeUVServiceWorker();
-
-/* ============================================================
    FERN CONNECTION DIAGNOSTICS
    ============================================================ */
 
@@ -3285,35 +3201,6 @@ async function runFernDiagnostics() {
         uvExists
     );
 
-    // Test the actual deployed UV files from inside the page.
-    // This lets managed browsers report HTTP failures without DevTools.
-    const uvFiles = [
-        ["UV config file", "/uv/uv.config.js"],
-        ["UV worker file", "/uv/uv.sw.js"],
-        ["UV bundle file", "/uv/uv.bundle.js"]
-    ];
-
-    for (const [label, fileURL] of uvFiles) {
-        try {
-            const response = await fetch(fileURL, {
-                cache: "no-store",
-                credentials: "same-origin"
-            });
-            const type = response.headers.get("content-type") || "none";
-            setDiagnosticLine(
-                label,
-                `${response.status} ${response.statusText || ""} | ${type}`,
-                response.ok
-            );
-        } catch (error) {
-            setDiagnosticLine(
-                label,
-                `${error && error.name ? error.name + ": " : ""}${error && error.message ? error.message : "request failed"}`,
-                false
-            );
-        }
-    }
-
     if (uvExists) {
         const prefixOK =
             typeof __uv$config.prefix === "string";
@@ -3348,7 +3235,7 @@ async function runFernDiagnostics() {
 
     if (swSupported && https) {
         try {
-            let regs =
+            const regs =
                 await navigator.serviceWorker.getRegistrations();
 
             setDiagnosticLine(
@@ -3357,52 +3244,14 @@ async function runFernDiagnostics() {
                 regs.length > 0
             );
 
-            const uvRegistration =
-                await initializeUVServiceWorker();
-
-            // Re-read after initialization because registration is asynchronous.
-            regs = await navigator.serviceWorker.getRegistrations();
-
-            setDiagnosticLine(
-                "Registered service workers after init",
-                String(regs.length),
-                regs.length > 0
-            );
-
-            setDiagnosticLine(
-                "UV worker initialization",
-                uvRegistration ? "registered / available" : "failed or unavailable",
-                !!uvRegistration
-            );
-
-            if (window.fernUVRegistrationError) {
-                setDiagnosticLine(
-                    "UV registration error",
-                    `${window.fernUVRegistrationError.name}: ${window.fernUVRegistrationError.message}`,
-                    false
-                );
-                setDiagnosticLine(
-                    "UV attempted worker",
-                    window.fernUVRegistrationError.workerPath || "unknown",
-                    null
-                );
-                setDiagnosticLine(
-                    "UV attempted scope",
-                    window.fernUVRegistrationError.scope || "unknown",
-                    null
-                );
-            }
-
             const prefix =
                 uvExists && typeof __uv$config.prefix === "string"
                     ? __uv$config.prefix
-                    : "/service/";
+                    : "/uv/service/";
 
             const matches = regs.filter(reg =>
                 reg.scope.includes(prefix) ||
-                (reg.active && reg.active.scriptURL.includes("uv")) ||
-                (reg.installing && reg.installing.scriptURL.includes("uv")) ||
-                (reg.waiting && reg.waiting.scriptURL.includes("uv"))
+                (reg.active && reg.active.scriptURL.includes("uv"))
             );
 
             setDiagnosticLine(
@@ -3410,30 +3259,6 @@ async function runFernDiagnostics() {
                 matches.length ? "found" : "not found",
                 matches.length > 0
             );
-
-            if (fernUVRegistration) {
-                setDiagnosticLine(
-                    "UV worker scope",
-                    fernUVRegistration.scope,
-                    true
-                );
-
-                setDiagnosticLine(
-                    "UV worker state",
-                    fernUVRegistration.active
-                        ? "active"
-                        : fernUVRegistration.installing
-                            ? "installing"
-                            : fernUVRegistration.waiting
-                                ? "waiting"
-                                : "unknown",
-                    !!(
-                        fernUVRegistration.active ||
-                        fernUVRegistration.installing ||
-                        fernUVRegistration.waiting
-                    )
-                );
-            }
 
             setDiagnosticLine(
                 "Current page controlled by SW",
@@ -3660,8 +3485,6 @@ function loadFernSettings() {
 
 loadFernSettings();
 renderGames();
-
-initializeUVServiceWorker();
 
 const runDiagnosticsButton =
     document.getElementById("runDiagnosticsButton");
