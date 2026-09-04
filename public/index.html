@@ -406,12 +406,11 @@
            CONTENT
            ===================================================== */
 
-        .content {
+         .content {
             width: 100%;
             height: auto;
             flex: 1 1 auto;
             min-height: 0;
-
             overflow-x: hidden;
             overflow-y: auto;
             overscroll-behavior-y: contain;
@@ -421,7 +420,7 @@
 
         #gamesPage {
             min-height: max-content;
-            padding-bottom: 80px;
+            padding-bottom: 100px;
         }
 
         #gamesPage.active {
@@ -1240,6 +1239,7 @@
 
 
 <script>
+const FERN_VERSION = "4";
 
 /* ============================================================
    FERN CONFIGURATION
@@ -1714,19 +1714,16 @@ document
    PRESS AND HOLD FULLSCREEN
    ============================================================ */
 
-const fullscreenButton =
-    document.getElementById("fullscreenButton");
-
-const fullscreenContainer =
-    document.getElementById("iframeContainer");
+const fullscreenButton = document.getElementById("fullscreenButton");
+const fullscreenContainer = document.getElementById("iframeContainer");
 
 let fullscreenPointerId = null;
 let fullscreenHeld = false;
 
-function updateFullscreenButton() {
+function setFullscreenButtonState() {
     if (!fullscreenButton) return;
 
-    if (document.fullscreenElement) {
+    if (document.fullscreenElement === fullscreenContainer) {
         fullscreenButton.textContent = "✕";
         fullscreenButton.title = "Release to exit fullscreen";
     } else {
@@ -1735,135 +1732,97 @@ function updateFullscreenButton() {
     }
 }
 
-async function beginFullscreenHold(event) {
-    if (!fullscreenButton || !fullscreenContainer) return;
-    if (event.button !== undefined && event.button !== 0) return;
-    if (fullscreenHeld) return;
+async function fullscreenPressDown(event) {
+    /*
+     * For a mouse, pointerdown is a transient user-activation event.
+     * requestFullscreen() must happen directly from that event.
+     */
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    if (fullscreenHeld || !fullscreenContainer) return;
 
     fullscreenHeld = true;
     fullscreenPointerId = event.pointerId;
 
-    /*
-     * Keep receiving pointerup even if the pointer leaves the button.
-     */
     try {
         fullscreenButton.setPointerCapture(event.pointerId);
-    } catch (error) {}
+    } catch (_) {}
 
-    /*
-     * This call is intentionally made immediately from pointerdown.
-     * Fullscreen requires a transient user activation.
-     */
-    if (
-        !document.fullscreenElement &&
-        typeof fullscreenContainer.requestFullscreen === "function"
-    ) {
+    if (!document.fullscreenElement) {
         try {
-            await fullscreenContainer.requestFullscreen({
-                navigationUI: "hide"
-            });
+            await fullscreenContainer.requestFullscreen();
         } catch (error) {
-            console.warn("Fullscreen unavailable:", error);
+            console.warn("Fullscreen request failed:", error);
             fullscreenHeld = false;
             fullscreenPointerId = null;
         }
     }
 
-    updateFullscreenButton();
+    setFullscreenButtonState();
 }
 
-async function endFullscreenHold(event) {
+async function fullscreenPressUp(event) {
     if (
-        event &&
         fullscreenPointerId !== null &&
         event.pointerId !== fullscreenPointerId
     ) {
         return;
     }
 
-    const wasHeld = fullscreenHeld;
-
+    const shouldExit = fullscreenHeld;
     fullscreenHeld = false;
     fullscreenPointerId = null;
 
-    if (wasHeld && document.fullscreenElement) {
+    if (shouldExit && document.fullscreenElement) {
         try {
             await document.exitFullscreen();
         } catch (error) {
-            console.warn("Could not exit fullscreen:", error);
+            console.warn("Fullscreen exit failed:", error);
         }
     }
 
-    updateFullscreenButton();
+    setFullscreenButtonState();
 }
 
-fullscreenButton.addEventListener(
-    "pointerdown",
-    beginFullscreenHold
-);
+fullscreenButton.addEventListener("pointerdown", fullscreenPressDown);
+fullscreenButton.addEventListener("pointerup", fullscreenPressUp);
+fullscreenButton.addEventListener("pointercancel", fullscreenPressUp);
 
-fullscreenButton.addEventListener(
-    "pointerup",
-    endFullscreenHold
-);
-
-fullscreenButton.addEventListener(
-    "pointercancel",
-    endFullscreenHold
-);
-
-document.addEventListener(
-    "pointerup",
-    event => {
-        if (
-            fullscreenPointerId !== null &&
-            event.pointerId === fullscreenPointerId
-        ) {
-            endFullscreenHold(event);
-        }
+document.addEventListener("pointerup", event => {
+    if (
+        fullscreenPointerId !== null &&
+        event.pointerId === fullscreenPointerId
+    ) {
+        fullscreenPressUp(event);
     }
-);
+});
 
-document.addEventListener(
-    "pointercancel",
-    event => {
-        if (
-            fullscreenPointerId !== null &&
-            event.pointerId === fullscreenPointerId
-        ) {
-            endFullscreenHold(event);
-        }
+document.addEventListener("pointercancel", event => {
+    if (
+        fullscreenPointerId !== null &&
+        event.pointerId === fullscreenPointerId
+    ) {
+        fullscreenPressUp(event);
     }
-);
+});
 
 /*
- * Never let the generated click toggle fullscreen.
- * The only fullscreen actions are press-down and release.
+ * Suppress the normal click event. Fullscreen is NOT a click/toggle.
  */
-fullscreenButton.addEventListener(
-    "click",
-    event => {
-        event.preventDefault();
-        event.stopPropagation();
+fullscreenButton.addEventListener("click", event => {
+    event.preventDefault();
+    event.stopPropagation();
+});
+
+document.addEventListener("fullscreenchange", () => {
+    if (!document.fullscreenElement) {
+        fullscreenHeld = false;
+        fullscreenPointerId = null;
     }
-);
 
-document.addEventListener(
-    "fullscreenchange",
-    () => {
-        /*
-         * If the browser exits fullscreen with Esc, clear the held state.
-         */
-        if (!document.fullscreenElement) {
-            fullscreenHeld = false;
-            fullscreenPointerId = null;
-        }
+    setFullscreenButtonState();
+});
 
-        updateFullscreenButton();
-    }
-);
-
-updateFullscreenButton();
+setFullscreenButtonState();
 
 
 /* ============================================================
