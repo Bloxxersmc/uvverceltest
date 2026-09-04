@@ -6,7 +6,7 @@
 
     <title>Fern</title>
 
-    <meta name="fern-version" content="1.1.0">
+    <meta name="fern-version" content="1.1.1">
 
     <!-- UV -->
     <script src="/uv/uv.bundle.js"></script>
@@ -32,7 +32,7 @@
             --red: #ff526f;
         }
 
-        * 
+        * {
             box-sizing: border-box;
         }
 
@@ -1192,13 +1192,13 @@
         }
 
         /* =====================================================
-           FERN 1.1 UI REFRESH
+           FERN 1.1.1 UI REFRESH
            ===================================================== */
 
         :root {
-            --radius-sm: 10px;
-            --radius-md: 16px;
-            --radius-lg: 22px;
+            --radius-sm: 9px;
+            --radius-md: 14px;
+            --radius-lg: 20px;
             --button-ease: cubic-bezier(.2,.8,.2,1);
         }
 
@@ -1207,9 +1207,7 @@
                 radial-gradient(circle at 12% 8%, rgba(0,255,102,.045), transparent 28%),
                 radial-gradient(circle at 88% 92%, rgba(0,255,102,.025), transparent 30%),
                 var(--bg);
-            transition:
-                background .35s ease,
-                color .35s ease;
+            transition: background .3s ease, color .3s ease;
         }
 
         body::before {
@@ -1222,21 +1220,11 @@
                 linear-gradient(rgba(255,255,255,.012) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(255,255,255,.012) 1px, transparent 1px);
             background-size: 28px 28px;
-            mask-image: linear-gradient(to bottom, black, transparent 85%);
         }
 
-        .header {
-            min-height: 66px;
-            gap: 18px;
-            padding: 10px 18px;
-            background: color-mix(in srgb, var(--panel) 88%, transparent);
-            border-bottom: 1px solid var(--border);
-            box-shadow: 0 10px 35px rgba(0,0,0,.18);
-        }
-
-        .brand {
-            gap: 11px;
-            letter-spacing: -.02em;
+        .topbar {
+            background: rgba(3,8,4,.92);
+            box-shadow: 0 10px 35px rgba(0,0,0,.16);
         }
 
         .brand-icon {
@@ -1246,8 +1234,8 @@
             height: 30px;
             border: 1px solid var(--border-bright);
             border-radius: 9px;
-            background: color-mix(in srgb, var(--green) 8%, transparent);
-            box-shadow: 0 0 22px color-mix(in srgb, var(--green) 14%, transparent);
+            background: rgba(0,255,102,.06);
+            box-shadow: 0 0 22px rgba(0,255,102,.10);
         }
 
         .nav {
@@ -1255,28 +1243,17 @@
             gap: 3px;
             border: 1px solid var(--border);
             border-radius: 13px;
-            background: color-mix(in srgb, var(--panel) 76%, transparent);
-        }
-
-        .nav button,
-        .proxy-controls button,
-        .settings-toggle,
-        .theme-card,
-        .iframe-toolbar button,
-        #reloadButton,
-        #fullscreenButton {
-            border-radius: 11px;
-            transition:
-                transform .22s var(--button-ease),
-                background .22s ease,
-                border-color .22s ease,
-                box-shadow .22s ease,
-                color .22s ease;
+            background: rgba(9,17,11,.76);
         }
 
         .nav button {
-            padding: 9px 13px;
-            border: 1px solid transparent;
+            border-radius: 9px;
+            transition:
+                transform .2s var(--button-ease),
+                background .2s ease,
+                border-color .2s ease,
+                color .2s ease,
+                box-shadow .2s ease;
         }
 
         .nav button:hover {
@@ -1285,15 +1262,15 @@
 
         .nav button.active {
             border-color: var(--border-bright);
-            background: color-mix(in srgb, var(--green) 9%, transparent);
-            box-shadow: inset 0 0 18px color-mix(in srgb, var(--green) 5%, transparent);
+            background: rgba(0,255,102,.08);
+            box-shadow: inset 0 0 18px rgba(0,255,102,.04);
         }
 
         .online {
             padding: 7px 10px;
             border: 1px solid var(--border);
             border-radius: 999px;
-            background: color-mix(in srgb, var(--panel) 70%, transparent);
+            background: rgba(9,17,11,.70);
         }
 
         .page {
@@ -1311,8 +1288,8 @@
         .hero {
             padding: 34px;
             background:
-                radial-gradient(circle at 90% 0%, color-mix(in srgb, var(--green) 9%, transparent), transparent 34%),
-                linear-gradient(135deg, color-mix(in srgb, var(--green) 5%, transparent), transparent 52%),
+                radial-gradient(circle at 90% 0%, rgba(0,255,102,.08), transparent 34%),
+                linear-gradient(135deg, rgba(0,255,102,.04), transparent 52%),
                 var(--panel);
         }
 
@@ -1328,15 +1305,15 @@
         .proxy-controls input {
             min-height: 48px;
             padding: 0 15px;
-            border-radius: 12px;
-            background: color-mix(in srgb, var(--bg) 78%, transparent);
+            border-radius: 11px;
+            background: var(--bg);
             border-color: var(--border);
-            transition: border-color .22s ease, box-shadow .22s ease, background .22s ease;
+            transition: border-color .2s ease, box-shadow .2s ease;
         }
 
         .proxy-controls input:focus {
             border-color: var(--border-bright);
-            box-shadow: 0 0 0 4px color-mix(in srgb, var(--green) 7%, transparent);
+            box-shadow: 0 0 0 4px rgba(0,255,102,.07);
             outline: none;
         }
 
@@ -1344,17 +1321,20 @@
             min-height: 48px;
             padding: 0 21px;
             border: 1px solid var(--border-bright);
-            background: linear-gradient(
-                135deg,
-                color-mix(in srgb, var(--green) 18%, var(--panel)),
-                color-mix(in srgb, var(--green) 7%, var(--panel))
-            );
-            box-shadow: 0 8px 24px color-mix(in srgb, var(--green) 7%, transparent);
+            border-radius: 11px;
+            background: var(--green);
+            color: var(--bg);
+            box-shadow: 0 8px 24px rgba(0,255,102,.07);
+            transition:
+                transform .2s var(--button-ease),
+                box-shadow .2s ease,
+                filter .2s ease;
         }
 
         .proxy-controls button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 30px color-mix(in srgb, var(--green) 13%, transparent);
+            filter: brightness(1.05);
+            box-shadow: 0 12px 30px rgba(0,255,102,.13);
         }
 
         .proxy-controls button:active,
@@ -1379,15 +1359,22 @@
             width: 40px;
             height: 40px;
             border: 1px solid var(--border);
-            background: color-mix(in srgb, var(--panel) 82%, transparent);
+            border-radius: 10px;
+            background: rgba(9,17,11,.82);
             backdrop-filter: blur(12px);
             box-shadow: 0 8px 24px rgba(0,0,0,.22);
+            transition:
+                transform .2s var(--button-ease),
+                background .2s ease,
+                border-color .2s ease,
+                color .2s ease,
+                box-shadow .2s ease;
         }
 
         .iframe-toolbar button:hover {
             color: var(--green);
             border-color: var(--border-bright);
-            background: color-mix(in srgb, var(--green) 9%, var(--panel));
+            background: var(--panel-hover);
             transform: translateY(-2px);
         }
 
@@ -1395,20 +1382,16 @@
             color: var(--green);
             border-color: var(--border-bright);
             box-shadow:
-                0 0 0 3px color-mix(in srgb, var(--green) 8%, transparent),
-                0 0 25px color-mix(in srgb, var(--green) 14%, transparent);
+                0 0 0 3px rgba(0,255,102,.08),
+                0 0 25px rgba(0,255,102,.14);
             transform: scale(.96);
-        }
-
-        .settings-panel {
-            gap: 16px;
         }
 
         .settings-section {
             padding: 24px;
             background:
-                linear-gradient(135deg, color-mix(in srgb, var(--green) 3%, transparent), transparent 55%),
-                color-mix(in srgb, var(--panel) 88%, transparent);
+                linear-gradient(135deg, rgba(0,255,102,.03), transparent 55%),
+                var(--panel);
         }
 
         .theme-grid {
@@ -1419,15 +1402,21 @@
         .theme-card {
             min-height: 68px;
             padding: 12px 14px;
-            background: color-mix(in srgb, var(--bg) 60%, var(--panel));
+            border-radius: 14px;
+            background: var(--bg);
             border-color: var(--border);
+            transition:
+                transform .2s var(--button-ease),
+                background .2s ease,
+                border-color .2s ease,
+                box-shadow .2s ease;
         }
 
         .theme-card:hover,
         .theme-card.active {
             transform: translateY(-2px);
             border-color: var(--border-bright);
-            background: color-mix(in srgb, var(--green) 6%, var(--panel));
+            background: var(--panel-hover);
             box-shadow: 0 12px 28px rgba(0,0,0,.18);
         }
 
@@ -1441,20 +1430,28 @@
         .theme-preview {
             width: 36px;
             height: 36px;
-            flex-basis: 36px;
+            flex: 0 0 36px;
             border-radius: 10px;
         }
 
+        .theme-light {
+            background: linear-gradient(135deg, #ffffff, #8fd7ad);
+        }
+
+        .theme-cyberpunk {
+            background: linear-gradient(135deg, #090511 0%, #ff2dcc 48%, #00efff 100%);
+        }
+
         .settings-toggle {
-            background: color-mix(in srgb, var(--bg) 55%, var(--panel));
+            border-radius: 13px;
+            background: var(--bg);
             border: 1px solid var(--border);
         }
 
         .settings-toggle:hover {
             border-color: var(--border-bright);
-            transform: translateY(-1px);
+            background: var(--panel-hover);
         }
-
 
         .settings-toggle select {
             min-width: 120px;
@@ -1462,7 +1459,7 @@
             color: var(--text);
             background: var(--panel);
             border: 1px solid var(--border);
-            border-radius: 10px;
+            border-radius: 9px;
             cursor: pointer;
         }
 
@@ -1471,19 +1468,25 @@
             border-color: var(--border-bright);
         }
 
-        /* Light mode */
+        /* Light */
         body[data-theme="light"] {
             --bg: #f3f6f5;
             --bg-light: #ffffff;
             --panel: #ffffff;
             --panel-hover: #edf3ef;
-            --green: #079447;
-            --green-dark: #05733a;
-            --green-soft: #0b6f3b;
+            --green: #087d3d;
+            --green-dark: #056630;
+            --green-soft: #0a7040;
             --text: #132018;
             --muted: #617067;
             --border: rgba(8,96,48,.16);
             --border-bright: rgba(8,96,48,.38);
+        }
+
+        body[data-theme="light"] {
+            background:
+                radial-gradient(circle at 12% 8%, rgba(8,125,61,.07), transparent 28%),
+                #f3f6f5;
         }
 
         body[data-theme="light"]::before {
@@ -1492,9 +1495,22 @@
                 linear-gradient(90deg, rgba(0,0,0,.025) 1px, transparent 1px);
         }
 
-        body[data-theme="light"] .header {
-            background: rgba(255,255,255,.88);
-            box-shadow: 0 10px 35px rgba(25,50,35,.08);
+        body[data-theme="light"] .topbar {
+            background: rgba(255,255,255,.92);
+        }
+
+        body[data-theme="light"] .nav,
+        body[data-theme="light"] .online,
+        body[data-theme="light"] .iframe-toolbar button {
+            background: rgba(255,255,255,.86);
+        }
+
+        body[data-theme="light"] .login-box {
+            background: rgba(255,255,255,.94);
+        }
+
+        body[data-theme="light"] #passwordInput {
+            background: #f7faf8;
         }
 
         /* Cyberpunk */
@@ -1503,7 +1519,7 @@
             --bg-light: #10091b;
             --panel: #120c1d;
             --panel-hover: #1b1028;
-            --green: #00f0ff;
+            --green: #00eaff;
             --green-dark: #0099a6;
             --green-soft: #82f8ff;
             --text: #f2fbff;
@@ -1517,23 +1533,30 @@
             background:
                 radial-gradient(circle at 15% 15%, rgba(255,45,205,.12), transparent 30%),
                 radial-gradient(circle at 85% 80%, rgba(0,240,255,.10), transparent 32%),
-                var(--bg);
+                #08050f;
         }
 
-        body[data-theme="cyberpunk"] .brand-icon,
+        body[data-theme="cyberpunk"] .topbar {
+            background: rgba(10,5,17,.93);
+        }
+
+        body[data-theme="cyberpunk"] .brand-icon {
+            border-color: rgba(255,45,205,.55);
+            background: rgba(255,45,205,.07);
+            box-shadow: 0 0 25px rgba(255,45,205,.13);
+        }
+
         body[data-theme="cyberpunk"] .nav button.active,
-        body[data-theme="cyberpunk"] .proxy-controls button:hover,
-        body[data-theme="cyberpunk"] .theme-card:hover,
         body[data-theme="cyberpunk"] .theme-card.active {
             border-color: rgba(255,45,205,.55);
-            box-shadow:
-                0 0 24px rgba(255,45,205,.10),
-                inset 0 0 20px rgba(0,240,255,.035);
+            background: rgba(255,45,205,.07);
         }
 
-        body[data-theme="cyberpunk"] .brand-icon,
-        body[data-theme="cyberpunk"] .online-dot {
-            color: #ff3fc8;
+        body[data-theme="cyberpunk"] .hero,
+        body[data-theme="cyberpunk"] .settings-section {
+            background:
+                linear-gradient(135deg, rgba(255,45,205,.055), transparent 48%),
+                var(--panel);
         }
 
         body[data-theme="cyberpunk"] .online-dot {
@@ -1541,28 +1564,34 @@
             box-shadow: 0 0 14px #ff3fc8;
         }
 
-        .theme-light { background: linear-gradient(135deg, #ffffff, #8fd7ad); }
-        .theme-cyberpunk { background: linear-gradient(135deg, #090511 0%, #ff2dcc 48%, #00efff 100%); }
-
-        /* Smooth button theme */
-        body[data-button-style="smooth"] button,
-        body[data-button-style="smooth"] .settings-toggle,
-        body[data-button-style="smooth"] input {
+        /* Smooth controls — intentionally scoped so checkboxes,
+           selects, and cards do not all become giant pills. */
+        body[data-button-style="smooth"] .nav button,
+        body[data-button-style="smooth"] .proxy-controls button,
+        body[data-button-style="smooth"] #loginButton,
+        body[data-button-style="smooth"] .settings-toggle select {
             border-radius: 999px;
         }
 
-        body[data-button-style="smooth"] .theme-card {
-            border-radius: 16px;
+        body[data-button-style="smooth"] .proxy-controls input,
+        body[data-button-style="smooth"] #passwordInput {
+            border-radius: 999px;
         }
 
         body[data-button-style="smooth"] .iframe-toolbar button {
             border-radius: 50%;
         }
 
+        body[data-button-style="smooth"] .theme-card {
+            border-radius: 16px;
+        }
+
         @media (max-width: 850px) {
-            .header {
+            .topbar {
                 flex-wrap: wrap;
                 justify-content: center;
+                height: auto;
+                min-height: 64px;
                 padding: 10px 12px;
             }
 
@@ -1714,7 +1743,7 @@
         </div>
 
         <div class="version-indicator" title="Fern build version">
-            BUILD <span id="fernVersion">v1.1.0</span>
+            BUILD <span id="fernVersion">v1.1.1</span>
         </div>
 
     </header>
@@ -1911,7 +1940,7 @@
                 <div class="settings-section settings-about">
                     <div>
                         <h3>About Fern</h3>
-                        <p>Fern build <span id="settingsVersion">v1.0.9</span></p>
+                        <p>Fern build <span id="settingsVersion">v1.1.1</span></p>
                     </div>
                 </div>
 
@@ -1998,189 +2027,199 @@ const COOKIE_NAME = "FernAuth";
    COOKIE AUTHENTICATION
    ============================================================ */
 
-function setAuthCookie() {
-
-    const maxAge =
-        60 * 60 * 24 * 365 * 20;
-
-    document.cookie =
-        COOKIE_NAME +
-        "=authenticated;" +
-        "Max-Age=" + maxAge + ";" +
-        "Path=/;" +
-        "SameSite=Lax";
-}
-
-
-function hasAuthCookie() {
-
-    return document.cookie
-        .split(";")
-        .some(cookie => {
-
-            return cookie.trim() ===
-                COOKIE_NAME + "=authenticated";
-
-        });
-
-}
-
-
-
 /* ============================================================
-   LOCAL STORAGE
+   AUTHENTICATION / PERSISTENCE
    ============================================================ */
 
-function saveLocalAuthentication() {
+const CORRECT_PASSWORD = "S1gmaGyat";
+const AUTH_KEY = "fern_authenticated";
+const COOKIE_NAME = "FernAuth";
 
+function storageAvailable() {
     try {
+        const testKey = "__fern_storage_test__";
+        localStorage.setItem(testKey, "1");
+        localStorage.removeItem(testKey);
+        return true;
+    } catch (_) {
+        return false;
+    }
+}
 
+function setAuthCookie() {
+    /*
+     * Cookie persistence is best-effort. Browsers do not guarantee
+     * normal cookie behavior for pages opened directly with file://.
+     */
+    try {
+        const maxAge = 60 * 60 * 24 * 365 * 20;
+
+        document.cookie =
+            COOKIE_NAME +
+            "=authenticated;" +
+            "Max-Age=" + maxAge + ";" +
+            "Path=/;" +
+            "SameSite=Lax";
+    } catch (_) {}
+}
+
+function hasAuthCookie() {
+    try {
+        return document.cookie
+            .split(";")
+            .some(cookie =>
+                cookie.trim() ===
+                COOKIE_NAME + "=authenticated"
+            );
+    } catch (_) {
+        return false;
+    }
+}
+
+function saveLocalAuthentication() {
+    try {
         localStorage.setItem(
             AUTH_KEY,
             "authenticated"
         );
-
+        return true;
     } catch (error) {
-
         console.warn(
-            "Fern could not save local authentication."
+            "Fern could not persist authentication with localStorage:",
+            error
         );
-
+        return false;
     }
-
 }
-
 
 function hasLocalAuthentication() {
-
     try {
-
         return localStorage.getItem(AUTH_KEY)
             === "authenticated";
-
-    } catch (error) {
-
+    } catch (_) {
         return false;
-
     }
-
 }
 
-
-
-/* ============================================================
-   AUTH STATE
-   ============================================================ */
+function clearLocalAuthentication() {
+    try {
+        localStorage.removeItem(AUTH_KEY);
+    } catch (_) {}
+}
 
 function isAuthenticated() {
-
+    /*
+     * localStorage is the primary persistent mechanism.
+     * The cookie is retained as a secondary mechanism for
+     * normal HTTP/HTTPS deployments.
+     */
     return (
-        hasAuthCookie() ||
-        hasLocalAuthentication()
+        hasLocalAuthentication() ||
+        hasAuthCookie()
     );
-
 }
-
 
 function showApplication() {
+    const loginScreen =
+        document.getElementById("loginScreen");
 
-    document.getElementById(
-        "loginScreen"
-    ).style.display = "none";
+    const app =
+        document.getElementById("app");
 
+    if (loginScreen) {
+        loginScreen.style.display = "none";
+    }
 
-    document.getElementById(
-        "app"
-    ).style.display = "flex";
-
+    if (app) {
+        app.style.display = "flex";
+    }
 }
-
 
 function showLogin() {
+    const loginScreen =
+        document.getElementById("loginScreen");
 
-    document.getElementById(
-        "loginScreen"
-    ).style.display = "flex";
+    const app =
+        document.getElementById("app");
 
+    if (loginScreen) {
+        loginScreen.style.display = "flex";
+    }
 
-    document.getElementById(
-        "app"
-    ).style.display = "none";
-
+    if (app) {
+        app.style.display = "none";
+    }
 }
 
-
-
-/* ============================================================
-   LOGIN
-   ============================================================ */
-
 function authenticate() {
-
     const input =
-        document.getElementById(
-            "passwordInput"
-        );
-
+        document.getElementById("passwordInput");
 
     const error =
-        document.getElementById(
-            "loginError"
-        );
+        document.getElementById("loginError");
 
+    if (!input) return;
 
     if (input.value === CORRECT_PASSWORD) {
+        const saved =
+            saveLocalAuthentication();
 
         setAuthCookie();
 
-        saveLocalAuthentication();
+        if (!saved && !hasAuthCookie()) {
+            if (error) {
+                error.textContent =
+                    "Fern could not save login state in this browser.";
+            }
+            return;
+        }
 
-        error.textContent = "";
+        if (error) {
+            error.textContent = "";
+        }
 
         showApplication();
-
         randomJoke();
-
     } else {
-
-        error.textContent =
-            "Wrong password. The fern has lost respect for you.";
+        if (error) {
+            error.textContent =
+                "Wrong password. The fern has lost respect for you.";
+        }
 
         input.value = "";
-
         input.focus();
-
     }
-
 }
 
+const loginButton =
+    document.getElementById("loginButton");
 
-
-document
-    .getElementById("loginButton")
-    .addEventListener(
+if (loginButton) {
+    loginButton.addEventListener(
         "click",
         authenticate
     );
+}
 
+const passwordInput =
+    document.getElementById("passwordInput");
 
-
-document
-    .getElementById("passwordInput")
-    .addEventListener(
+if (passwordInput) {
+    passwordInput.addEventListener(
         "keydown",
         event => {
-
             if (event.key === "Enter") {
-
                 authenticate();
-
             }
-
         }
     );
+}
 
 
+/* Migrate a previously saved Fern cookie into localStorage. */
+if (hasAuthCookie() && !hasLocalAuthentication()) {
+    saveLocalAuthentication();
+}
 
 /* ============================================================
    NAVIGATION
