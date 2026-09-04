@@ -6,7 +6,7 @@
 
     <title>Fern</title>
 
-    <meta name="fern-version" content="1.1.1">
+    <meta name="fern-version" content="1.1.2">
 
     <!-- UV -->
     <script src="/uv/uv.bundle.js"></script>
@@ -1743,7 +1743,7 @@
         </div>
 
         <div class="version-indicator" title="Fern build version">
-            BUILD <span id="fernVersion">v1.1.1</span>
+            BUILD <span id="fernVersion">v1.1.2</span>
         </div>
 
     </header>
@@ -1940,7 +1940,7 @@
                 <div class="settings-section settings-about">
                     <div>
                         <h3>About Fern</h3>
-                        <p>Fern build <span id="settingsVersion">v1.1.1</span></p>
+                        <p>Fern build <span id="settingsVersion">v1.1.2</span></p>
                     </div>
                 </div>
 
@@ -2016,24 +2016,12 @@
    ============================================================ */
 
 const CORRECT_PASSWORD = "S1gmaGyat";
-
 const AUTH_KEY = "fern_authenticated";
-
 const COOKIE_NAME = "FernAuth";
-
-
-
-/* ============================================================
-   COOKIE AUTHENTICATION
-   ============================================================ */
 
 /* ============================================================
    AUTHENTICATION / PERSISTENCE
    ============================================================ */
-
-const CORRECT_PASSWORD = "S1gmaGyat";
-const AUTH_KEY = "fern_authenticated";
-const COOKIE_NAME = "FernAuth";
 
 function storageAvailable() {
     try {
@@ -2161,23 +2149,19 @@ function authenticate() {
     if (!input) return;
 
     if (input.value === CORRECT_PASSWORD) {
-        const saved =
-            saveLocalAuthentication();
-
+        /*
+         * Authentication itself should not depend on whether the browser
+         * permits persistent storage. Save the state when possible, then
+         * continue into Fern.
+         */
+        saveLocalAuthentication();
         setAuthCookie();
-
-        if (!saved && !hasAuthCookie()) {
-            if (error) {
-                error.textContent =
-                    "Fern could not save login state in this browser.";
-            }
-            return;
-        }
 
         if (error) {
             error.textContent = "";
         }
 
+        input.value = "";
         showApplication();
         randomJoke();
     } else {
