@@ -405,7 +405,23 @@
             width: 100%;
             height: calc(100% - 64px);
 
-            overflow: auto;
+            overflow-x: hidden;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        #gamesPage {
+            min-height: 100%;
+            padding-bottom: 60px;
+        }
+
+        #gamesPage.active {
+            display: block;
+        }
+
+        .games-grid {
+            padding-bottom: 10px;
         }
 
 
@@ -738,6 +754,7 @@
                 repeat(auto-fill, minmax(220px, 1fr));
 
             gap: 15px;
+            padding-bottom: 10px;
         }
 
 
@@ -1560,7 +1577,7 @@ function launchURL(targetURL = null) {
 
 
     /*
-     * Launches triggered directly by a click are allowed to request
+     * Launches triggered directly by a game-card click can request
      * fullscreen as part of that same browser user gesture.
      */
     if (
@@ -2068,6 +2085,114 @@ const games = [
         name: "Chess.com",
         description: "Play chess online and practice your skills.",
         link: "https://www.chess.com"
+    },
+
+    {
+        name: "Drift Boss",
+        description: "One-button drifting through increasingly tricky tracks.",
+        link: "https://poki.com/en/g/drift-boss"
+    },
+
+    {
+        name: "Stickman Hook",
+        description: "Swing through levels using your grappling hook.",
+        link: "https://poki.com/en/g/stickman-hook"
+    },
+
+    {
+        name: "Smash Karts",
+        description: "Fast multiplayer kart battles in your browser.",
+        link: "https://poki.com/en/g/smash-karts"
+    },
+
+    {
+        name: "Subway Surfers",
+        description: "Run, dodge, and collect coins in the classic runner.",
+        link: "https://poki.com/en/g/subway-surfers"
+    },
+
+    {
+        name: "Level Devil",
+        description: "A platformer full of unexpected traps.",
+        link: "https://poki.com/en/g/level-devil"
+    },
+
+    {
+        name: "Drive Mad",
+        description: "Try to keep your vehicle balanced across wild tracks.",
+        link: "https://poki.com/en/g/drive-mad"
+    },
+
+    {
+        name: "Moto X3M",
+        description: "Race through obstacle-filled motorcycle courses.",
+        link: "https://poki.com/en/g/moto-x3m"
+    },
+
+    {
+        name: "Fireboy & Watergirl",
+        description: "Solve cooperative platforming puzzles with two characters.",
+        link: "https://www.coolmathgames.com/0-fireboy-and-water-girl"
+    },
+
+    {
+        name: "Run 3",
+        description: "Run through twisting tunnels in space.",
+        link: "https://www.coolmathgames.com/0-run-3"
+    },
+
+    {
+        name: "World's Hardest Game",
+        description: "A classic precision challenge.",
+        link: "https://www.coolmathgames.com/0-worlds-hardest-game"
+    },
+
+    {
+        name: "Action Turnip",
+        description: "Fast-paced browser arcade action.",
+        link: "https://www.crazygames.com/game/action-turnip"
+    },
+
+    {
+        name: "Geometry Dash",
+        description: "Jump and fly through rhythm-based obstacle courses.",
+        link: "https://www.crazygames.com/game/geometry-dash-online"
+    },
+
+    {
+        name: "Bloxd.io",
+        description: "A block-building multiplayer browser world.",
+        link: "https://bloxd.io"
+    },
+
+    {
+        name: "Diep.io",
+        description: "Upgrade your tank and compete in an arena.",
+        link: "https://diep.io"
+    },
+
+    {
+        name: "Paper.io 2",
+        description: "Claim territory while avoiding other players.",
+        link: "https://paper-io.com"
+    },
+
+    {
+        name: "Hole.io",
+        description: "Grow by collecting objects around the map.",
+        link: "https://hole-io.com"
+    },
+
+    {
+        name: "2048",
+        description: "Combine matching tiles to reach 2048.",
+        link: "https://play2048.co"
+    },
+
+    {
+        name: "GBA Web Demo",
+        description: "A browser GBA demo that launches directly into its demo game.",
+        link: "https://x1n-q.github.io/Web-Based-Emulator/"
     }
 ];
 
@@ -2136,6 +2261,11 @@ function openGame(targetURL) {
         proxyButton.click();
     }
 
+    /*
+     * Launch directly from the game's click gesture.
+     * launchURL() requests fullscreen before loading the URL,
+     * so the browser can honor the fullscreen request.
+     */
     launchURL(targetURL);
 }
 
