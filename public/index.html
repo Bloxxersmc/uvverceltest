@@ -6,7 +6,7 @@
 
     <title>Fern</title>
 
-    <meta name="fern-version" content="1.0.8">
+    <meta name="fern-version" content="1.0.9">
 
     <!-- UV -->
     <script src="/uv/uv.bundle.js"></script>
@@ -1312,7 +1312,7 @@
         </div>
 
         <div class="version-indicator" title="Fern build version">
-            BUILD <span id="fernVersion">v1.0.8</span>
+            BUILD <span id="fernVersion">v1.0.9</span>
         </div>
 
     </header>
@@ -1488,7 +1488,7 @@
                 <div class="settings-section settings-about">
                     <div>
                         <h3>About Fern</h3>
-                        <p>Fern build <span id="settingsVersion">v1.0.8</span></p>
+                        <p>Fern build <span id="settingsVersion">v1.0.9</span></p>
                     </div>
                 </div>
 
@@ -2009,178 +2009,282 @@ document
 
 
 /* ============================================================
-   PRESS AND HOLD FULLSCREEN
+   FULLSCREEN — PRESS AND HOLD
    ============================================================ */
 
-const fullscreenButton = document.getElementById("fullscreenButton");
-const fullscreenContainer = document.getElementById("iframeContainer");
+const fullscreenButton =
+    document.getElementById("fullscreenButton");
 
-let fullscreenHeld = false;
-let fullscreenRequestInProgress = false;
+const fullscreenContainer =
+    document.getElementById("iframeContainer");
 
-function setFullscreenButtonState() {
-    if (!fullscreenButton) return;
+let fullscreenMouseHeld = false;
+let fullscreenTouchHeld = false;
+let fullscreenRequestPending = false;
 
-    const active =
-        document.fullscreenElement === fullscreenContainer;
-
-    fullscreenButton.textContent = active ? "✕" : "⛶";
-    fullscreenButton.title =
-        active
-            ? "Release to exit fullscreen"
-            : "Press and hold for fullscreen";
-
-    fullscreenButton.classList.toggle("holding", fullscreenHeld);
+function fullscreenIsActive() {
+    return document.fullscreenElement === fullscreenContainer;
 }
 
-function beginFullscreenHold(event) {
-    /*
-     * Desktop behavior:
-     * mousedown is a browser-recognized transient user activation,
-     * so requestFullscreen() is made directly from this event.
-     */
-    if (event.button !== 0 || !fullscreenContainer) return;
-    if (fullscreenHeld) return;
+function updateFullscreenUI() {
+    if (!fullscreenButton) return;
 
-    fullscreenHeld = true;
-    setFullscreenButtonState();
+    const active = fullscreenIsActive();
 
-    if (document.fullscreenElement === fullscreenContainer) {
+    fullscreenButton.textContent = active ? "✕" : "⛶";
+
+    fullscreenButton.title = active
+        ? "Release to exit fullscreen"
+        : "Press and hold for fullscreen";
+
+    fullscreenButton.classList.toggle(
+        "holding",
+        fullscreenMouseHeld || fullscreenTouchHeld
+    );
+}
+
+function enterFernFullscreen() {
+    if (!fullscreenContainer) return;
+
+    if (fullscreenIsActive()) {
+        return;
+    }
+
+    if (document.fullscreenElement) {
         return;
     }
 
     if (
-        typeof fullscreenContainer.requestFullscreen !== "function" ||
-        !document.fullscreenEnabled
+        !document.fullscreenEnabled ||
+        typeof fullscreenContainer.requestFullscreen !== "function"
     ) {
-        fullscreenHeld = false;
-        setFullscreenButtonState();
+        console.warn("Fullscreen is not available.");
         return;
     }
 
-    fullscreenRequestInProgress = true;
+    fullscreenRequestPending = true;
 
+    /*
+     * IMPORTANT:
+     * requestFullscreen() is called directly from the
+     * mousedown/touchend handler. Do not put an await or
+     * timeout before this call because fullscreen requires
+     * transient user activation.
+     */
     fullscreenContainer
-        .requestFullscreen()
+        .requestFullscreen({
+            navigationUI: "hide"
+        })
         .then(() => {
-            fullscreenRequestInProgress = false;
+            fullscreenRequestPending = false;
 
             /*
-             * If the user released before Chrome finished entering
-             * fullscreen, immediately leave again.
+             * The user may have released extremely quickly while
+             * Chrome was completing the fullscreen transition.
              */
             if (
-                !fullscreenHeld &&
+                !fullscreenMouseHeld &&
+                !fullscreenTouchHeld &&
                 document.fullscreenElement
             ) {
                 return document.exitFullscreen();
             }
         })
         .catch(error => {
-            fullscreenRequestInProgress = false;
-            fullscreenHeld = false;
-            console.warn("Fullscreen request failed:", error);
-            setFullscreenButtonState();
+            fullscreenRequestPending = false;
+
+            console.warn(
+                "Fern fullscreen request failed:",
+                error
+            );
+
+            updateFullscreenUI();
         });
 }
 
-function endFullscreenHold() {
-    if (!fullscreenHeld && !fullscreenRequestInProgress) return;
+function leaveFernFullscreen() {
+    fullscreenMouseHeld = false;
+    fullscreenTouchHeld = false;
 
-    fullscreenHeld = false;
-    setFullscreenButtonState();
+    updateFullscreenUI();
 
     if (document.fullscreenElement) {
-        document.exitFullscreen().catch(error => {
-            console.warn("Fullscreen exit failed:", error);
-        });
+        document
+            .exitFullscreen()
+            .catch(error => {
+                console.warn(
+                    "Fern fullscreen exit failed:",
+                    error
+                );
+            });
     }
 }
 
+/*
+ * MOUSE:
+ * mousedown is the activation event, so fullscreen starts
+ * immediately when the button is pressed.
+ */
 if (fullscreenButton) {
     fullscreenButton.addEventListener(
         "mousedown",
-        beginFullscreenHold
+        event => {
+            if (event.button !== 0) return;
+
+            fullscreenMouseHeld = true;
+            updateFullscreenUI();
+
+            enterFernFullscreen();
+        }
     );
 
+    /*
+     * Prevent the normal click from becoming a toggle.
+     * The button is intentionally NOT a click-to-toggle control.
+     */
     fullscreenButton.addEventListener(
         "click",
         event => {
-            /*
-             * Do not turn this into a click/toggle button.
-             */
             event.preventDefault();
             event.stopPropagation();
         }
     );
 
     /*
-     * Releasing anywhere on the window exits fullscreen.
+     * Release anywhere on the page/window.
+     * This also handles dragging the pointer off the button.
      */
     window.addEventListener(
         "mouseup",
-        endFullscreenHold
+        () => {
+            if (!fullscreenMouseHeld) return;
+
+            fullscreenMouseHeld = false;
+            updateFullscreenUI();
+
+            if (
+                fullscreenIsActive() ||
+                fullscreenRequestPending
+            ) {
+                if (document.fullscreenElement) {
+                    document
+                        .exitFullscreen()
+                        .catch(() => {});
+                }
+            }
+        }
     );
 
     /*
-     * Touch support: touchend is a user activation event in browsers
-     * that support the Fullscreen API this way.
+     * If the pointer is released while the browser window
+     * loses focus, treat that as a release too.
      */
+    window.addEventListener(
+        "blur",
+        () => {
+            if (!fullscreenMouseHeld) return;
+
+            fullscreenMouseHeld = false;
+            updateFullscreenUI();
+
+            if (document.fullscreenElement) {
+                document
+                    .exitFullscreen()
+                    .catch(() => {});
+            }
+        }
+    );
+
+    /*
+     * Touch support.
+     * touchend is itself an activation-triggering event.
+     */
+    fullscreenButton.addEventListener(
+        "touchstart",
+        () => {
+            fullscreenTouchHeld = true;
+            updateFullscreenUI();
+        },
+        { passive: true }
+    );
+
     fullscreenButton.addEventListener(
         "touchend",
         event => {
             event.preventDefault();
 
-            if (!fullscreenHeld) {
-                fullscreenHeld = true;
-                setFullscreenButtonState();
+            /*
+             * Start fullscreen from the activation event.
+             */
+            enterFernFullscreen();
 
-                if (
-                    fullscreenContainer &&
-                    !document.fullscreenElement &&
-                    typeof fullscreenContainer.requestFullscreen === "function"
-                ) {
-                    fullscreenContainer
-                        .requestFullscreen()
-                        .catch(error => {
-                            fullscreenHeld = false;
-                            console.warn(
-                                "Touch fullscreen request failed:",
-                                error
-                            );
-                            setFullscreenButtonState();
-                        });
-                }
+            /*
+             * A touch release means the hold is finished.
+             * If fullscreen is already active, exit immediately.
+             */
+            fullscreenTouchHeld = false;
+            updateFullscreenUI();
+
+            if (document.fullscreenElement) {
+                document
+                    .exitFullscreen()
+                    .catch(() => {});
             }
         },
         { passive: false }
     );
 
-    window.addEventListener(
-        "touchend",
-        endFullscreenHold,
+    fullscreenButton.addEventListener(
+        "touchcancel",
+        () => {
+            fullscreenTouchHeld = false;
+            updateFullscreenUI();
+
+            if (document.fullscreenElement) {
+                document
+                    .exitFullscreen()
+                    .catch(() => {});
+            }
+        },
         { passive: true }
     );
 }
 
-document.addEventListener("fullscreenchange", () => {
-    if (!document.fullscreenElement) {
-        fullscreenHeld = false;
-        fullscreenRequestInProgress = false;
+/*
+ * Keep the UI synchronized if the browser exits fullscreen
+ * because of Esc, F11, tab switching, another application,
+ * or another fullscreen request.
+ */
+document.addEventListener(
+    "fullscreenchange",
+    () => {
+        if (!document.fullscreenElement) {
+            fullscreenMouseHeld = false;
+            fullscreenTouchHeld = false;
+            fullscreenRequestPending = false;
+        }
+
+        updateFullscreenUI();
     }
+);
 
-    setFullscreenButtonState();
-});
+document.addEventListener(
+    "fullscreenerror",
+    event => {
+        fullscreenMouseHeld = false;
+        fullscreenTouchHeld = false;
+        fullscreenRequestPending = false;
 
-document.addEventListener("fullscreenerror", event => {
-    fullscreenHeld = false;
-    fullscreenRequestInProgress = false;
-    console.warn("Fullscreen error:", event);
-    setFullscreenButtonState();
-});
+        console.warn(
+            "Fern fullscreen error:",
+            event
+        );
 
-setFullscreenButtonState();
+        updateFullscreenUI();
+    }
+);
 
+updateFullscreenUI();
 
 /* ============================================================
    UV SERVICE WORKER
@@ -2801,54 +2905,6 @@ function loadFernSettings() {
 
 loadFernSettings();
 
-
-/* ============================================================
-   PRESS AND HOLD ESCAPE TO EXIT FULLSCREEN
-   ============================================================ */
-
-let escapeHeld = false;
-
-window.addEventListener("keydown", event => {
-    if (event.key !== "Escape") return;
-
-    /*
-     * Browser fullscreen normally exits on a single Escape press.
-     * Prevent that default behavior and require the key to remain
-     * held for a short duration instead.
-     */
-    if (!escapeHeld && document.fullscreenElement) {
-        event.preventDefault();
-        escapeHeld = true;
-
-        setTimeout(() => {
-            if (
-                escapeHeld &&
-                document.fullscreenElement
-            ) {
-                document.exitFullscreen().catch(error => {
-                    console.warn(
-                        "Escape fullscreen exit failed:",
-                        error
-                    );
-                });
-            }
-        }, 450);
-    }
-}, true);
-
-window.addEventListener("keyup", event => {
-    if (event.key !== "Escape") return;
-
-    if (document.fullscreenElement) {
-        event.preventDefault();
-    }
-
-    escapeHeld = false;
-}, true);
-
-window.addEventListener("blur", () => {
-    escapeHeld = false;
-});
 
 /* ============================================================
    START FERN
