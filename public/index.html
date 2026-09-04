@@ -1473,7 +1473,7 @@
             color: var(--text);
             background: var(--panel);
             border: 1px solid var(--border);
-            border-radius: 9px;
+            border-radius: 99px;
             cursor: pointer;
         }
 
@@ -3001,7 +3001,7 @@ const games = [
 
 
 /* ============================================================
-   GAME CARD BUILDER
+   GAME CARD BUILDER (WITH AUTO LOGO FETCH)
    ============================================================ */
 
 function renderGames() {
@@ -3021,7 +3021,23 @@ function renderGames() {
 
         const icon = document.createElement("div");
         icon.className = "game-icon";
-        icon.textContent = "🎮";
+        icon.style.overflow = "hidden";
+        icon.style.padding = "0";
+
+        const img = document.createElement("img");
+        img.alt = game.name + " logo";
+        img.style.width = "100%";
+        img.style.height = "100%";
+        img.style.objectFit = "cover";
+
+        const cleanDomain = game.link.replace(/^https?:\/\//, '').split('/')[0];
+        img.src = `https://icons.duckduckgo.com/ip3/${cleanDomain}.ico`;
+
+        img.onerror = function() {
+            icon.innerHTML = "🎮";
+        };
+
+        icon.appendChild(img);
 
         const title = document.createElement("h3");
         title.textContent = game.name;
