@@ -292,12 +292,17 @@
             display: none;
 
             width: 100%;
-            height: 100%;
+            height: 100vh;
+            min-height: 0;
+
+            flex-direction: column;
         }
 
 
         .topbar {
             height: 64px;
+            min-height: 64px;
+            flex: 0 0 64px;
 
             display: flex;
             align-items: center;
@@ -403,17 +408,20 @@
 
         .content {
             width: 100%;
-            height: calc(100% - 64px);
+            height: auto;
+            flex: 1 1 auto;
+            min-height: 0;
 
             overflow-x: hidden;
             overflow-y: auto;
-            overscroll-behavior: contain;
+            overscroll-behavior-y: contain;
             -webkit-overflow-scrolling: touch;
+            scrollbar-gutter: stable;
         }
 
         #gamesPage {
-            min-height: 100%;
-            padding-bottom: 60px;
+            min-height: max-content;
+            padding-bottom: 80px;
         }
 
         #gamesPage.active {
@@ -421,7 +429,7 @@
         }
 
         .games-grid {
-            padding-bottom: 10px;
+            padding-bottom: 30px;
         }
 
 
@@ -587,6 +595,30 @@
             background: white;
         }
 
+
+
+        /* =====================================================
+           FULLSCREEN LAYOUT
+           ===================================================== */
+
+        #iframeContainer:fullscreen {
+            width: 100vw;
+            height: 100vh;
+            min-height: 0;
+            margin: 0;
+            border: 0;
+            border-radius: 0;
+            background: #020402;
+        }
+
+        #iframeContainer:fullscreen #iframeWindow {
+            width: 100%;
+            height: 100%;
+        }
+
+        #iframeContainer:fullscreen .iframe-toolbar {
+            z-index: 50;
+        }
 
         /* =====================================================
            PROXY WINDOW POP-IN ANIMATION
@@ -1679,7 +1711,7 @@ document
 
 
 /* ============================================================
-   FULLSCREEN
+   PRESS AND HOLD FULLSCREEN
    ============================================================ */
 
 const fullscreenButton =
@@ -1688,133 +1720,150 @@ const fullscreenButton =
 const fullscreenContainer =
     document.getElementById("iframeContainer");
 
+let fullscreenPointerId = null;
 let fullscreenHeld = false;
 
-async function startHeldFullscreen(event) {
+function updateFullscreenButton() {
+    if (!fullscreenButton) return;
 
-    event.preventDefault();
-
-    if (fullscreenHeld) {
-        return;
+    if (document.fullscreenElement) {
+        fullscreenButton.textContent = "✕";
+        fullscreenButton.title = "Release to exit fullscreen";
+    } else {
+        fullscreenButton.textContent = "⛶";
+        fullscreenButton.title = "Press and hold for fullscreen";
     }
-
-    fullscreenHeld = true;
-
-    try {
-
-        if (
-            !document.fullscreenElement &&
-            fullscreenContainer &&
-            typeof fullscreenContainer.requestFullscreen === "function"
-        ) {
-            await fullscreenContainer.requestFullscreen();
-        }
-
-    } catch (error) {
-
-        console.warn(
-            "Fullscreen unavailable:",
-            error
-        );
-
-    }
-
 }
 
-async function stopHeldFullscreen(event) {
+async function beginFullscreenHold(event) {
+    if (!fullscreenButton || !fullscreenContainer) return;
+    if (event.button !== undefined && event.button !== 0) return;
+    if (fullscreenHeld) return;
 
-    event.preventDefault();
+    fullscreenHeld = true;
+    fullscreenPointerId = event.pointerId;
 
-    if (!fullscreenHeld) {
+    /*
+     * Keep receiving pointerup even if the pointer leaves the button.
+     */
+    try {
+        fullscreenButton.setPointerCapture(event.pointerId);
+    } catch (error) {}
+
+    /*
+     * This call is intentionally made immediately from pointerdown.
+     * Fullscreen requires a transient user activation.
+     */
+    if (
+        !document.fullscreenElement &&
+        typeof fullscreenContainer.requestFullscreen === "function"
+    ) {
+        try {
+            await fullscreenContainer.requestFullscreen({
+                navigationUI: "hide"
+            });
+        } catch (error) {
+            console.warn("Fullscreen unavailable:", error);
+            fullscreenHeld = false;
+            fullscreenPointerId = null;
+        }
+    }
+
+    updateFullscreenButton();
+}
+
+async function endFullscreenHold(event) {
+    if (
+        event &&
+        fullscreenPointerId !== null &&
+        event.pointerId !== fullscreenPointerId
+    ) {
         return;
     }
 
+    const wasHeld = fullscreenHeld;
+
     fullscreenHeld = false;
+    fullscreenPointerId = null;
 
-    try {
-
-        if (document.fullscreenElement) {
+    if (wasHeld && document.fullscreenElement) {
+        try {
             await document.exitFullscreen();
+        } catch (error) {
+            console.warn("Could not exit fullscreen:", error);
         }
-
-    } catch (error) {
-
-        console.warn(
-            "Could not exit fullscreen:",
-            error
-        );
-
     }
 
+    updateFullscreenButton();
 }
 
 fullscreenButton.addEventListener(
     "pointerdown",
-    event => {
-
-        try {
-            fullscreenButton.setPointerCapture(
-                event.pointerId
-            );
-        } catch (error) {}
-
-        startHeldFullscreen(event);
-    }
+    beginFullscreenHold
 );
 
 fullscreenButton.addEventListener(
     "pointerup",
-    stopHeldFullscreen
+    endFullscreenHold
 );
 
 fullscreenButton.addEventListener(
     "pointercancel",
-    stopHeldFullscreen
+    endFullscreenHold
 );
 
+document.addEventListener(
+    "pointerup",
+    event => {
+        if (
+            fullscreenPointerId !== null &&
+            event.pointerId === fullscreenPointerId
+        ) {
+            endFullscreenHold(event);
+        }
+    }
+);
+
+document.addEventListener(
+    "pointercancel",
+    event => {
+        if (
+            fullscreenPointerId !== null &&
+            event.pointerId === fullscreenPointerId
+        ) {
+            endFullscreenHold(event);
+        }
+    }
+);
+
+/*
+ * Never let the generated click toggle fullscreen.
+ * The only fullscreen actions are press-down and release.
+ */
 fullscreenButton.addEventListener(
-    "lostpointercapture",
-    stopHeldFullscreen
+    "click",
+    event => {
+        event.preventDefault();
+        event.stopPropagation();
+    }
 );
 
 document.addEventListener(
     "fullscreenchange",
     () => {
-
+        /*
+         * If the browser exits fullscreen with Esc, clear the held state.
+         */
         if (!document.fullscreenElement) {
             fullscreenHeld = false;
+            fullscreenPointerId = null;
         }
 
+        updateFullscreenButton();
     }
 );
 
-
-
-document.addEventListener(
-    "fullscreenchange",
-    () => {
-
-        const button =
-            document.getElementById(
-                "fullscreenButton"
-            );
-
-
-        if (document.fullscreenElement) {
-
-            button.textContent = "✕";
-            button.title = "Exit fullscreen";
-
-        } else {
-
-            button.textContent = "⛶";
-            button.title = "Fullscreen";
-
-        }
-
-    }
-);
-
+updateFullscreenButton();
 
 
 /* ============================================================
@@ -2233,6 +2282,7 @@ function renderGames() {
 
         link.addEventListener("click", event => {
             event.preventDefault();
+            event.stopPropagation();
             openGame(game.link);
         });
 
@@ -2261,11 +2311,6 @@ function openGame(targetURL) {
         proxyButton.click();
     }
 
-    /*
-     * Launch directly from the game's click gesture.
-     * launchURL() requests fullscreen before loading the URL,
-     * so the browser can honor the fullscreen request.
-     */
     launchURL(targetURL);
 }
 
