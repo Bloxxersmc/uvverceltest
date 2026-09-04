@@ -2489,7 +2489,7 @@ body::after{
 .nav button.active{background:linear-gradient(180deg,color-mix(in srgb,var(--green) 11%,transparent),color-mix(in srgb,var(--green) 3%,transparent))!important;border-color:color-mix(in srgb,var(--green) 30%,transparent)!important;box-shadow:0 0 25px color-mix(in srgb,var(--green) 7%,transparent)!important}
 .nav-symbol{font-size:19px!important}.online{min-width:174px!important;border-radius:12px!important;background:rgba(255,255,255,.025)!important}
 
-.content{width:100%!important;max-width:none!important;padding:20px 0 50px!important;overflow:hidden!important}
+.content{width:100%!important;max-width:none!important;padding:20px 0 50px!important;overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior-y:contain!important;-webkit-overflow-scrolling:touch!important;scrollbar-gutter:stable!important}
 .page{width:100%!important;max-width:none!important;padding:20px 0 50px!important;margin:0!important}
 #proxyPage{position:relative;padding-left:3.35vw!important;}
 #proxyPage .hero,#proxyPage .iframe-container{width:min(58.5vw,904px)!important;max-width:904px!important;}
@@ -2538,6 +2538,43 @@ body[data-theme="light"]::after{background:radial-gradient(ellipse at 50% 50%,tr
 body[data-theme="light"] .topbar{background:rgba(255,255,255,.78)!important;border-color:rgba(20,70,50,.15)!important}
 body[data-theme="light"] #proxyPage .hero,body[data-theme="light"] #proxyPage .iframe-container{background:rgba(255,255,255,.76)!important;border-color:rgba(20,100,65,.20)!important}
 body[data-theme="light"] #proxyPage #urlInput{background:rgba(245,249,247,.92)!important;color:var(--text)!important}
+
+
+/* ============================================================
+   FERN 3.0 — PERFORMANCE OVERRIDES
+   ============================================================ */
+/* One GPU-friendly atmospheric layer instead of several animated/blurred layers. */
+body::before{
+    content:"" !important;
+    position:fixed !important; inset:-12% !important; z-index:0 !important;
+    pointer-events:none !important;
+    background:
+      radial-gradient(ellipse 43% 34% at 82% 34%, var(--mist1,rgba(55,155,215,.16)), transparent 70%),
+      radial-gradient(ellipse 39% 31% at 88% 70%, var(--mist2,rgba(135,65,205,.15)), transparent 72%),
+      radial-gradient(ellipse 27% 20% at 69% 82%, var(--mist3,rgba(35,125,155,.10)), transparent 72%) !important;
+    transform:translate3d(0,0,0);
+    animation:fernCheapMist 55s ease-in-out infinite alternate !important;
+    filter:none !important;
+}
+body::after{
+    content:"" !important; position:fixed !important; inset:0 !important; z-index:0 !important;
+    pointer-events:none !important;
+    background:radial-gradient(ellipse at 50% 50%,transparent 42%,rgba(0,0,0,.30) 100%) !important;
+}
+.fern-nebula{display:none !important;}
+body.no-animations::before{animation:none !important;}
+@media(prefers-reduced-motion:reduce){body::before{animation:none !important;}}
+@keyframes fernCheapMist{
+    0%{transform:translate3d(-1%,.5%,0) scale(1)}
+    50%{transform:translate3d(.7%,-.8%,0) scale(1.025)}
+    100%{transform:translate3d(1.2%,.6%,0) scale(1.01)}
+}
+/* Backdrop blur is expensive over a moving background. Solid translucent panels keep the look. */
+.topbar,.nav,.online,.hero,.game-card,.settings-section,.theme-card,.settings-toggle,.iframe-container,.library-controls{
+    backdrop-filter:none !important; -webkit-backdrop-filter:none !important;
+}
+.game-card{cursor:pointer;}
+.game-card:focus-visible{outline:2px solid var(--green);outline-offset:2px;}
 </style>
 
 <style id="fern-v29-atmosphere">
@@ -2629,6 +2666,13 @@ body .fern-nebula{mix-blend-mode:normal;}
 @media(max-width:650px){
   #proxyPage{padding-left:14px!important;padding-right:14px!important;}
 }
+
+/* v3.1 — allow the main content area to scroll, especially the Library. */
+#app{height:100vh!important;min-height:0!important;overflow:hidden!important;}
+.content{flex:1 1 auto!important;min-height:0!important;height:auto!important;overflow-x:hidden!important;overflow-y:auto!important;}
+#gamesPage{min-height:max-content!important;height:auto!important;padding-bottom:120px!important;}
+#gamesPage .games-grid{padding-bottom:24px!important;}
+
 
 /* Respect the animation setting. */
 body.no-animations .fern-nebula-cloud{animation:none!important;}
@@ -3113,7 +3157,7 @@ body.no-animations .fern-nebula-cloud{animation:none!important;}
 
 <script>
 /* ============================================================
-   BACKGROUND — TARGET-STYLE STARS + SUBTLE CONSTELLATIONS
+   BACKGROUND — LOW-CPU STARFIELD + STATIC CONSTELLATIONS
    ============================================================ */
 (function initParticles(){
     const canvas=document.getElementById('bgCanvas');
@@ -3122,137 +3166,92 @@ body.no-animations .fern-nebula-cloud{animation:none!important;}
     if(!ctx) return;
 
     const mouse={x:-9999,y:-9999};
-    let stars=[],grid=new Map(),w=0,h=0,dpr=1;
-    let lastFrame=0,lastAccent='';
-
-    const FRAME_MS=42;          // ~24 FPS: enough for a smooth background, much cheaper than 60 FPS
-    const LINK_DISTANCE=112;
-    const LINK_DISTANCE2=LINK_DISTANCE*LINK_DISTANCE;
-    const MOUSE_RADIUS=145;
-    const CELL=LINK_DISTANCE;
-
+    let stars=[],links=[],w=0,h=0,lastFrame=0,lastLinks=0,raf=0,running=true,lastAccent='';
+    const FRAME_MS=66; // ~15 FPS for the background only
+    const LINK_DISTANCE=125, LINK_DISTANCE2=LINK_DISTANCE*LINK_DISTANCE, MOUSE_RADIUS=135;
     const getAccent=()=>getComputedStyle(document.documentElement).getPropertyValue('--green').trim()||'#36f6d0';
 
     addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY},{passive:true});
     addEventListener('mouseleave',()=>{mouse.x=mouse.y=-9999},{passive:true});
-    addEventListener('resize',resize,{passive:true});
 
     function resize(){
         w=innerWidth; h=innerHeight;
-        dpr=1; // Deliberately capped at 1x. This background should never eat a 2x/3x canvas.
-        canvas.width=Math.max(1,Math.floor(w*dpr));
-        canvas.height=Math.max(1,Math.floor(h*dpr));
-        canvas.style.width=w+'px';
-        canvas.style.height=h+'px';
-        ctx.setTransform(dpr,0,0,dpr,0,0);
-
-        // More visible stars than v2.8, but still bounded on ultrawide displays.
-        const count=Math.max(150,Math.min(260,Math.floor(w*h/7200)));
-        stars=new Array(count);
-        for(let i=0;i<count;i++){
-            stars[i]={
-                x:Math.random()*w,
-                y:Math.random()*h,
-                vx:(Math.random()-.5)*0.018,
-                vy:(Math.random()-.5)*0.018,
-                r:.38+Math.random()*1.12,
-                a:.32+Math.random()*.58,
-                phase:Math.random()*Math.PI*2,
-                tw:.35+Math.random()*.8
-            };
-        }
-        rebuildGrid();
+        canvas.width=Math.max(1,w); canvas.height=Math.max(1,h);
+        canvas.style.width=w+'px'; canvas.style.height=h+'px';
+        const count=Math.max(120,Math.min(185,Math.floor(w*h/10800)));
+        stars=Array.from({length:count},()=>({
+            x:Math.random()*w,y:Math.random()*h,
+            vx:(Math.random()-.5)*.10,vy:(Math.random()-.5)*.10,
+            r:.45+Math.random()*1.05,a:.34+Math.random()*.56,
+            phase:Math.random()*6.283,tw:.3+Math.random()*.7
+        }));
+        links=[]; lastLinks=0;
     }
+    addEventListener('resize',resize,{passive:true});
 
-    function cellKey(x,y){return Math.floor(x/CELL)+','+Math.floor(y/CELL);}
-
-    function rebuildGrid(){
-        grid.clear();
+    function rebuildLinks(){
+        links=[];
+        // Rebuild infrequently. This is the expensive part, so it is never done per frame.
         for(let i=0;i<stars.length;i++){
-            const p=stars[i],key=cellKey(p.x,p.y);
-            let bucket=grid.get(key);
-            if(!bucket){bucket=[];grid.set(key,bucket);}
-            bucket.push(i);
+            const p=stars[i]; let best=-1,bestD=LINK_DISTANCE2;
+            for(let j=i+1;j<stars.length;j++){
+                const q=stars[j],dx=q.x-p.x,dy=q.y-p.y,d=dx*dx+dy*dy;
+                if(d<bestD){bestD=d;best=j;}
+            }
+            if(best>=0) links.push([i,best]);
         }
+        lastLinks=performance.now();
     }
 
-    function draw(t){
-        requestAnimationFrame(draw);
-        if(document.hidden) return;
-        if(t-lastFrame<FRAME_MS) return;
+    function frame(t){
+        if(!running) return;
+        raf=requestAnimationFrame(frame);
+        if(document.hidden || t-lastFrame<FRAME_MS) return;
         lastFrame=t;
-
-        const dt=.042;
         const accent=getAccent();
-        if(accent!==lastAccent) lastAccent=accent;
+        if(t-lastLinks>900) rebuildLinks();
+
         ctx.clearRect(0,0,w,h);
-
         for(const p of stars){
-            p.x+=p.vx*60*dt;
-            p.y+=p.vy*60*dt;
-            if(p.x<-4)p.x=w+4; else if(p.x>w+4)p.x=-4;
-            if(p.y<-4)p.y=h+4; else if(p.y>h+4)p.y=-4;
-
+            p.x+=p.vx; p.y+=p.vy;
+            if(p.x<-3)p.x=w+3; else if(p.x>w+3)p.x=-3;
+            if(p.y<-3)p.y=h+3; else if(p.y>h+3)p.y=-3;
             const dx=p.x-mouse.x,dy=p.y-mouse.y,d2=dx*dx+dy*dy;
-            if(d2<MOUSE_RADIUS*MOUSE_RADIUS && d2>16){
-                const d=Math.sqrt(d2),force=(1-d/MOUSE_RADIUS)*.22;
-                p.x+=(dx/d)*force;
-                p.y+=(dy/d)*force;
+            if(d2<MOUSE_RADIUS*MOUSE_RADIUS && d2>25){
+                const d=Math.sqrt(d2),force=(1-d/MOUSE_RADIUS)*.9;
+                p.x+=(dx/d)*force; p.y+=(dy/d)*force;
             }
-            p.phase+=dt*p.tw;
+            p.phase+=.035*p.tw;
         }
 
-        // Spatial buckets avoid the O(n²) connection loop that caused the lag.
-        rebuildGrid();
-        ctx.strokeStyle=accent;
-        ctx.lineWidth=.55;
-        ctx.globalAlpha=.19;
-        ctx.beginPath();
-
-        for(let i=0;i<stars.length;i++){
-            const p=stars[i];
-            const cx=Math.floor(p.x/CELL),cy=Math.floor(p.y/CELL);
-            let nearest1=-1,nearest2=-1,d1=LINK_DISTANCE2,d2=LINK_DISTANCE2;
-
-            for(let gx=cx-1;gx<=cx+1;gx++){
-                for(let gy=cy-1;gy<=cy+1;gy++){
-                    const bucket=grid.get(gx+','+gy);
-                    if(!bucket) continue;
-                    for(const j of bucket){
-                        if(j<=i) continue;
-                        const q=stars[j],dx=q.x-p.x,dy=q.y-p.y,d=dx*dx+dy*dy;
-                        if(d<d1){d2=d1;nearest2=nearest1;d1=d;nearest1=j;}
-                        else if(d<d2){d2=d;nearest2=j;}
-                    }
-                }
-            }
-            if(nearest1>=0){ctx.moveTo(p.x,p.y);ctx.lineTo(stars[nearest1].x,stars[nearest1].y);}
-            // Only some second-nearest links: keeps the constellation airy instead of turning into polygons.
-            if(nearest2>=0 && ((i&1)===0)){ctx.moveTo(p.x,p.y);ctx.lineTo(stars[nearest2].x,stars[nearest2].y);}
+        ctx.strokeStyle=accent; ctx.lineWidth=.48; ctx.globalAlpha=.16; ctx.beginPath();
+        for(const [a,b] of links){
+            const p=stars[a],q=stars[b];
+            ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y);
         }
         ctx.stroke();
 
         ctx.fillStyle=accent;
         for(const p of stars){
-            const pulse=.76+.24*Math.sin(p.phase);
+            const pulse=.82+.18*Math.sin(p.phase);
             ctx.globalAlpha=p.a*pulse;
-            ctx.beginPath();
-            ctx.arc(p.x,p.y,p.r*(.86+.14*pulse),0,Math.PI*2);
-            ctx.fill();
-            if(p.r>1.12){
-                ctx.globalAlpha=.12*p.a;
-                ctx.beginPath();
-                ctx.arc(p.x,p.y,p.r*2.8,0,Math.PI*2);
-                ctx.fill();
-            }
+            ctx.fillRect(p.x-p.r*.5,p.y-p.r*.5,p.r,p.r);
         }
         ctx.globalAlpha=1;
     }
 
-    resize();
-    requestAnimationFrame(draw);
-    document.addEventListener('visibilitychange',()=>{if(!document.hidden)lastFrame=performance.now();});
-})();;
+    function start(){
+        if(running) return;
+        running=true; lastFrame=performance.now(); raf=requestAnimationFrame(frame);
+    }
+    function stop(){
+        running=false; if(raf) cancelAnimationFrame(raf); raf=0;
+    }
+    resize(); running=true; raf=requestAnimationFrame(frame);
+    document.addEventListener('visibilitychange',()=>{
+        if(document.hidden) stop(); else start();
+    });
+})();
 
 /* ============================================================
    FERN CONFIGURATION
@@ -4263,6 +4262,22 @@ function renderGames() {
         const card = document.createElement('article');
         card.className = 'game-card';
         card.dataset.gameIndex = index;
+
+        // Make the entire game card clickable, not just the Play now text.
+        card.setAttribute('role', 'button');
+        card.tabIndex = 0;
+        card.addEventListener('click', event => {
+            if (event.target.closest('.bookmark-button') || event.target.closest('a')) return;
+            openGame(game.link);
+        });
+        card.addEventListener('keydown', event => {
+            if ((event.key === 'Enter' || event.key === ' ') &&
+                !event.target.closest('.bookmark-button') &&
+                !event.target.closest('a')) {
+                event.preventDefault();
+                openGame(game.link);
+            }
+        });
 
         const media = document.createElement('div');
         media.className = 'game-media';
