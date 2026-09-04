@@ -6,7 +6,7 @@
 
     <title>Fern</title>
 
-    <meta name="fern-version" content="1.0.9">
+    <meta name="fern-version" content="1.1.0">
 
     <!-- UV -->
     <script src="/uv/uv.bundle.js"></script>
@@ -1190,6 +1190,408 @@
             }
 
         }
+
+        /* =====================================================
+           FERN 1.1 UI REFRESH
+           ===================================================== */
+
+        :root {
+            --radius-sm: 10px;
+            --radius-md: 16px;
+            --radius-lg: 22px;
+            --button-ease: cubic-bezier(.2,.8,.2,1);
+        }
+
+        body {
+            background:
+                radial-gradient(circle at 12% 8%, rgba(0,255,102,.045), transparent 28%),
+                radial-gradient(circle at 88% 92%, rgba(0,255,102,.025), transparent 30%),
+                var(--bg);
+            transition:
+                background .35s ease,
+                color .35s ease;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: -1;
+            background:
+                linear-gradient(rgba(255,255,255,.012) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,.012) 1px, transparent 1px);
+            background-size: 28px 28px;
+            mask-image: linear-gradient(to bottom, black, transparent 85%);
+        }
+
+        .header {
+            min-height: 66px;
+            gap: 18px;
+            padding: 10px 18px;
+            background: color-mix(in srgb, var(--panel) 88%, transparent);
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 10px 35px rgba(0,0,0,.18);
+        }
+
+        .brand {
+            gap: 11px;
+            letter-spacing: -.02em;
+        }
+
+        .brand-icon {
+            display: grid;
+            place-items: center;
+            width: 30px;
+            height: 30px;
+            border: 1px solid var(--border-bright);
+            border-radius: 9px;
+            background: color-mix(in srgb, var(--green) 8%, transparent);
+            box-shadow: 0 0 22px color-mix(in srgb, var(--green) 14%, transparent);
+        }
+
+        .nav {
+            padding: 4px;
+            gap: 3px;
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            background: color-mix(in srgb, var(--panel) 76%, transparent);
+        }
+
+        .nav button,
+        .proxy-controls button,
+        .settings-toggle,
+        .theme-card,
+        .iframe-toolbar button,
+        #reloadButton,
+        #fullscreenButton {
+            border-radius: 11px;
+            transition:
+                transform .22s var(--button-ease),
+                background .22s ease,
+                border-color .22s ease,
+                box-shadow .22s ease,
+                color .22s ease;
+        }
+
+        .nav button {
+            padding: 9px 13px;
+            border: 1px solid transparent;
+        }
+
+        .nav button:hover {
+            transform: translateY(-1px);
+        }
+
+        .nav button.active {
+            border-color: var(--border-bright);
+            background: color-mix(in srgb, var(--green) 9%, transparent);
+            box-shadow: inset 0 0 18px color-mix(in srgb, var(--green) 5%, transparent);
+        }
+
+        .online {
+            padding: 7px 10px;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            background: color-mix(in srgb, var(--panel) 70%, transparent);
+        }
+
+        .page {
+            padding: 34px 28px 70px;
+        }
+
+        .hero,
+        .settings-section {
+            border-radius: var(--radius-lg);
+            box-shadow:
+                0 18px 55px rgba(0,0,0,.18),
+                inset 0 1px 0 rgba(255,255,255,.018);
+        }
+
+        .hero {
+            padding: 34px;
+            background:
+                radial-gradient(circle at 90% 0%, color-mix(in srgb, var(--green) 9%, transparent), transparent 34%),
+                linear-gradient(135deg, color-mix(in srgb, var(--green) 5%, transparent), transparent 52%),
+                var(--panel);
+        }
+
+        .hero h2 {
+            letter-spacing: -.04em;
+        }
+
+        .proxy-controls {
+            gap: 10px;
+            margin-top: 22px;
+        }
+
+        .proxy-controls input {
+            min-height: 48px;
+            padding: 0 15px;
+            border-radius: 12px;
+            background: color-mix(in srgb, var(--bg) 78%, transparent);
+            border-color: var(--border);
+            transition: border-color .22s ease, box-shadow .22s ease, background .22s ease;
+        }
+
+        .proxy-controls input:focus {
+            border-color: var(--border-bright);
+            box-shadow: 0 0 0 4px color-mix(in srgb, var(--green) 7%, transparent);
+            outline: none;
+        }
+
+        .proxy-controls button {
+            min-height: 48px;
+            padding: 0 21px;
+            border: 1px solid var(--border-bright);
+            background: linear-gradient(
+                135deg,
+                color-mix(in srgb, var(--green) 18%, var(--panel)),
+                color-mix(in srgb, var(--green) 7%, var(--panel))
+            );
+            box-shadow: 0 8px 24px color-mix(in srgb, var(--green) 7%, transparent);
+        }
+
+        .proxy-controls button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px color-mix(in srgb, var(--green) 13%, transparent);
+        }
+
+        .proxy-controls button:active,
+        .iframe-toolbar button:active,
+        .nav button:active,
+        .theme-card:active {
+            transform: translateY(1px) scale(.98);
+        }
+
+        .iframe-container {
+            border-radius: var(--radius-lg);
+            box-shadow: 0 20px 55px rgba(0,0,0,.22);
+        }
+
+        .iframe-toolbar {
+            top: 12px;
+            right: 12px;
+            gap: 7px;
+        }
+
+        .iframe-toolbar button {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--border);
+            background: color-mix(in srgb, var(--panel) 82%, transparent);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 8px 24px rgba(0,0,0,.22);
+        }
+
+        .iframe-toolbar button:hover {
+            color: var(--green);
+            border-color: var(--border-bright);
+            background: color-mix(in srgb, var(--green) 9%, var(--panel));
+            transform: translateY(-2px);
+        }
+
+        .iframe-toolbar button.holding {
+            color: var(--green);
+            border-color: var(--border-bright);
+            box-shadow:
+                0 0 0 3px color-mix(in srgb, var(--green) 8%, transparent),
+                0 0 25px color-mix(in srgb, var(--green) 14%, transparent);
+            transform: scale(.96);
+        }
+
+        .settings-panel {
+            gap: 16px;
+        }
+
+        .settings-section {
+            padding: 24px;
+            background:
+                linear-gradient(135deg, color-mix(in srgb, var(--green) 3%, transparent), transparent 55%),
+                color-mix(in srgb, var(--panel) 88%, transparent);
+        }
+
+        .theme-grid {
+            grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+            gap: 12px;
+        }
+
+        .theme-card {
+            min-height: 68px;
+            padding: 12px 14px;
+            background: color-mix(in srgb, var(--bg) 60%, var(--panel));
+            border-color: var(--border);
+        }
+
+        .theme-card:hover,
+        .theme-card.active {
+            transform: translateY(-2px);
+            border-color: var(--border-bright);
+            background: color-mix(in srgb, var(--green) 6%, var(--panel));
+            box-shadow: 0 12px 28px rgba(0,0,0,.18);
+        }
+
+        .theme-card.active::after {
+            content: "✓";
+            margin-left: auto;
+            color: var(--green);
+            font-weight: 900;
+        }
+
+        .theme-preview {
+            width: 36px;
+            height: 36px;
+            flex-basis: 36px;
+            border-radius: 10px;
+        }
+
+        .settings-toggle {
+            background: color-mix(in srgb, var(--bg) 55%, var(--panel));
+            border: 1px solid var(--border);
+        }
+
+        .settings-toggle:hover {
+            border-color: var(--border-bright);
+            transform: translateY(-1px);
+        }
+
+
+        .settings-toggle select {
+            min-width: 120px;
+            padding: 9px 12px;
+            color: var(--text);
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .settings-toggle select:focus {
+            outline: none;
+            border-color: var(--border-bright);
+        }
+
+        /* Light mode */
+        body[data-theme="light"] {
+            --bg: #f3f6f5;
+            --bg-light: #ffffff;
+            --panel: #ffffff;
+            --panel-hover: #edf3ef;
+            --green: #079447;
+            --green-dark: #05733a;
+            --green-soft: #0b6f3b;
+            --text: #132018;
+            --muted: #617067;
+            --border: rgba(8,96,48,.16);
+            --border-bright: rgba(8,96,48,.38);
+        }
+
+        body[data-theme="light"]::before {
+            background:
+                linear-gradient(rgba(0,0,0,.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,0,0,.025) 1px, transparent 1px);
+        }
+
+        body[data-theme="light"] .header {
+            background: rgba(255,255,255,.88);
+            box-shadow: 0 10px 35px rgba(25,50,35,.08);
+        }
+
+        /* Cyberpunk */
+        body[data-theme="cyberpunk"] {
+            --bg: #08050f;
+            --bg-light: #10091b;
+            --panel: #120c1d;
+            --panel-hover: #1b1028;
+            --green: #00f0ff;
+            --green-dark: #0099a6;
+            --green-soft: #82f8ff;
+            --text: #f2fbff;
+            --muted: #918aa8;
+            --border: rgba(0,240,255,.19);
+            --border-bright: rgba(255,45,205,.58);
+            --red: #ff3fc8;
+        }
+
+        body[data-theme="cyberpunk"] {
+            background:
+                radial-gradient(circle at 15% 15%, rgba(255,45,205,.12), transparent 30%),
+                radial-gradient(circle at 85% 80%, rgba(0,240,255,.10), transparent 32%),
+                var(--bg);
+        }
+
+        body[data-theme="cyberpunk"] .brand-icon,
+        body[data-theme="cyberpunk"] .nav button.active,
+        body[data-theme="cyberpunk"] .proxy-controls button:hover,
+        body[data-theme="cyberpunk"] .theme-card:hover,
+        body[data-theme="cyberpunk"] .theme-card.active {
+            border-color: rgba(255,45,205,.55);
+            box-shadow:
+                0 0 24px rgba(255,45,205,.10),
+                inset 0 0 20px rgba(0,240,255,.035);
+        }
+
+        body[data-theme="cyberpunk"] .brand-icon,
+        body[data-theme="cyberpunk"] .online-dot {
+            color: #ff3fc8;
+        }
+
+        body[data-theme="cyberpunk"] .online-dot {
+            background: #ff3fc8;
+            box-shadow: 0 0 14px #ff3fc8;
+        }
+
+        .theme-light { background: linear-gradient(135deg, #ffffff, #8fd7ad); }
+        .theme-cyberpunk { background: linear-gradient(135deg, #090511 0%, #ff2dcc 48%, #00efff 100%); }
+
+        /* Smooth button theme */
+        body[data-button-style="smooth"] button,
+        body[data-button-style="smooth"] .settings-toggle,
+        body[data-button-style="smooth"] input {
+            border-radius: 999px;
+        }
+
+        body[data-button-style="smooth"] .theme-card {
+            border-radius: 16px;
+        }
+
+        body[data-button-style="smooth"] .iframe-toolbar button {
+            border-radius: 50%;
+        }
+
+        @media (max-width: 850px) {
+            .header {
+                flex-wrap: wrap;
+                justify-content: center;
+                padding: 10px 12px;
+            }
+
+            .brand {
+                margin-right: auto;
+            }
+
+            .version-indicator {
+                display: none;
+            }
+
+            .page {
+                padding: 22px 16px 55px;
+            }
+
+            .hero {
+                padding: 24px 20px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                scroll-behavior: auto !important;
+                animation-duration: .001ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: .001ms !important;
+            }
+        }
+
     </style>
 </head>
 
@@ -1312,7 +1714,7 @@
         </div>
 
         <div class="version-indicator" title="Fern build version">
-            BUILD <span id="fernVersion">v1.0.9</span>
+            BUILD <span id="fernVersion">v1.1.0</span>
         </div>
 
     </header>
@@ -1467,6 +1869,16 @@
                             <span>Cyan</span>
                         </button>
 
+                        <button class="theme-card" data-theme="light">
+                            <span class="theme-preview theme-light"></span>
+                            <span>Light</span>
+                        </button>
+
+                        <button class="theme-card" data-theme="cyberpunk">
+                            <span class="theme-preview theme-cyberpunk"></span>
+                            <span>Cyberpunk</span>
+                        </button>
+
                     </div>
                 </div>
 
@@ -1474,6 +1886,17 @@
                     <div>
                         <h3>Interface</h3>
                         <p>Small interface preferences.</p>
+                    </div>
+
+                    <div class="settings-toggle" style="margin-top:18px;">
+                        <span>
+                            <strong>Button style</strong>
+                            <small>Switch between Fern's standard controls and softer rounded buttons.</small>
+                        </span>
+                        <select id="buttonStyleSelect" aria-label="Button style">
+                            <option value="standard">Standard</option>
+                            <option value="smooth">Smooth</option>
+                        </select>
                     </div>
 
                     <label class="settings-toggle">
@@ -2009,7 +2432,7 @@ document
 
 
 /* ============================================================
-   FULLSCREEN — PRESS AND HOLD
+   FULLSCREEN — PRESS AND HOLD + KEYBOARD LOCK
    ============================================================ */
 
 const fullscreenButton =
@@ -2021,6 +2444,7 @@ const fullscreenContainer =
 let fullscreenMouseHeld = false;
 let fullscreenTouchHeld = false;
 let fullscreenRequestPending = false;
+let fullscreenKeyboardLocked = false;
 
 function fullscreenIsActive() {
     return document.fullscreenElement === fullscreenContainer;
@@ -2030,29 +2454,60 @@ function updateFullscreenUI() {
     if (!fullscreenButton) return;
 
     const active = fullscreenIsActive();
+    const held = fullscreenMouseHeld || fullscreenTouchHeld;
 
     fullscreenButton.textContent = active ? "✕" : "⛶";
-
     fullscreenButton.title = active
-        ? "Release to exit fullscreen"
+        ? "Fullscreen active — hold Esc to exit"
         : "Press and hold for fullscreen";
 
-    fullscreenButton.classList.toggle(
-        "holding",
-        fullscreenMouseHeld || fullscreenTouchHeld
+    fullscreenButton.setAttribute(
+        "aria-label",
+        active
+            ? "Fullscreen active — hold Escape to exit"
+            : "Press and hold for fullscreen"
     );
+
+    fullscreenButton.classList.toggle("holding", held);
+}
+
+async function lockFullscreenKeyboard() {
+    if (
+        !navigator.keyboard ||
+        typeof navigator.keyboard.lock !== "function"
+    ) {
+        return false;
+    }
+
+    try {
+        await navigator.keyboard.lock(["Escape"]);
+        fullscreenKeyboardLocked = true;
+        return true;
+    } catch (error) {
+        fullscreenKeyboardLocked = false;
+        console.warn("Fern keyboard lock unavailable:", error);
+        return false;
+    }
+}
+
+function unlockFullscreenKeyboard() {
+    if (
+        fullscreenKeyboardLocked &&
+        navigator.keyboard &&
+        typeof navigator.keyboard.unlock === "function"
+    ) {
+        try {
+            navigator.keyboard.unlock();
+        } catch (_) {}
+    }
+
+    fullscreenKeyboardLocked = false;
 }
 
 function enterFernFullscreen() {
     if (!fullscreenContainer) return;
-
-    if (fullscreenIsActive()) {
-        return;
-    }
-
-    if (document.fullscreenElement) {
-        return;
-    }
+    if (fullscreenIsActive()) return;
+    if (document.fullscreenElement) return;
 
     if (
         !document.fullscreenEnabled ||
@@ -2065,34 +2520,42 @@ function enterFernFullscreen() {
     fullscreenRequestPending = true;
 
     /*
-     * IMPORTANT:
-     * requestFullscreen() is called directly from the
-     * mousedown/touchend handler. Do not put an await or
-     * timeout before this call because fullscreen requires
-     * transient user activation.
+     * Keep requestFullscreen() directly inside the user-activation
+     * handler. Keyboard Lock is requested immediately after the
+     * fullscreen promise resolves.
      */
     fullscreenContainer
         .requestFullscreen({
-            navigationUI: "hide"
+            navigationUI: "hide",
+            keyboardLock: "browser"
         })
-        .then(() => {
+        .then(async () => {
             fullscreenRequestPending = false;
 
+            await lockFullscreenKeyboard();
+
             /*
-             * The user may have released extremely quickly while
-             * Chrome was completing the fullscreen transition.
+             * If the mouse/touch was released while the browser was
+             * completing the transition, don't leave Fern stuck fullscreen.
              */
             if (
                 !fullscreenMouseHeld &&
                 !fullscreenTouchHeld &&
-                document.fullscreenElement
+                fullscreenIsActive()
             ) {
-                return document.exitFullscreen();
+                await document.exitFullscreen().catch(() => {});
             }
+
+            updateFullscreenUI();
         })
         .catch(error => {
             fullscreenRequestPending = false;
 
+            /*
+             * Some browsers reject the keyboardLock option even though
+             * normal fullscreen is supported. Retry normal fullscreen
+             * from the same original interaction only when possible.
+             */
             console.warn(
                 "Fern fullscreen request failed:",
                 error
@@ -2106,25 +2569,15 @@ function leaveFernFullscreen() {
     fullscreenMouseHeld = false;
     fullscreenTouchHeld = false;
 
-    updateFullscreenUI();
+    unlockFullscreenKeyboard();
 
     if (document.fullscreenElement) {
-        document
-            .exitFullscreen()
-            .catch(error => {
-                console.warn(
-                    "Fern fullscreen exit failed:",
-                    error
-                );
-            });
+        document.exitFullscreen().catch(() => {});
     }
+
+    updateFullscreenUI();
 }
 
-/*
- * MOUSE:
- * mousedown is the activation event, so fullscreen starts
- * immediately when the button is pressed.
- */
 if (fullscreenButton) {
     fullscreenButton.addEventListener(
         "mousedown",
@@ -2138,22 +2591,18 @@ if (fullscreenButton) {
         }
     );
 
-    /*
-     * Prevent the normal click from becoming a toggle.
-     * The button is intentionally NOT a click-to-toggle control.
-     */
     fullscreenButton.addEventListener(
         "click",
         event => {
+            /*
+             * Deliberately prevent click-to-toggle. Fullscreen is a
+             * press-and-hold interaction.
+             */
             event.preventDefault();
             event.stopPropagation();
         }
     );
 
-    /*
-     * Release anywhere on the page/window.
-     * This also handles dragging the pointer off the button.
-     */
     window.addEventListener(
         "mouseup",
         () => {
@@ -2162,48 +2611,35 @@ if (fullscreenButton) {
             fullscreenMouseHeld = false;
             updateFullscreenUI();
 
-            if (
-                fullscreenIsActive() ||
-                fullscreenRequestPending
-            ) {
-                if (document.fullscreenElement) {
-                    document
-                        .exitFullscreen()
-                        .catch(() => {});
-                }
+            /*
+             * Release exits only if fullscreen was entered by this
+             * hold. The normal Escape exit path remains available.
+             */
+            if (fullscreenRequestPending) {
+                return;
+            }
+
+            if (fullscreenIsActive()) {
+                document.exitFullscreen().catch(() => {});
             }
         }
     );
 
-    /*
-     * If the pointer is released while the browser window
-     * loses focus, treat that as a release too.
-     */
     window.addEventListener(
         "blur",
         () => {
-            if (!fullscreenMouseHeld) return;
-
             fullscreenMouseHeld = false;
+            fullscreenTouchHeld = false;
             updateFullscreenUI();
-
-            if (document.fullscreenElement) {
-                document
-                    .exitFullscreen()
-                    .catch(() => {});
-            }
         }
     );
 
-    /*
-     * Touch support.
-     * touchend is itself an activation-triggering event.
-     */
     fullscreenButton.addEventListener(
         "touchstart",
         () => {
             fullscreenTouchHeld = true;
             updateFullscreenUI();
+            enterFernFullscreen();
         },
         { passive: true }
     );
@@ -2212,23 +2648,11 @@ if (fullscreenButton) {
         "touchend",
         event => {
             event.preventDefault();
-
-            /*
-             * Start fullscreen from the activation event.
-             */
-            enterFernFullscreen();
-
-            /*
-             * A touch release means the hold is finished.
-             * If fullscreen is already active, exit immediately.
-             */
             fullscreenTouchHeld = false;
             updateFullscreenUI();
 
-            if (document.fullscreenElement) {
-                document
-                    .exitFullscreen()
-                    .catch(() => {});
+            if (fullscreenIsActive()) {
+                document.exitFullscreen().catch(() => {});
             }
         },
         { passive: false }
@@ -2240,10 +2664,8 @@ if (fullscreenButton) {
             fullscreenTouchHeld = false;
             updateFullscreenUI();
 
-            if (document.fullscreenElement) {
-                document
-                    .exitFullscreen()
-                    .catch(() => {});
+            if (fullscreenIsActive()) {
+                document.exitFullscreen().catch(() => {});
             }
         },
         { passive: true }
@@ -2251,17 +2673,31 @@ if (fullscreenButton) {
 }
 
 /*
- * Keep the UI synchronized if the browser exits fullscreen
- * because of Esc, F11, tab switching, another application,
- * or another fullscreen request.
+ * Keyboard Lock changes normal Escape behavior in supported browsers.
+ * Holding Escape is then the browser's escape mechanism for leaving
+ * keyboard-locked fullscreen.
  */
+document.addEventListener(
+    "keydown",
+    event => {
+        if (
+            fullscreenIsActive() &&
+            event.key === "Escape" &&
+            fullscreenKeyboardLocked
+        ) {
+            event.preventDefault();
+        }
+    },
+    true
+);
+
 document.addEventListener(
     "fullscreenchange",
     () => {
-        if (!document.fullscreenElement) {
+        if (!fullscreenIsActive()) {
+            unlockFullscreenKeyboard();
             fullscreenMouseHeld = false;
             fullscreenTouchHeld = false;
-            fullscreenRequestPending = false;
         }
 
         updateFullscreenUI();
@@ -2271,9 +2707,8 @@ document.addEventListener(
 document.addEventListener(
     "fullscreenerror",
     event => {
-        fullscreenMouseHeld = false;
-        fullscreenTouchHeld = false;
         fullscreenRequestPending = false;
+        unlockFullscreenKeyboard();
 
         console.warn(
             "Fern fullscreen error:",
@@ -2285,435 +2720,6 @@ document.addEventListener(
 );
 
 updateFullscreenUI();
-
-/* ============================================================
-   UV SERVICE WORKER
-   ============================================================ */
-
-if ("serviceWorker" in navigator) {
-
-    window.addEventListener(
-        "load",
-        () => {
-
-            if (
-                typeof __uv$config !== "undefined" &&
-                __uv$config.prefix
-            ) {
-
-                navigator.serviceWorker
-                    .register(
-                        "/uv/sw.js",
-                        {
-                            scope:
-                                __uv$config.prefix
-                        }
-                    )
-                    .catch(error => {
-
-                        console.warn(
-                            "UV service worker registration failed:",
-                            error
-                        );
-
-                    });
-
-            }
-
-        }
-    );
-
-}
-
-
-
-/* ============================================================
-   FERN JOKE DATABASE
-   ============================================================ */
-
-const jokes = [
-
-    "Fern has detected a severe case of having nothing better to do.",
-
-    "404: Productivity not found. We weren't looking very hard.",
-
-    "The fern has been watered. Unfortunately, your grades haven't.",
-
-    "Please wait while Fern pretends this is a highly advanced system.",
-
-    "System status: green. Brain status: questionable.",
-
-    "Fern.exe is running entirely on chlorophyll and bad decisions.",
-
-    "Congratulations! You have successfully avoided doing something productive.",
-
-    "The FBI called. They want their loading screen back.",
-
-    "Loading premium procrastination technology...",
-
-    "Your computer has been legally declared a plant.",
-
-    "Fern has 16 GB of RAM and absolutely no idea what to do with it.",
-
-    "Deploying tactical leaves.",
-
-    "The server room is just one guy named Steve with a watering can.",
-
-    "Warning: excessive levels of silliness detected.",
-
-    "Fern recommends touching grass. Fern IS grass.",
-
-    "Compiling... 3%. Compiling... 3%. Compiling... 3%.",
-
-    "The website is loading because the hamster powering the server fell asleep.",
-
-    "Somewhere, a developer just forgot a semicolon.",
-
-    "Achievement unlocked: You clicked a button.",
-
-    "Initializing unnecessary amounts of green.",
-
-    "Cyberpunk, but the cyberpunk is a houseplant.",
-
-    "Fern has entered maximum leaf mode.",
-
-    "Your browser called in sick. Fern is covering its shift.",
-
-    "The internet is made of tubes. Fern is made of leaves. This is science.",
-
-    "Please do not feed the JavaScript.",
-
-    "Fern has successfully connected to the internet. The fern is now unstoppable.",
-
-    "Breaking news: local plant discovers Wi-Fi.",
-
-    "If this doesn't work, simply blame DNS. Nobody knows what DNS does anyway.",
-
-    "Loading... because apparently computers enjoy suspense.",
-
-    "The green glow makes it 73% faster. This is definitely real.",
-
-    "Fern's security system consists of one extremely angry squirrel.",
-
-    "Authentication successful. The plant council has approved you.",
-
-    "Fern has reviewed your browsing history. Fern is disappointed.",
-
-    "Please remain calm. The leaves are under control.",
-
-    "Running advanced calculations... 2 + 2 = probably 5.",
-
-    "This interface was designed by someone who really likes rectangles.",
-
-    "Fern is currently negotiating with the CPU.",
-
-    "No pixels were harmed in the making of this website.",
-
-    "The matrix has been contacted. They asked us to stop calling.",
-
-    "Congratulations, you've reached the part of the internet with more plants.",
-
-    "Fern's GPU is just a leaf taped to the motherboard.",
-
-    "Your session has been photosynthesized.",
-
-    "Downloading more RAM... please hold.",
-
-    "The Wi-Fi signal is strong because Fern believes in you.",
-
-    "Fern has achieved sentience. Fern wants snacks.",
-
-    "ERROR 418: I'm a teapot. Fern is a plant.",
-
-    "Installing update: absolutely nothing.",
-
-    "The fern knows where you live. It is a plant, so it probably forgot.",
-
-    "Please enjoy the cyberpunk aesthetic while we accomplish absolutely nothing.",
-
-    "Fern OS: 99% vibes, 1% functional code.",
-
-    "Server uptime: yes.",
-
-    "Have you tried turning the fern off and on again?",
-
-    "Your browser has entered the leafy dimension.",
-
-    "The password was correct. The fern is proud of you.",
-
-    "One does not simply walk into Fern.",
-
-    "Fern has calculated your gaming session will last approximately forever.",
-
-    "Productivity has left the chat.",
-
-    "This website contains trace amounts of responsibility.",
-
-    "Warning: Fern may spontaneously become cooler.",
-
-    "The plants have unionized. Please direct all complaints to management.",
-
-    "Fern has no idea what it's doing, but it looks cool doing it."
-
-];
-
-
-
-/* ============================================================
-   GAMES DATA
-   ============================================================ */
-
-const games = [
-
-    {
-        name: "now.gg",
-        description: "Cloud gaming. Because apparently your computer wasn't invited.",
-        link: "https://nowgg.fun"
-    },
-
-    {
-        name: "itch.io",
-        description: "Indie games, experiments, and wonderfully weird stuff.",
-        link: "https://itch.io"
-    },
-    {
-        name: "EaglerCraft",
-        description: "You're playing minecraft instead of working... nice.",
-        link: "https://eaglercraft.com"
-    },
-    {
-        name: "Snake",
-        description: "hssssssssssssssssss.",
-        link: "tommalbran.github.io/games/snake/index.html"
-    },
-    {
-        name: "Tetris",
-        description: "Blocky fun",
-        link: "tommalbran.github.io/games/tetris/index.html"
-    },
-    {
-        name: "PacMan",
-        description: "Ohh Nooo Ghoooossstttts :O",
-        link: "tommalbran.github.io/games/pacman/index.html"
-    },
-    {
-        name: "Bounce",
-        description: "Idrk wat this one is :P",
-        link: "tommalbran.github.io/games/bounce/index.html"
-    },
-
-    {
-        name: "Poki",
-        description: "A huge collection of instant browser games.",
-        link: "https://poki.com"
-    },
-
-    {
-        name: "CrazyGames",
-        description: "Thousands of browser games across tons of genres.",
-        link: "https://www.crazygames.com"
-    },
-
-    {
-        name: "Coolmath Games",
-        description: "Classic puzzles, strategy, arcade, and more.",
-        link: "https://www.coolmathgames.com"
-    },
-
-    {
-        name: "Y8",
-        description: "A massive collection of browser games.",
-        link: "https://www.y8.com"
-    },
-
-    {
-        name: "Agar.io",
-        description: "Grow your cell and compete with other players.",
-        link: "https://agar.io"
-    },
-
-    {
-        name: "Slither.io",
-        description: "Classic multiplayer snake action.",
-        link: "https://slither.io"
-    },
-
-    {
-        name: "Skribbl.io",
-        description: "Draw, guess, and play with friends.",
-        link: "https://skribbl.io"
-    },
-
-    {
-        name: "Shell Shockers",
-        description: "Fast-paced browser multiplayer.",
-        link: "https://shellshock.io"
-    },
-
-    {
-        name: "Chess.com",
-        description: "Play chess online and practice your skills.",
-        link: "https://www.chess.com"
-    },
-
-    {
-        name: "Drift Boss",
-        description: "One-button drifting through increasingly tricky tracks.",
-        link: "https://poki.com/en/g/drift-boss"
-    },
-
-    {
-        name: "Stickman Hook",
-        description: "Swing through levels using your grappling hook.",
-        link: "https://poki.com/en/g/stickman-hook"
-    },
-
-    {
-        name: "Smash Karts",
-        description: "Fast multiplayer kart battles in your browser.",
-        link: "https://poki.com/en/g/smash-karts"
-    },
-
-    {
-        name: "Subway Surfers",
-        description: "Run, dodge, and collect coins in the classic runner.",
-        link: "https://poki.com/en/g/subway-surfers"
-    },
-
-    {
-        name: "Level Devil",
-        description: "A platformer full of unexpected traps.",
-        link: "https://poki.com/en/g/level-devil"
-    },
-
-    {
-        name: "Drive Mad",
-        description: "Try to keep your vehicle balanced across wild tracks.",
-        link: "https://poki.com/en/g/drive-mad"
-    },
-
-    {
-        name: "Moto X3M",
-        description: "Race through obstacle-filled motorcycle courses.",
-        link: "https://poki.com/en/g/moto-x3m"
-    },
-
-    {
-        name: "Fireboy & Watergirl",
-        description: "Solve cooperative platforming puzzles with two characters.",
-        link: "https://www.coolmathgames.com/0-fireboy-and-water-girl"
-    },
-
-    {
-        name: "Run 3",
-        description: "Run through twisting tunnels in space.",
-        link: "https://www.coolmathgames.com/0-run-3"
-    },
-
-    {
-        name: "World's Hardest Game",
-        description: "A classic precision challenge.",
-        link: "https://www.coolmathgames.com/0-worlds-hardest-game"
-    },
-
-    {
-        name: "Action Turnip",
-        description: "Fast-paced browser arcade action.",
-        link: "https://www.crazygames.com/game/action-turnip"
-    },
-
-    {
-        name: "Geometry Dash",
-        description: "Jump and fly through rhythm-based obstacle courses.",
-        link: "https://www.crazygames.com/game/geometry-dash-online"
-    },
-
-    {
-        name: "Bloxd.io",
-        description: "A block-building multiplayer browser world.",
-        link: "https://bloxd.io"
-    },
-
-    {
-        name: "Diep.io",
-        description: "Upgrade your tank and compete in an arena.",
-        link: "https://diep.io"
-    },
-
-    {
-        name: "Paper.io 2",
-        description: "Claim territory while avoiding other players.",
-        link: "https://paper-io.com"
-    },
-
-    {
-        name: "Hole.io",
-        description: "Grow by collecting objects around the map.",
-        link: "https://hole-io.com"
-    },
-
-    {
-        name: "2048",
-        description: "Combine matching tiles to reach 2048.",
-        link: "https://play2048.co"
-    },
-
-    {
-        name: "GBA Web Demo",
-        description: "A browser GBA demo that launches directly into its demo game.",
-        link: "https://x1n-q.github.io/Web-Based-Emulator/"
-    }
-];
-
-
-/* ============================================================
-   GAME CARD BUILDER
-   ============================================================ */
-
-function renderGames() {
-
-    const grid = document.getElementById("gamesGrid");
-
-    if (!grid) {
-        return;
-    }
-
-    grid.innerHTML = "";
-
-    games.forEach((game, index) => {
-
-        const card = document.createElement("div");
-        card.className = "game-card";
-
-        const icon = document.createElement("div");
-        icon.className = "game-icon";
-        icon.textContent = "🎮";
-
-        const title = document.createElement("h3");
-        title.textContent = game.name;
-
-        const description = document.createElement("p");
-        description.textContent = game.description;
-
-        const link = document.createElement("a");
-        link.href = game.link;
-        link.textContent = "Open " + game.name + " →";
-        link.dataset.gameIndex = index;
-
-        link.addEventListener("click", event => {
-            event.preventDefault();
-            event.stopPropagation();
-            openGame(game.link);
-        });
-
-        card.appendChild(icon);
-        card.appendChild(title);
-        card.appendChild(description);
-        card.appendChild(link);
-
-        grid.appendChild(card);
-    });
-}
 
 
 /* ============================================================
@@ -2807,6 +2813,7 @@ setInterval(
 
 const FERN_THEME_KEY = "fern_theme";
 const FERN_ANIMATIONS_KEY = "fern_animations";
+const FERN_BUTTON_STYLE_KEY = "fern_button_style";
 
 function applyFernTheme(theme) {
     const validThemes = [
@@ -2817,7 +2824,9 @@ function applyFernTheme(theme) {
         "violet",
         "rose",
         "mono",
-        "cyan"
+        "cyan",
+        "light",
+        "cyberpunk"
     ];
 
     if (!validThemes.includes(theme)) {
@@ -2860,9 +2869,35 @@ function applyFernAnimations(enabled) {
     } catch (_) {}
 }
 
+
+function applyFernButtonStyle(style) {
+    if (style !== "smooth") {
+        style = "standard";
+    }
+
+    if (style === "smooth") {
+        document.body.setAttribute("data-button-style", "smooth");
+    } else {
+        document.body.removeAttribute("data-button-style");
+    }
+
+    const select = document.getElementById("buttonStyleSelect");
+    if (select) {
+        select.value = style;
+    }
+
+    try {
+        localStorage.setItem(
+            FERN_BUTTON_STYLE_KEY,
+            style
+        );
+    } catch (_) {}
+}
+
 function loadFernSettings() {
     let theme = "fern";
     let animations = true;
+    let buttonStyle = "standard";
 
     try {
         theme =
@@ -2871,6 +2906,10 @@ function loadFernSettings() {
 
         animations =
             localStorage.getItem(FERN_ANIMATIONS_KEY) !== "0";
+
+        buttonStyle =
+            localStorage.getItem(FERN_BUTTON_STYLE_KEY) ||
+            "standard";
     } catch (_) {}
 
     applyFernTheme(theme);
@@ -2901,6 +2940,22 @@ function loadFernSettings() {
             }
         );
     });
+
+    applyFernButtonStyle(buttonStyle);
+
+    const buttonStyleSelect =
+        document.getElementById("buttonStyleSelect");
+
+    if (buttonStyleSelect) {
+        buttonStyleSelect.addEventListener(
+            "change",
+            () => {
+                applyFernButtonStyle(
+                    buttonStyleSelect.value
+                );
+            }
+        );
+    }
 }
 
 loadFernSettings();
