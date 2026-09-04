@@ -6,7 +6,7 @@
 
     <title>Fern</title>
 
-    <meta name="fern-version" content="1.1.3">
+    <meta name="fern-version" content="1.1.4">
 
     <!-- UV -->
     <script src="/uv/uv.bundle.js"></script>
@@ -1621,233 +1621,6 @@
             }
         }
 
-
-        /* =====================================================
-           FERN 1.1.3 THEME NORMALIZATION
-           Make every major surface actually follow the selected
-           palette instead of retaining Fern-green hardcoded panels.
-           ===================================================== */
-
-        body[data-theme="midnight"],
-        body[data-theme="amber"],
-        body[data-theme="ice"],
-        body[data-theme="violet"],
-        body[data-theme="rose"],
-        body[data-theme="mono"],
-        body[data-theme="cyan"],
-        body[data-theme="light"],
-        body[data-theme="cyberpunk"] {
-            color-scheme: dark;
-        }
-
-        body[data-theme="light"] {
-            color-scheme: light;
-        }
-
-        body {
-            background:
-                radial-gradient(
-                    circle at 10% 10%,
-                    color-mix(in srgb, var(--green) 7%, transparent),
-                    transparent 28%
-                ),
-                radial-gradient(
-                    circle at 90% 90%,
-                    color-mix(in srgb, var(--green) 5%, transparent),
-                    transparent 30%
-                ),
-                var(--bg);
-        }
-
-        #loginScreen {
-            background:
-                linear-gradient(
-                    color-mix(in srgb, var(--green) 4%, transparent) 1px,
-                    transparent 1px
-                ),
-                linear-gradient(
-                    90deg,
-                    color-mix(in srgb, var(--green) 4%, transparent) 1px,
-                    transparent 1px
-                ),
-                var(--bg);
-        }
-
-        .login-box,
-        .settings-section {
-            background: color-mix(in srgb, var(--panel) 92%, transparent) !important;
-        }
-
-        #passwordInput,
-        #urlInput {
-            color: var(--text);
-            background: var(--bg) !important;
-        }
-
-        #loginButton,
-        .proxy-controls button {
-            color: var(--bg);
-            background: var(--green) !important;
-        }
-
-        .topbar {
-            background: color-mix(in srgb, var(--panel) 94%, transparent) !important;
-            border-color: var(--border) !important;
-        }
-
-        .nav {
-            background: color-mix(in srgb, var(--panel) 78%, transparent) !important;
-            border-color: var(--border) !important;
-        }
-
-        .nav button {
-            color: var(--muted);
-        }
-
-        .nav button:hover,
-        .nav button.active {
-            color: var(--green);
-            background: color-mix(in srgb, var(--green) 9%, var(--panel)) !important;
-            border-color: var(--border-bright) !important;
-        }
-
-        .online {
-            color: var(--muted);
-            background: color-mix(in srgb, var(--panel) 78%, transparent) !important;
-            border-color: var(--border) !important;
-        }
-
-        .hero {
-            background:
-                linear-gradient(
-                    135deg,
-                    color-mix(in srgb, var(--green) 7%, transparent),
-                    transparent 50%
-                ),
-                var(--panel) !important;
-            border-color: var(--border) !important;
-        }
-
-        .iframe-container {
-            background: var(--bg) !important;
-            border-color: var(--border) !important;
-        }
-
-        .iframe-container:fullscreen {
-            background: var(--bg) !important;
-        }
-
-        .iframe-toolbar button {
-            color: var(--green);
-            background: color-mix(in srgb, var(--panel) 94%, transparent) !important;
-            border-color: var(--border) !important;
-        }
-
-        .iframe-toolbar button:hover,
-        .iframe-toolbar button.holding {
-            color: var(--green);
-            background: var(--panel-hover) !important;
-            border-color: var(--border-bright) !important;
-        }
-
-        .proxy-opening-overlay {
-            background: color-mix(in srgb, var(--bg) 78%, transparent) !important;
-        }
-
-        .proxy-opening-text {
-            background: var(--panel) !important;
-            color: var(--green) !important;
-            border-color: var(--border) !important;
-        }
-
-        .theme-card {
-            color: var(--text) !important;
-            background: var(--bg) !important;
-            border-color: var(--border) !important;
-        }
-
-        .theme-card:hover,
-        .theme-card.active {
-            background: var(--panel-hover) !important;
-            border-color: var(--border-bright) !important;
-        }
-
-        .settings-toggle {
-            background: var(--bg) !important;
-            border-color: var(--border) !important;
-        }
-
-        .settings-toggle:hover {
-            background: var(--panel-hover) !important;
-            border-color: var(--border-bright) !important;
-        }
-
-        .settings-toggle select {
-            color: var(--text) !important;
-            background: var(--panel) !important;
-            border-color: var(--border) !important;
-        }
-
-        .game-card {
-            background: var(--panel) !important;
-            border-color: var(--border) !important;
-        }
-
-        .game-card:hover {
-            background: var(--panel-hover) !important;
-            border-color: var(--border-bright) !important;
-        }
-
-        .game-icon {
-            color: var(--green);
-            background: color-mix(in srgb, var(--green) 7%, var(--panel)) !important;
-        }
-
-        .game-card a {
-            color: var(--green);
-        }
-
-        .joke-card {
-            color: var(--green-soft);
-            background: color-mix(in srgb, var(--green) 5%, var(--panel)) !important;
-            border-color: var(--border) !important;
-        }
-
-        .version-indicator span,
-        .hero h2 span,
-        .fern-logo h1 span,
-        .fern-icon {
-            color: var(--green) !important;
-        }
-
-        /* Light mode needs explicit contrast for the few original
-           hardcoded dark surfaces. */
-        body[data-theme="light"] .login-box,
-        body[data-theme="light"] .settings-section,
-        body[data-theme="light"] .hero {
-            box-shadow: 0 10px 35px rgba(0,0,0,.06);
-        }
-
-        body[data-theme="light"] #loginButton,
-        body[data-theme="light"] .proxy-controls button {
-            color: #ffffff !important;
-        }
-
-        body[data-theme="light"] .iframe-toolbar button {
-            background: rgba(255,255,255,.9) !important;
-        }
-
-        body[data-theme="light"] .theme-card,
-        body[data-theme="light"] .settings-toggle {
-            background: #ffffff !important;
-        }
-
-        body[data-theme="light"] .theme-card:hover,
-        body[data-theme="light"] .theme-card.active,
-        body[data-theme="light"] .settings-toggle:hover {
-            background: #edf3ef !important;
-        }
-
     </style>
 </head>
 
@@ -1970,7 +1743,7 @@
         </div>
 
         <div class="version-indicator" title="Fern build version">
-            BUILD <span id="fernVersion">v1.1.3</span>
+            BUILD <span id="fernVersion">v1.1.4</span>
         </div>
 
     </header>
@@ -2167,7 +1940,7 @@
                 <div class="settings-section settings-about">
                     <div>
                         <h3>About Fern</h3>
-                        <p>Fern build <span id="settingsVersion">v1.1.3</span></p>
+                        <p>Fern build <span id="settingsVersion">v1.1.4</span></p>
                     </div>
                 </div>
 
@@ -2263,43 +2036,29 @@ function storageAvailable() {
 
 function setAuthCookie() {
     /*
-     * Cookies are reliable on HTTP/HTTPS origins, but browsers do not
-     * guarantee cookie/localStorage behavior for file:// documents.
-     * Fern therefore treats localStorage as the primary client-side
-     * login state and uses a cookie as an additional HTTP/HTTPS backup.
+     * Cookie persistence is best-effort. Browsers do not guarantee
+     * normal cookie behavior for pages opened directly with file://.
      */
     try {
-        if (location.protocol !== "http:" &&
-            location.protocol !== "https:") {
-            return false;
-        }
-
         const maxAge = 60 * 60 * 24 * 365 * 20;
-        const secure = location.protocol === "https:" ? ";Secure" : "";
 
         document.cookie =
             COOKIE_NAME +
             "=authenticated;" +
             "Max-Age=" + maxAge + ";" +
             "Path=/;" +
-            "SameSite=Lax" +
-            secure;
-
-        return hasAuthCookie();
-    } catch (_) {
-        return false;
-    }
+            "SameSite=Lax";
+    } catch (_) {}
 }
 
 function hasAuthCookie() {
     try {
         return document.cookie
             .split(";")
-            .some(cookie => {
-                const parts = cookie.trim().split("=");
-                return parts[0] === COOKIE_NAME &&
-                       parts.slice(1).join("=") === "authenticated";
-            });
+            .some(cookie =>
+                cookie.trim() ===
+                COOKIE_NAME + "=authenticated"
+            );
     } catch (_) {
         return false;
     }
@@ -2311,7 +2070,7 @@ function saveLocalAuthentication() {
             AUTH_KEY,
             "authenticated"
         );
-        return localStorage.getItem(AUTH_KEY) === "authenticated";
+        return true;
     } catch (error) {
         console.warn(
             "Fern could not persist authentication with localStorage:",
@@ -2323,7 +2082,8 @@ function saveLocalAuthentication() {
 
 function hasLocalAuthentication() {
     try {
-        return localStorage.getItem(AUTH_KEY) === "authenticated";
+        return localStorage.getItem(AUTH_KEY)
+            === "authenticated";
     } catch (_) {
         return false;
     }
@@ -2336,16 +2096,15 @@ function clearLocalAuthentication() {
 }
 
 function isAuthenticated() {
-    if (hasLocalAuthentication()) {
-        return true;
-    }
-
-    if (location.protocol === "http:" ||
-        location.protocol === "https:") {
-        return hasAuthCookie();
-    }
-
-    return false;
+    /*
+     * localStorage is the primary persistent mechanism.
+     * The cookie is retained as a secondary mechanism for
+     * normal HTTP/HTTPS deployments.
+     */
+    return (
+        hasLocalAuthentication() ||
+        hasAuthCookie()
+    );
 }
 
 function showApplication() {
@@ -2416,43 +2175,33 @@ function authenticate() {
     }
 }
 
-function bindAuthenticationUI() {
-    const loginButton =
-        document.getElementById("loginButton");
+const loginButton =
+    document.getElementById("loginButton");
 
-    if (loginButton && !loginButton.dataset.fernAuthBound) {
-        loginButton.dataset.fernAuthBound = "1";
-        loginButton.addEventListener(
-            "click",
-            authenticate
-        );
-    }
-
-    const passwordInput =
-        document.getElementById("passwordInput");
-
-    if (passwordInput && !passwordInput.dataset.fernAuthBound) {
-        passwordInput.dataset.fernAuthBound = "1";
-        passwordInput.addEventListener(
-            "keydown",
-            event => {
-                if (event.key === "Enter") {
-                    authenticate();
-                }
-            }
-        );
-    }
+if (loginButton) {
+    loginButton.addEventListener(
+        "click",
+        authenticate
+    );
 }
 
-if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", bindAuthenticationUI, { once: true });
-} else {
-    bindAuthenticationUI();
+const passwordInput =
+    document.getElementById("passwordInput");
+
+if (passwordInput) {
+    passwordInput.addEventListener(
+        "keydown",
+        event => {
+            if (event.key === "Enter") {
+                authenticate();
+            }
+        }
+    );
 }
 
 
 /* Migrate a previously saved Fern cookie into localStorage. */
-if ((location.protocol === "http:" || location.protocol === "https:") && hasAuthCookie() && !hasLocalAuthentication()) {
+if (hasAuthCookie() && !hasLocalAuthentication()) {
     saveLocalAuthentication();
 }
 
@@ -3016,6 +2765,283 @@ function openGame(targetURL) {
 
 
 /* ============================================================
+   GAMES DATA
+   ============================================================ */
+
+const games = [
+
+    {
+        name: "now.gg",
+        description: "Cloud gaming. Because apparently your computer wasn't invited.",
+        link: "https://nowgg.fun"
+    },
+
+    {
+        name: "itch.io",
+        description: "Indie games, experiments, and wonderfully weird stuff.",
+        link: "https://itch.io"
+    },
+    {
+        name: "EaglerCraft",
+        description: "You're playing minecraft instead of working... nice.",
+        link: "https://eaglercraft.com"
+    },
+    {
+        name: "Snake",
+        description: "hssssssssssssssssss.",
+        link: "tommalbran.github.io/games/snake/index.html"
+    },
+    {
+        name: "Tetris",
+        description: "Blocky fun",
+        link: "tommalbran.github.io/games/tetris/index.html"
+    },
+    {
+        name: "PacMan",
+        description: "Ohh Nooo Ghoooossstttts :O",
+        link: "tommalbran.github.io/games/pacman/index.html"
+    },
+    {
+        name: "Bounce",
+        description: "Idrk wat this one is :P",
+        link: "tommalbran.github.io/games/bounce/index.html"
+    },
+
+    {
+        name: "Poki",
+        description: "A huge collection of instant browser games.",
+        link: "https://poki.com"
+    },
+
+    {
+        name: "CrazyGames",
+        description: "Thousands of browser games across tons of genres.",
+        link: "https://www.crazygames.com"
+    },
+
+    {
+        name: "Coolmath Games",
+        description: "Classic puzzles, strategy, arcade, and more.",
+        link: "https://www.coolmathgames.com"
+    },
+
+    {
+        name: "Y8",
+        description: "A massive collection of browser games.",
+        link: "https://www.y8.com"
+    },
+
+    {
+        name: "Agar.io",
+        description: "Grow your cell and compete with other players.",
+        link: "https://agar.io"
+    },
+
+    {
+        name: "Slither.io",
+        description: "Classic multiplayer snake action.",
+        link: "https://slither.io"
+    },
+
+    {
+        name: "Skribbl.io",
+        description: "Draw, guess, and play with friends.",
+        link: "https://skribbl.io"
+    },
+
+    {
+        name: "Shell Shockers",
+        description: "Fast-paced browser multiplayer.",
+        link: "https://shellshock.io"
+    },
+
+    {
+        name: "Chess.com",
+        description: "Play chess online and practice your skills.",
+        link: "https://www.chess.com"
+    },
+
+    {
+        name: "Drift Boss",
+        description: "One-button drifting through increasingly tricky tracks.",
+        link: "https://poki.com/en/g/drift-boss"
+    },
+
+    {
+        name: "Stickman Hook",
+        description: "Swing through levels using your grappling hook.",
+        link: "https://poki.com/en/g/stickman-hook"
+    },
+
+    {
+        name: "Smash Karts",
+        description: "Fast multiplayer kart battles in your browser.",
+        link: "https://poki.com/en/g/smash-karts"
+    },
+
+    {
+        name: "Subway Surfers",
+        description: "Run, dodge, and collect coins in the classic runner.",
+        link: "https://poki.com/en/g/subway-surfers"
+    },
+
+    {
+        name: "Level Devil",
+        description: "A platformer full of unexpected traps.",
+        link: "https://poki.com/en/g/level-devil"
+    },
+
+    {
+        name: "Drive Mad",
+        description: "Try to keep your vehicle balanced across wild tracks.",
+        link: "https://poki.com/en/g/drive-mad"
+    },
+
+    {
+        name: "Moto X3M",
+        description: "Race through obstacle-filled motorcycle courses.",
+        link: "https://poki.com/en/g/moto-x3m"
+    },
+
+    {
+        name: "Fireboy & Watergirl",
+        description: "Solve cooperative platforming puzzles with two characters.",
+        link: "https://www.coolmathgames.com/0-fireboy-and-water-girl"
+    },
+
+    {
+        name: "Run 3",
+        description: "Run through twisting tunnels in space.",
+        link: "https://www.coolmathgames.com/0-run-3"
+    },
+
+    {
+        name: "World's Hardest Game",
+        description: "A classic precision challenge.",
+        link: "https://www.coolmathgames.com/0-worlds-hardest-game"
+    },
+
+    {
+        name: "Action Turnip",
+        description: "Fast-paced browser arcade action.",
+        link: "https://www.crazygames.com/game/action-turnip"
+    },
+
+    {
+        name: "Geometry Dash",
+        description: "Jump and fly through rhythm-based obstacle courses.",
+        link: "https://www.crazygames.com/game/geometry-dash-online"
+    },
+
+    {
+        name: "Bloxd.io",
+        description: "A block-building multiplayer browser world.",
+        link: "https://bloxd.io"
+    },
+
+    {
+        name: "Diep.io",
+        description: "Upgrade your tank and compete in an arena.",
+        link: "https://diep.io"
+    },
+
+    {
+        name: "Paper.io 2",
+        description: "Claim territory while avoiding other players.",
+        link: "https://paper-io.com"
+    },
+
+    {
+        name: "Hole.io",
+        description: "Grow by collecting objects around the map.",
+        link: "https://hole-io.com"
+    },
+
+    {
+        name: "2048",
+        description: "Combine matching tiles to reach 2048.",
+        link: "https://play2048.co"
+    },
+
+    {
+        name: "GBA Web Demo",
+        description: "A browser GBA demo that launches directly into its demo game.",
+        link: "https://x1n-q.github.io/Web-Based-Emulator/"
+    }
+];
+
+
+/* ============================================================
+   GAME CARD BUILDER
+   ============================================================ */
+
+function renderGames() {
+
+    const grid = document.getElementById("gamesGrid");
+
+    if (!grid) {
+        return;
+    }
+
+    grid.innerHTML = "";
+
+    games.forEach((game, index) => {
+
+        const card = document.createElement("div");
+        card.className = "game-card";
+
+        const icon = document.createElement("div");
+        icon.className = "game-icon";
+        icon.textContent = "🎮";
+
+        const title = document.createElement("h3");
+        title.textContent = game.name;
+
+        const description = document.createElement("p");
+        description.textContent = game.description;
+
+        const link = document.createElement("a");
+        link.href = game.link;
+        link.textContent = "Open " + game.name + " →";
+        link.dataset.gameIndex = index;
+
+        link.addEventListener("click", event => {
+            event.preventDefault();
+            event.stopPropagation();
+            openGame(game.link);
+        });
+
+        card.appendChild(icon);
+        card.appendChild(title);
+        card.appendChild(description);
+        card.appendChild(link);
+
+        grid.appendChild(card);
+    });
+}
+
+
+/* ============================================================
+   GAME LAUNCHER
+   ============================================================ */
+
+function openGame(targetURL) {
+
+    const proxyButton =
+        document.querySelector(
+            '.nav-button[data-page="proxy"]'
+        );
+
+    if (proxyButton) {
+        proxyButton.click();
+    }
+
+    launchURL(targetURL);
+}
+
+
+
+/* ============================================================
    RANDOM JOKES
    ============================================================ */
 
@@ -3089,83 +3115,123 @@ const FERN_THEME_KEY = "fern_theme";
 const FERN_ANIMATIONS_KEY = "fern_animations";
 const FERN_BUTTON_STYLE_KEY = "fern_button_style";
 
-function applyFernTheme(theme) {
-    const validThemes = [
-        "fern",
-        "midnight",
-        "amber",
-        "ice",
-        "violet",
-        "rose",
-        "mono",
-        "cyan",
-        "light",
-        "cyberpunk"
-    ];
+const FERN_THEMES = {
+    fern: {
+        bg: "#030603", bgLight: "#071007", panel: "#0b120d", panelHover: "#101b13",
+        accent: "#00ff66", accentDark: "#00bd4b", accentSoft: "#7affad",
+        text: "#e9fff0", muted: "#769180", border: "rgba(0,255,102,.18)", borderBright: "rgba(0,255,102,.48)"
+    },
+    midnight: {
+        bg: "#050612", bgLight: "#0a0d1d", panel: "#0b0e20", panelHover: "#11152c",
+        accent: "#6f86ff", accentDark: "#4e65df", accentSoft: "#aab8ff",
+        text: "#eef1ff", muted: "#7d86a6", border: "rgba(111,134,255,.20)", borderBright: "rgba(111,134,255,.52)"
+    },
+    amber: {
+        bg: "#0b0702", bgLight: "#160e04", panel: "#171006", panelHover: "#211508",
+        accent: "#ffb020", accentDark: "#d88d00", accentSoft: "#ffd477",
+        text: "#fff5df", muted: "#9d8a6c", border: "rgba(255,176,32,.20)", borderBright: "rgba(255,176,32,.52)"
+    },
+    ice: {
+        bg: "#031016", bgLight: "#061a22", panel: "#08202a", panelHover: "#0b2b37",
+        accent: "#5de7ff", accentDark: "#27b9d3", accentSoft: "#a4f3ff",
+        text: "#e9fbff", muted: "#71939c", border: "rgba(93,231,255,.20)", borderBright: "rgba(93,231,255,.52)"
+    },
+    violet: {
+        bg: "#080311", bgLight: "#11061b", panel: "#160a20", panelHover: "#20102e",
+        accent: "#b36bff", accentDark: "#8644cf", accentSoft: "#d4a9ff",
+        text: "#f8efff", muted: "#957fa4", border: "rgba(179,107,255,.20)", borderBright: "rgba(179,107,255,.52)"
+    },
+    rose: {
+        bg: "#110307", bgLight: "#1b060c", panel: "#210a11", panelHover: "#2b0e17",
+        accent: "#ff6688", accentDark: "#d83f63", accentSoft: "#ffadbd",
+        text: "#fff0f4", muted: "#a37b86", border: "rgba(255,102,136,.20)", borderBright: "rgba(255,102,136,.52)"
+    },
+    mono: {
+        bg: "#050505", bgLight: "#0c0c0c", panel: "#111111", panelHover: "#181818",
+        accent: "#d7d7d7", accentDark: "#999999", accentSoft: "#f1f1f1",
+        text: "#eeeeee", muted: "#858585", border: "rgba(255,255,255,.16)", borderBright: "rgba(255,255,255,.42)"
+    },
+    cyan: {
+        bg: "#02100e", bgLight: "#041b18", panel: "#06221e", panelHover: "#0a2d28",
+        accent: "#20ffd4", accentDark: "#10b69a", accentSoft: "#8affea",
+        text: "#e8fffb", muted: "#6c9991", border: "rgba(32,255,212,.20)", borderBright: "rgba(32,255,212,.52)"
+    },
+    light: {
+        bg: "#f3f6f5", bgLight: "#ffffff", panel: "#ffffff", panelHover: "#edf3ef",
+        accent: "#087d3d", accentDark: "#056630", accentSoft: "#0a7040",
+        text: "#132018", muted: "#617067", border: "rgba(8,96,48,.16)", borderBright: "rgba(8,96,48,.38)"
+    },
+    cyberpunk: {
+        bg: "#08050f", bgLight: "#10091b", panel: "#120c1d", panelHover: "#1b1028",
+        accent: "#00eaff", accentDark: "#0099a6", accentSoft: "#82f8ff",
+        text: "#f2fbff", muted: "#918aa8", border: "rgba(0,240,255,.19)", borderBright: "rgba(255,45,205,.58)"
+    }
+};
 
-    if (!validThemes.includes(theme)) {
+function applyFernTheme(theme) {
+    if (!Object.prototype.hasOwnProperty.call(FERN_THEMES, theme)) {
         theme = "fern";
     }
 
-    if (theme === "fern") {
-        document.body.removeAttribute("data-theme");
-    } else {
-        document.body.setAttribute("data-theme", theme);
-    }
+    const palette = FERN_THEMES[theme];
+    const root = document.documentElement;
+    const body = document.body;
+
+    root.style.setProperty("--bg", palette.bg);
+    root.style.setProperty("--bg-light", palette.bgLight);
+    root.style.setProperty("--panel", palette.panel);
+    root.style.setProperty("--panel-hover", palette.panelHover);
+    root.style.setProperty("--green", palette.accent);
+    root.style.setProperty("--green-dark", palette.accentDark);
+    root.style.setProperty("--green-soft", palette.accentSoft);
+    root.style.setProperty("--text", palette.text);
+    root.style.setProperty("--muted", palette.muted);
+    root.style.setProperty("--border", palette.border);
+    root.style.setProperty("--border-bright", palette.borderBright);
+
+    body.dataset.theme = theme;
+    if (theme === "fern") body.removeAttribute("data-theme");
+
+    body.style.setProperty("background-color", palette.bg, "important");
+    body.style.setProperty("color", palette.text, "important");
 
     document.querySelectorAll(".theme-card").forEach(card => {
-        card.classList.toggle(
-            "active",
-            card.dataset.theme === theme
-        );
+        card.classList.toggle("active", card.dataset.theme === theme);
+    });
+
+    const forcedBackgrounds = document.querySelectorAll(
+        ".topbar, .nav, .online, .hero, .settings-section, .game-card, .theme-card, .settings-toggle, .iframe-container"
+    );
+
+    forcedBackgrounds.forEach(el => {
+        if (el.classList.contains("game-card") || el.classList.contains("hero") || el.classList.contains("settings-section")) {
+            el.style.setProperty("background", palette.panel, "important");
+        } else if (el.classList.contains("theme-card") || el.classList.contains("settings-toggle")) {
+            el.style.setProperty("background", palette.bgLight, "important");
+        } else {
+            el.style.setProperty("background", palette.panel, "important");
+        }
+        el.style.setProperty("color", palette.text, "important");
+        el.style.setProperty("border-color", palette.border, "important");
     });
 
     try {
-        localStorage.setItem(
-            FERN_THEME_KEY,
-            theme
-        );
+        localStorage.setItem(FERN_THEME_KEY, theme);
     } catch (_) {}
-
 }
 
 function applyFernAnimations(enabled) {
-    document.body.classList.toggle(
-        "no-animations",
-        !enabled
-    );
-
-    try {
-        localStorage.setItem(
-            FERN_ANIMATIONS_KEY,
-            enabled ? "1" : "0"
-        );
-    } catch (_) {}
+    document.body.classList.toggle("no-animations", !enabled);
+    try { localStorage.setItem(FERN_ANIMATIONS_KEY, enabled ? "1" : "0"); } catch (_) {}
 }
 
-
 function applyFernButtonStyle(style) {
-    if (style !== "smooth") {
-        style = "standard";
-    }
-
-    if (style === "smooth") {
-        document.body.setAttribute("data-button-style", "smooth");
-    } else {
-        document.body.removeAttribute("data-button-style");
-    }
-
+    if (style !== "smooth") style = "standard";
+    if (style === "smooth") document.body.setAttribute("data-button-style", "smooth");
+    else document.body.removeAttribute("data-button-style");
     const select = document.getElementById("buttonStyleSelect");
-    if (select) {
-        select.value = style;
-    }
-
-    try {
-        localStorage.setItem(
-            FERN_BUTTON_STYLE_KEY,
-            style
-        );
-    } catch (_) {}
+    if (select) select.value = style;
+    try { localStorage.setItem(FERN_BUTTON_STYLE_KEY, style); } catch (_) {}
 }
 
 function loadFernSettings() {
@@ -3174,69 +3240,37 @@ function loadFernSettings() {
     let buttonStyle = "standard";
 
     try {
-        theme =
-            localStorage.getItem(FERN_THEME_KEY) ||
-            "fern";
-
-        animations =
-            localStorage.getItem(FERN_ANIMATIONS_KEY) !== "0";
-
-        buttonStyle =
-            localStorage.getItem(FERN_BUTTON_STYLE_KEY) ||
-            "standard";
+        theme = localStorage.getItem(FERN_THEME_KEY) || "fern";
+        animations = localStorage.getItem(FERN_ANIMATIONS_KEY) !== "0";
+        buttonStyle = localStorage.getItem(FERN_BUTTON_STYLE_KEY) || "standard";
     } catch (_) {}
 
     applyFernTheme(theme);
+    applyFernAnimations(animations);
+    applyFernButtonStyle(buttonStyle);
 
-    const animationsToggle =
-        document.getElementById("animationsToggle");
-
-    if (animationsToggle) {
+    const animationsToggle = document.getElementById("animationsToggle");
+    if (animationsToggle && !animationsToggle.dataset.fernBound) {
+        animationsToggle.dataset.fernBound = "1";
         animationsToggle.checked = animations;
-
-        animationsToggle.addEventListener(
-            "change",
-            () => {
-                applyFernAnimations(
-                    animationsToggle.checked
-                );
-            }
-        );
+        animationsToggle.addEventListener("change", () => applyFernAnimations(animationsToggle.checked));
     }
 
     document.querySelectorAll(".theme-card").forEach(card => {
-        card.addEventListener(
-            "click",
-            () => {
-                applyFernTheme(
-                    card.dataset.theme
-                );
-            }
-        );
+        if (card.dataset.fernBound) return;
+        card.dataset.fernBound = "1";
+        card.addEventListener("click", () => applyFernTheme(card.dataset.theme));
     });
 
-    applyFernButtonStyle(buttonStyle);
-
-    const buttonStyleSelect =
-        document.getElementById("buttonStyleSelect");
-
-    if (buttonStyleSelect) {
-        buttonStyleSelect.addEventListener(
-            "change",
-            () => {
-                applyFernButtonStyle(
-                    buttonStyleSelect.value
-                );
-            }
-        );
+    const buttonStyleSelect = document.getElementById("buttonStyleSelect");
+    if (buttonStyleSelect && !buttonStyleSelect.dataset.fernBound) {
+        buttonStyleSelect.dataset.fernBound = "1";
+        buttonStyleSelect.addEventListener("change", () => applyFernButtonStyle(buttonStyleSelect.value));
     }
 }
 
-if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", loadFernSettings, { once: true });
-} else {
-    loadFernSettings();
-}
+loadFernSettings();
+renderGames();
 
 
 /* ============================================================
