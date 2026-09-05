@@ -3219,23 +3219,6 @@ body::after{content:""!important;position:fixed!important;inset:0!important;z-in
 
 <body>
 
-<!-- Fern emergency startup: authentication UI is decided before optional systems load. -->
-<script>
-(function(){
-  try {
-    var ok = false;
-    try { ok = localStorage.getItem("fern_authenticated") === "authenticated"; } catch(e) {}
-    if (!ok && (location.protocol === "http:" || location.protocol === "https:")) {
-      try { ok = document.cookie.split(";").some(function(c){ var p=c.trim().split("="); return p[0]==="FernAuth" && p.slice(1).join("=")==="authenticated"; }); } catch(e) {}
-    }
-    var style=document.createElement("style");
-    style.id="fern-startup-visibility";
-    style.textContent=ok ? "#loginScreen{display:none!important}#app{display:flex!important}" : "#loginScreen{display:flex!important}#app{display:none!important}";
-    document.head.appendChild(style);
-  } catch(e) {}
-})();
-</script>
-
 <!-- BACKGROUND CANVAS FOR FLOATING PARTICLES -->
 <canvas id="bgCanvas"></canvas>
 
@@ -3487,6 +3470,41 @@ body::after{content:""!important;position:fixed!important;inset:0!important;z-in
         </div>
 
     </div>
+
+
+<!-- Fern auth bootstrap: deliberately isolated from the rest of the application. -->
+<script>
+(function(){
+  "use strict";
+  function bootAuth(){
+    var login=document.getElementById("loginScreen");
+    var app=document.getElementById("app");
+    var input=document.getElementById("passwordInput");
+    var button=document.getElementById("loginButton");
+    var error=document.getElementById("loginError");
+    if(!login||!app||!input||!button)return;
+    var key="fern_authenticated", cookie="FernAuth", pass="S1gmaGyat";
+    function hasAuth(){
+      try{if(localStorage.getItem(key)==="authenticated")return true;}catch(e){}
+      try{return document.cookie.split(";").some(function(c){var p=c.trim().split("=");return p[0]===cookie&&p.slice(1).join("=")==="authenticated";});}catch(e){return false;}
+    }
+    function saveAuth(){
+      try{localStorage.setItem(key,"authenticated");}catch(e){}
+      try{if(location.protocol==="http:"||location.protocol==="https:")document.cookie=cookie+"=authenticated; Max-Age=630720000; Path=/; SameSite=Lax";}catch(e){}
+    }
+    function showApp(){login.style.display="none";app.style.display="flex";input.blur();}
+    function showLogin(){login.style.display="flex";app.style.display="none";}
+    function auth(){
+      if(input.value===pass){saveAuth();if(error)error.textContent="";input.value="";showApp();}
+      else{if(error)error.textContent="Wrong password. The fern has lost respect for you.";input.select();input.focus();}
+    }
+    button.onclick=auth;
+    input.onkeydown=function(e){if(e.key==="Enter")auth();};
+    if(hasAuth())showApp();else showLogin();
+  }
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",bootAuth,{once:true});else bootAuth();
+})();
+</script>
 
 </div>
 
@@ -5492,18 +5510,10 @@ document.querySelectorAll("[data-page-jump]").forEach(el => {
 const aboutVersion = document.getElementById("aboutVersion");
 if (aboutVersion) aboutVersion.textContent = "v" + FERN_VERSION;
 
-if (isAuthenticated()) {
-
-    showApplication();
-
-} else {
-
-    showLogin();
-
-}
+// Auth bootstrap owns the initial screen state.
 
 
-randomJoke();
+// randomJoke is triggered after successful login by the application.
 
 </script>
 
