@@ -2684,7 +2684,7 @@ body.no-animations .fern-nebula-cloud{animation:none!important;}
     overflow:hidden;
     pointer-events:none;
     isolation:isolate;
-    opacity:.78;
+    opacity:.70;
     -webkit-mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.12) 13%,#000 38%,#000 100%);
     mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.12) 13%,#000 38%,#000 100%);
 }
@@ -2732,10 +2732,21 @@ body.no-animations .fern-whisp-layer,
 @media(prefers-reduced-motion:reduce){.fern-whisp-layer{animation:none!important;}}
 </style>
 
+<style id="fern-fast-constellations">
+#fernConstellations{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:.42}
+#bgCanvas{opacity:.10!important;z-index:0!important}
+#app,#loginScreen{position:relative;z-index:3!important}
+.fern-nebula{z-index:1!important;opacity:.70!important;pointer-events:none!important}
+.fern-fog-gradient{position:fixed;top:0;right:0;width:72vw;height:100vh;z-index:2;pointer-events:none;background:linear-gradient(90deg,transparent 0%,rgba(25,40,90,.04) 25%,rgba(70,90,180,.10) 55%,rgba(120,90,220,.16) 100%);mask-image:linear-gradient(90deg,transparent,black 42%);-webkit-mask-image:linear-gradient(90deg,transparent,black 42%)}
+/* Keep theme controls/variables from the v3 build intact. */
+body[data-theme="midnight"]{--bg:#040817;--bg-light:#081126;--green:#72a7ff;--green-dark:#4776cf;--green-soft:#b9d2ff;--text:#edf4ff;--muted:#8192b0;--border:rgba(114,167,255,.20);--border-bright:rgba(114,167,255,.50)}
+body[data-theme="nebula"]{--bg:#090411;--bg-light:#16091e;--green:#c084ff;--green-dark:#8b52c7;--green-soft:#e4c4ff;--text:#fbf2ff;--muted:#a98fb7;--border:rgba(192,132,255,.20);--border-bright:rgba(235,135,255,.52)}
+@media(prefers-reduced-motion:reduce){.fern-nebula-cloud,.fern-whisp-layer{animation:none!important}}
+</style>
 </head>
 
 
-<body>
+<body><canvas id="fernConstellations" aria-hidden="true"></canvas><div class="fern-fog-gradient" aria-hidden="true"></div>
 
 <!-- Lightweight wispy cloud atmosphere inspired by a CSS-only fog technique. -->
 <div class="fern-whisp-cloud" aria-hidden="true">
@@ -4901,5 +4912,5 @@ randomJoke();
 
 </script>
 
-</body>
+<script id="fern-fast-constellation-js">(()=>{const c=document.getElementById('fernConstellations'),x=c.getContext('2d');let w,h,d=1,stars=[];const N=34,L=155;function resize(){d=Math.min(devicePixelRatio||1,1.25);w=innerWidth;h=innerHeight;c.width=w*d;c.height=h*d;x.setTransform(d,0,0,d,0,0);if(!stars.length)for(let i=0;i<N;i++)stars.push({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.012,vy:(Math.random()-.5)*.008,r:.5+Math.random()*.5,a:.18+Math.random()*.28});draw()}function draw(){x.clearRect(0,0,w,h);for(let i=0;i<N;i++){let a=stars[i];for(let j=i+1;j<N;j++){let b=stars[j],dx=a.x-b.x,dy=a.y-b.y,ds=dx*dx+dy*dy;if(ds<L*L){let q=1-Math.sqrt(ds)/L;x.strokeStyle='rgba(170,195,255,'+(q*.13)+')';x.lineWidth=.45;x.beginPath();x.moveTo(a.x,a.y);x.lineTo(b.x,b.y);x.stroke()}}}for(const s of stars){x.fillStyle='rgba(215,230,255,'+s.a+')';x.beginPath();x.arc(s.x,s.y,s.r,0,6.283);x.fill()}}let last=0;function loop(t){if(t-last>90){last=t;for(const s of stars){s.x+=s.vx;s.y+=s.vy;if(s.x<0)s.x=w;if(s.x>w)s.x=0;if(s.y<0)s.y=h;if(s.y>h)s.y=0}draw()}requestAnimationFrame(loop)}resize();addEventListener('resize',resize,{passive:true});if(!matchMedia('(prefers-reduced-motion:reduce)').matches)requestAnimationFrame(loop)})();</script></body>
 </html>
