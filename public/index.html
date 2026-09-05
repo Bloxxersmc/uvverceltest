@@ -6,7 +6,7 @@
 
     <title>Fern</title>
 
-    <meta name="fern-version" content="1.3.2">
+    <meta name="fern-version" content="1.2.9">
 
     <!-- UV -->
     <script src="/uv/uv.bundle.js"></script>
@@ -2672,44 +2672,19 @@ body.no-animations .fern-nebula-cloud{animation:none!important;}
 @media(prefers-reduced-motion:reduce){.fern-nebula-cloud{animation:none!important;}}
 </style>
 <style id="fern-fixed-mist-texture">
-/* High-resolution right-side cloud: fixed, lightweight, and isolated from page scrolling. */
-#fernMistTexture{position:fixed;left:50vw;top:0;width:50vw;height:100vh;pointer-events:none;z-index:1;overflow:hidden;background:transparent url("https://opengameart.org/sites/default/files/oga-textures/136561/fx_cloudalpha05.png") 62% center/cover no-repeat;opacity:.72;mix-blend-mode:screen;transform:translate3d(0,0,0);contain:strict;}
-#fernMistImage{position:absolute;inset:-8% -10%;width:120%;height:116%;object-fit:cover;object-position:62% center;opacity:.72;mix-blend-mode:screen;display:block;}
-#fernMistTexture::before{content:"";position:absolute;inset:0;background:inherit;background-position:62% center;background-size:cover;opacity:.85;mix-blend-mode:screen;}
-#fernMistTexture::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(3,7,18,.98) 0%,rgba(5,10,25,.38) 14%,rgba(20,35,75,.02) 78%,transparent 100%),radial-gradient(ellipse at 72% 50%,rgba(92,132,255,.16),transparent 58%);}
+/* Lightweight right-side mist: one fixed layer, no blur/filter, no full-screen image paint. */
+#fernMistTexture{position:fixed;left:52vw;top:0;width:48vw;height:100vh;pointer-events:none;z-index:0;overflow:hidden;background:transparent url("https://opengameart.org/sites/default/files/styles/medium/public/clouds_0.png") 58% center/cover no-repeat;opacity:.34;mix-blend-mode:screen;transform:translate3d(0,0,0);will-change:background-position;}
+#fernMistTexture::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,9,22,.95) 0%,rgba(8,13,31,.48) 18%,rgba(25,38,85,.06) 100%);}
 #app,#loginScreen{position:relative;z-index:2;}
-#bgCanvas{z-index:0!important;pointer-events:none!important;}
-.content{height:0!important;min-height:0!important;flex:1 1 auto!important;overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior-y:auto!important;-webkit-overflow-scrolling:touch!important;scrollbar-gutter:stable!important;}
-.page{overflow:visible!important;}
-#gamesPage{min-height:max-content!important;overflow:visible!important;}
-@media(max-width:900px){#fernMistTexture{left:32vw;width:68vw;opacity:.58;}#fernMistImage{opacity:.62;}}
+#bgCanvas{z-index:1!important;}
+@media(max-width:900px){#fernMistTexture{left:35vw;width:65vw;opacity:.27;}}
 @media(prefers-reduced-motion:reduce){#fernMistTexture{will-change:auto;}}
 </style>
-
-<style id="fern-extra-themes">
-/* Extra Fern 1.3 themes */
-.theme-forest{background:linear-gradient(135deg,#06120b,#2ee66b)}
-.theme-amethyst{background:linear-gradient(135deg,#0c0618,#a855f7)}
-.theme-ember{background:linear-gradient(135deg,#160704,#ff5a36)}
-.theme-sapphire{background:linear-gradient(135deg,#03101c,#2389ff)}
-.theme-neon{background:linear-gradient(135deg,#070016,#ff2bd6)}
-.theme-mint{background:linear-gradient(135deg,#03140f,#36f1b0)}
-.theme-slate{background:linear-gradient(135deg,#080b12,#8290a8)}
-.theme-cosmic{background:linear-gradient(135deg,#080014,#6741ff)}
-</style>
-<script>
-(function(){
- const themes={forest:{},amethyst:{},ember:{},sapphire:{},neon:{},mint:{},slate:{},cosmic:{}};
- function activate(t){ if(!themes[t]) return; document.body.dataset.theme=t; localStorage.setItem('fern_theme',t); document.querySelectorAll('.theme-card').forEach(b=>b.classList.toggle('active',b.dataset.theme===t)); }
- document.addEventListener('click',e=>{const b=e.target.closest('.theme-card'); if(b && themes[b.dataset.theme]) activate(b.dataset.theme);});
- const saved=localStorage.getItem('fern_theme'); if(saved && themes[saved]) activate(saved);
-})();
-</script>
 </head>
 
 
 <body>
-<div id="fernMistTexture" aria-hidden="true"><img id="fernMistImage" src="https://opengameart.org/sites/default/files/oga-textures/136561/fx_cloudalpha05.png" alt="" /></div>
+<div id="fernMistTexture" aria-hidden="true"></div>
 
 <!-- BACKGROUND CANVAS FOR FLOATING PARTICLES -->
 <canvas id="bgCanvas"></canvas>
@@ -2836,7 +2811,7 @@ body.no-animations .fern-nebula-cloud{animation:none!important;}
         </div>
 
         <div class="version-indicator" title="Fern build version">
-            BUILD <span id="fernVersion">v1.3.2</span>
+            BUILD <span id="fernVersion">v1.1.5</span>
         </div>
 
     </header>
@@ -3060,23 +3035,6 @@ body.no-animations .fern-nebula-cloud{animation:none!important;}
                     </div>
                 </div>
 
-                <div class="settings-section fern-extra-theme-section">
-                    <div>
-                        <h3>More Themes</h3>
-                        <p>Additional color presets for Fern.</p>
-                    </div>
-                    <div class="theme-grid" id="extraThemeGrid">
-                        <button class="theme-card" data-theme="forest"><span class="theme-preview theme-forest"></span><span>Forest</span></button>
-                        <button class="theme-card" data-theme="amethyst"><span class="theme-preview theme-amethyst"></span><span>Amethyst</span></button>
-                        <button class="theme-card" data-theme="ember"><span class="theme-preview theme-ember"></span><span>Ember</span></button>
-                        <button class="theme-card" data-theme="sapphire"><span class="theme-preview theme-sapphire"></span><span>Sapphire</span></button>
-                        <button class="theme-card" data-theme="neon"><span class="theme-preview theme-neon"></span><span>Neon</span></button>
-                        <button class="theme-card" data-theme="mint"><span class="theme-preview theme-mint"></span><span>Mint</span></button>
-                        <button class="theme-card" data-theme="slate"><span class="theme-preview theme-slate"></span><span>Slate</span></button>
-                        <button class="theme-card" data-theme="cosmic"><span class="theme-preview theme-cosmic"></span><span>Cosmic</span></button>
-                    </div>
-                </div>
-
                 <div class="settings-section">
                     <div>
                         <h3>Interface</h3>
@@ -3122,7 +3080,7 @@ body.no-animations .fern-nebula-cloud{animation:none!important;}
                 <div class="settings-section settings-about">
                     <div>
                         <h3>About Fern</h3>
-                        <p>Fern build <span id="settingsVersion">v1.3.2</span></p>
+                        <p>Fern build <span id="settingsVersion">v1.1.5</span></p>
                     </div>
                 </div>
 
@@ -4752,15 +4710,7 @@ const FERN_THEMES = {
         bg: "#0b0912", bgLight: "#151021", panel: "rgba(27, 21, 40, 0.86)", panelHover: "#38294f",
         accent: "#bd93f9", accentDark: "#8b63c7", accentSoft: "#e2ccff",
         text: "#f8f5ff", muted: "#938aa8", border: "rgba(189,147,249,.20)", borderBright: "rgba(255,121,198,.55)", mist1:"rgba(170,95,245,.18)", mist2:"rgba(255,85,180,.15)", mist3:"rgba(75,75,180,.11)"
-    },
-    forest: { bg:"#06120b", bgLight:"#0b2014", panel:"rgba(10,30,18,.86)", panelHover:"#12301d", accent:"#35e879", accentDark:"#20ad58", accentSoft:"#a2ffc5", text:"#eafff0", muted:"#91b49d", border:"rgba(53,232,121,.20)", borderBright:"rgba(53,232,121,.48)", mist1:"rgba(40,220,110,.18)", mist2:"rgba(20,110,75,.14)", mist3:"rgba(90,190,130,.10)" },
-    amethyst: { bg:"#0d0618", bgLight:"#1a0c2a", panel:"rgba(27,13,45,.87)", panelHover:"#32194e", accent:"#b66cff", accentDark:"#8544c8", accentSoft:"#e0baff", text:"#f8ecff", muted:"#bba4c9", border:"rgba(182,108,255,.20)", borderBright:"rgba(182,108,255,.50)", mist1:"rgba(150,80,255,.20)", mist2:"rgba(210,80,220,.15)", mist3:"rgba(80,80,190,.12)" },
-    ember: { bg:"#180704", bgLight:"#29100a", panel:"rgba(42,15,9,.87)", panelHover:"#4a1a0f", accent:"#ff704f", accentDark:"#cf4630", accentSoft:"#ffc0ae", text:"#fff1eb", muted:"#c79a8d", border:"rgba(255,112,79,.20)", borderBright:"rgba(255,112,79,.50)", mist1:"rgba(255,80,45,.18)", mist2:"rgba(210,55,35,.14)", mist3:"rgba(255,160,70,.10)" },
-    sapphire: { bg:"#03101c", bgLight:"#071e30", panel:"rgba(6,29,48,.87)", panelHover:"#0b3550", accent:"#2f9dff", accentDark:"#1873c5", accentSoft:"#a9dbff", text:"#eaf7ff", muted:"#8fb1c8", border:"rgba(47,157,255,.20)", borderBright:"rgba(47,157,255,.50)", mist1:"rgba(45,140,255,.20)", mist2:"rgba(90,75,230,.16)", mist3:"rgba(35,170,210,.11)" },
-    neon: { bg:"#080016", bgLight:"#18052b", panel:"rgba(23,5,44,.87)", panelHover:"#34105a", accent:"#ff35d0", accentDark:"#c41c9d", accentSoft:"#ff9eea", text:"#fff0ff", muted:"#c49bca", border:"rgba(255,53,208,.20)", borderBright:"rgba(255,53,208,.52)", mist1:"rgba(255,35,205,.20)", mist2:"rgba(100,45,255,.18)", mist3:"rgba(35,200,255,.10)" },
-    mint: { bg:"#03140f", bgLight:"#08271e", panel:"rgba(7,36,27,.87)", panelHover:"#0d4434", accent:"#39efb0", accentDark:"#1eae80", accentSoft:"#a6ffe0", text:"#eafff8", muted:"#91c8b6", border:"rgba(57,239,176,.20)", borderBright:"rgba(57,239,176,.50)", mist1:"rgba(45,230,175,.18)", mist2:"rgba(40,130,210,.13)", mist3:"rgba(75,210,150,.10)" },
-    slate: { bg:"#080b12", bgLight:"#111722", panel:"rgba(18,23,34,.88)", panelHover:"#202a3a", accent:"#8290a8", accentDark:"#5c6b82", accentSoft:"#c6d0df", text:"#edf2f8", muted:"#8e9aad", border:"rgba(130,144,168,.20)", borderBright:"rgba(130,144,168,.46)", mist1:"rgba(130,150,190,.14)", mist2:"rgba(95,105,150,.12)", mist3:"rgba(160,170,190,.08)" },
-    cosmic: { bg:"#080014", bgLight:"#16052b", panel:"rgba(19,7,39,.88)", panelHover:"#30115c", accent:"#7657ff", accentDark:"#5034c7", accentSoft:"#c5b9ff", text:"#f5f1ff", muted:"#a99fc4", border:"rgba(118,87,255,.20)", borderBright:"rgba(118,87,255,.50)", mist1:"rgba(105,65,255,.20)", mist2:"rgba(210,60,220,.15)", mist3:"rgba(40,110,230,.11)" }
+    }
 };
 
 function applyFernTheme(theme) {
