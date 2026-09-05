@@ -6,11 +6,11 @@
 
     <title>Fern</title>
 
-    <meta name="fern-version" content="4.3.0">
+    <meta name="fern-version" content="4.3.2">
 
     <!-- UV -->
-    <script src="/uv/uv.bundle.js"></script>
-    <script src="/uv/uv.config.js"></script>
+    <script defer src="/uv/uv.bundle.js"></script>
+    <script defer src="/uv/uv.config.js"></script>
 <script>
         // UV legacy-compatible service worker registration (v1.0.5 setup)
         if ("serviceWorker" in navigator) {
@@ -3209,10 +3209,32 @@ body::after{content:""!important;position:fixed!important;inset:0!important;z-in
 .game-card,.nav-button,.theme-card,.hero,.settings-section,.iframe-container{will-change:auto!important;}
 @media (max-width:900px){body::before{background-size:110vw 85vh!important;background-position:72% 48%!important;opacity:.72!important;}#proxyPage .hero{width:100%!important;max-width:none!important;}}
 </style>
+<style id="fern-v432-runtime-guard">
+/* Keep optional decorative layers completely non-interactive and cheap. */
+#bgCanvas,.fern-nebula,body::before,body::after{pointer-events:none!important;}
+#app{isolation:isolate;}
+</style>
 </head>
 
 
 <body>
+
+<!-- Fern emergency startup: authentication UI is decided before optional systems load. -->
+<script>
+(function(){
+  try {
+    var ok = false;
+    try { ok = localStorage.getItem("fern_authenticated") === "authenticated"; } catch(e) {}
+    if (!ok && (location.protocol === "http:" || location.protocol === "https:")) {
+      try { ok = document.cookie.split(";").some(function(c){ var p=c.trim().split("="); return p[0]==="FernAuth" && p.slice(1).join("=")==="authenticated"; }); } catch(e) {}
+    }
+    var style=document.createElement("style");
+    style.id="fern-startup-visibility";
+    style.textContent=ok ? "#loginScreen{display:none!important}#app{display:flex!important}" : "#loginScreen{display:flex!important}#app{display:none!important}";
+    document.head.appendChild(style);
+  } catch(e) {}
+})();
+</script>
 
 <!-- BACKGROUND CANVAS FOR FLOATING PARTICLES -->
 <canvas id="bgCanvas"></canvas>
@@ -3524,7 +3546,7 @@ body::after{content:""!important;position:fixed!important;inset:0!important;z-in
         </div>
 
         <div class="version-indicator" title="Fern build version">
-            BUILD <span id="fernVersion">v4.3.0</span>
+            BUILD <span id="fernVersion">v4.3.2</span>
         </div>
 
     </header>
@@ -3644,7 +3666,7 @@ body::after{content:""!important;position:fixed!important;inset:0!important;z-in
                 <p>A clean home for your browser tools and game library.</p>
             </div>
             <div class="about-grid">
-                <div class="about-card"><span class="about-icon">✦</span><div><strong>Fern</strong><small>Build <span id="aboutVersion">v4.3.0</span></small></div></div>
+                <div class="about-card"><span class="about-icon">✦</span><div><strong>Fern</strong><small>Build <span id="aboutVersion">v4.3.2</span></small></div></div>
                 <div class="about-card"><span class="about-icon">⌁</span><div><strong>Proxy</strong><small>Launch URLs through your configured Fern proxy.</small></div></div>
                 <div class="about-card"><span class="about-icon">▦</span><div><strong>Library</strong><small>Game artwork is loaded automatically when available.</small></div></div>
                 <div class="about-card"><span class="about-icon">♡</span><div><strong>Bookmarks</strong><small>Saved locally in this browser.</small></div></div>
@@ -3858,7 +3880,7 @@ body::after{content:""!important;position:fixed!important;inset:0!important;z-in
                 <div class="settings-section settings-about">
                     <div>
                         <h3>About Fern</h3>
-                        <p>Fern build <span id="settingsVersion">v4.3.0</span></p>
+                        <p>Fern build <span id="settingsVersion">v4.3.2</span></p>
                     </div>
                 </div>
 
@@ -5455,8 +5477,6 @@ if (runDiagnosticsButton) {
     );
 }
 
-runFernDiagnostics();
-
 
 document.querySelectorAll("[data-page-jump]").forEach(el => {
     el.addEventListener("click", () => {
@@ -5561,7 +5581,6 @@ randomJoke();
     }catch(e){console.warn('Fern startup recovery:',e);}
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',recover,{once:true}); else recover();
-  setTimeout(recover,350);
 })();
 </script>
 </body>
