@@ -2755,11 +2755,11 @@ const boot=()=>{
  const buf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buf);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
  const loc=gl.getAttribLocation(pr,'p'),rr=gl.getUniformLocation(pr,'r'),tm=gl.getUniformLocation(pr,'t');gl.useProgram(pr);gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
  let w=0,h=0,last=0,active=true;
- const resize=()=>{w=Math.max(1,Math.floor(innerWidth*.62));h=Math.max(1,Math.floor(innerHeight*.62));c.width=w;c.height=h;c.style.width='100%';c.style.height='100%';gl.viewport(0,0,w,h);};
+ const resize=()=>{w=Math.max(1,Math.floor(innerWidth*.48));h=Math.max(1,Math.floor(innerHeight*.48));c.width=w;c.height=h;c.style.width='100%';c.style.height='100%';gl.viewport(0,0,w,h);};
  addEventListener('resize',resize,{passive:true}); resize();
  const io=new IntersectionObserver(es=>{active=es.some(e=>e.isIntersecting)});io.observe(c);
  document.addEventListener('visibilitychange',()=>active=!document.hidden);
- const frame=now=>{if(active){if(now-last>32){last=now;gl.uniform2f(rr,w,h);gl.uniform1f(tm,now*.001);gl.drawArrays(gl.TRIANGLES,0,3);}}requestAnimationFrame(frame)};
+ const frame=now=>{if(active){if(now-last>66){last=now;gl.uniform2f(rr,w,h);gl.uniform1f(tm,now*.001);gl.drawArrays(gl.TRIANGLES,0,3);}}requestAnimationFrame(frame)};
  requestAnimationFrame(frame);
 };
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
@@ -2852,6 +2852,42 @@ body.fern-proxy-active .fern-mist-layer{display:none!important;}
 
 <link rel="dns-prefetch" href="https://dante-el-gamer.github.io">
 <link rel="dns-prefetch" href="https://now.gg">
+
+<style id="fern-final-performance">
+/* ============================================================
+   FERN FINAL PERFORMANCE PASS
+   Keep the look, remove expensive always-on compositing.
+   ============================================================ */
+html{scroll-behavior:auto!important}
+*,*::before,*::after{box-sizing:border-box}
+.hero,.game-card,.settings-section,.theme-card,.iframe-container,.topbar,.nav,.online,.library-controls,.login-box,.modal,.panel{
+  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+}
+.game-card,.theme-card,.settings-section,.hero,.iframe-container{
+  will-change:auto!important;
+}
+.game-card:hover{will-change:auto!important}
+.game-card .game-image{will-change:auto!important}
+/* Avoid expensive blur/filter stacks on ordinary UI elements. */
+.game-media-glow{display:none!important}
+/* The aurora is intentionally rendered at low resolution and 15 FPS. */
+#fernWebGLAurora{
+  image-rendering:auto!important;
+  will-change:auto!important;
+}
+/* Disable decorative CSS motion while the user has disabled animations. */
+body.no-animations .fern-nebula,
+body.no-animations .fern-nebula-cloud,
+body.no-animations #fernMistTexture{animation:none!important}
+/* Don't create compositor layers for every interactive element. */
+button,.nav-button,.game-card,.theme-card,input,select{will-change:auto!important}
+</style>
+
+<style id="fern-library-render-optimization">
+.games-grid{contain:layout style paint}
+.game-card{content-visibility:auto;contain-intrinsic-size:0 320px}
+.bookmark-row{content-visibility:auto;contain-intrinsic-size:0 90px}
+</style>
 </head>
 
 
@@ -4208,8 +4244,8 @@ function renderGames() {
         const image = document.createElement('img');
         image.className = 'game-image';
         image.alt = game.name + ' logo';
-        image.loading = index < 6 ? 'eager' : 'lazy';
-        if (index < 3) image.fetchPriority = 'high';
+        image.loading = index < 3 ? 'eager' : 'lazy';
+        if (index < 2) image.fetchPriority = 'high';
         image.referrerPolicy = 'no-referrer';
         const imageCandidates = getGameImageCandidates(game);
         let imageCandidateIndex = 0;
