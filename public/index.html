@@ -6,7 +6,7 @@
 
     <title>Fern</title>
 
-    <meta name="fern-version" content="1.2.9">
+    <meta name="fern-version" content="5.7.8">
 
     <!-- UV -->
     <script src="/uv/uv.bundle.js"></script>
@@ -2765,6 +2765,20 @@ const boot=()=>{
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();
 </script>
+
+<style id="fern-stars-moon">
+#fernSkyDecor{position:fixed;inset:0;pointer-events:none;z-index:2;overflow:hidden}
+.fern-moon{position:absolute;right:6vw;top:5vh;width:92px;height:92px;border-radius:50%;background:radial-gradient(circle at 34% 30%,#fff 0 28%,#edf4ff 52%,#b9d4ff 78%,#7ea8e8 100%);box-shadow:0 0 18px rgba(205,225,255,.9),0 0 42px rgba(130,180,255,.42),0 0 80px rgba(100,140,255,.18);opacity:.95}
+.fern-moon:after{content:"";position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 68% 22%,rgba(70,100,145,.18) 0 8%,transparent 9%),radial-gradient(circle at 35% 66%,rgba(70,100,145,.14) 0 11%,transparent 12%),radial-gradient(circle at 62% 70%,rgba(70,100,145,.11) 0 7%,transparent 8%)}
+.fern-star{position:absolute;width:2px;height:2px;border-radius:50%;background:#fff;box-shadow:0 0 5px 1px rgba(220,240,255,.95);opacity:.9}
+.fern-star.big{width:3px;height:3px;box-shadow:0 0 8px 2px rgba(220,240,255,1)}
+@media(max-width:900px){.fern-moon{width:64px;height:64px;right:5vw}.fern-star{transform:scale(.8)}}
+</style>
+<div id="fernSkyDecor" aria-hidden="true"><div class="fern-moon"></div><i class="fern-star big" style="left:61.5%;top:4.3%"></i><i class="fern-star" style="left:28.8%;top:14.6%"></i><i class="fern-star" style="left:70.3%;top:38.2%"></i><i class="fern-star" style="left:84.3%;top:7.5%"></i><i class="fern-star" style="left:42.0%;top:4.5%"></i><i class="fern-star" style="left:23.7%;top:29.3%"></i><i class="fern-star" style="left:6.4%;top:13.3%"></i><i class="fern-star" style="left:62.5%;top:31.3%"></i><i class="fern-star" style="left:23.8%;top:33.6%"></i><i class="fern-star big" style="left:76.8%;top:3.3%"></i><i class="fern-star" style="left:76.5%;top:39.3%"></i><i class="fern-star" style="left:34.6%;top:11.1%"></i><i class="fern-star" style="left:90.1%;top:20.5%"></i><i class="fern-star" style="left:12.3%;top:8.0%"></i><i class="fern-star" style="left:80.3%;top:34.4%"></i><i class="fern-star" style="left:76.6%;top:40.9%"></i><i class="fern-star" style="left:52.3%;top:53.6%"></i><i class="fern-star" style="left:38.1%;top:31.7%"></i><i class="fern-star big" style="left:78.6%;top:35.2%"></i><i class="fern-star" style="left:81.6%;top:33.0%"></i><i class="fern-star" style="left:67.4%;top:5.4%"></i><i class="fern-star" style="left:24.5%;top:18.0%"></i><i class="fern-star" style="left:11.2%;top:15.1%"></i><i class="fern-star" style="left:13.1%;top:17.5%"></i><i class="fern-star" style="left:61.2%;top:22.0%"></i><i class="fern-star" style="left:37.3%;top:13.9%"></i><i class="fern-star" style="left:28.0%;top:51.7%"></i><i class="fern-star big" style="left:62.3%;top:34.7%"></i><i class="fern-star" style="left:19.4%;top:40.9%"></i><i class="fern-star" style="left:18.7%;top:22.7%"></i><i class="fern-star" style="left:93.1%;top:36.3%"></i><i class="fern-star" style="left:54.1%;top:38.6%"></i><i class="fern-star" style="left:79.9%;top:43.4%"></i><i class="fern-star" style="left:24.6%;top:4.7%"></i></div>
+
+<style id="fern-aurora-definition">
+#fernWebGLAurora{opacity:.9!important;filter:saturate(1.18) contrast(1.16)!important}
+</style>
 </head>
 
 
