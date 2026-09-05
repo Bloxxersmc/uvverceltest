@@ -6,7 +6,7 @@
 
     <title>Fern</title>
 
-    <meta name="fern-version" content="4.3.2">
+    <meta name="fern-version" content="4.3.3">
 
     <!-- UV -->
     <script defer src="/uv/uv.bundle.js"></script>
@@ -3546,7 +3546,7 @@ body::after{content:""!important;position:fixed!important;inset:0!important;z-in
         </div>
 
         <div class="version-indicator" title="Fern build version">
-            BUILD <span id="fernVersion">v4.3.2</span>
+            BUILD <span id="fernVersion">v4.3.3</span>
         </div>
 
     </header>
@@ -3666,7 +3666,7 @@ body::after{content:""!important;position:fixed!important;inset:0!important;z-in
                 <p>A clean home for your browser tools and game library.</p>
             </div>
             <div class="about-grid">
-                <div class="about-card"><span class="about-icon">✦</span><div><strong>Fern</strong><small>Build <span id="aboutVersion">v4.3.2</span></small></div></div>
+                <div class="about-card"><span class="about-icon">✦</span><div><strong>Fern</strong><small>Build <span id="aboutVersion">v4.3.3</span></small></div></div>
                 <div class="about-card"><span class="about-icon">⌁</span><div><strong>Proxy</strong><small>Launch URLs through your configured Fern proxy.</small></div></div>
                 <div class="about-card"><span class="about-icon">▦</span><div><strong>Library</strong><small>Game artwork is loaded automatically when available.</small></div></div>
                 <div class="about-card"><span class="about-icon">♡</span><div><strong>Bookmarks</strong><small>Saved locally in this browser.</small></div></div>
@@ -3880,7 +3880,7 @@ body::after{content:""!important;position:fixed!important;inset:0!important;z-in
                 <div class="settings-section settings-about">
                     <div>
                         <h3>About Fern</h3>
-                        <p>Fern build <span id="settingsVersion">v4.3.2</span></p>
+                        <p>Fern build <span id="settingsVersion">v4.3.3</span></p>
                     </div>
                 </div>
 
@@ -4155,11 +4155,11 @@ function showApplication() {
         document.getElementById("app");
 
     if (loginScreen) {
-        loginScreen.style.display = "none";
+        loginScreen.style.setProperty("display", "none", "important");
     }
 
     if (app) {
-        app.style.display = "flex";
+        app.style.setProperty("display", "flex", "important");
     }
 }
 
@@ -4171,11 +4171,11 @@ function showLogin() {
         document.getElementById("app");
 
     if (loginScreen) {
-        loginScreen.style.display = "flex";
+        loginScreen.style.setProperty("display", "flex", "important");
     }
 
     if (app) {
-        app.style.display = "none";
+        app.style.setProperty("display", "none", "important");
     }
 }
 
@@ -5570,18 +5570,6 @@ randomJoke();
 </script>
 
 
-<script>
-/* FERN 4.3 startup safety: never leave the page visually stuck. */
-(function(){
-  function recover(){
-    try{
-      if(typeof isAuthenticated==='function' && typeof showApplication==='function' && typeof showLogin==='function'){
-        if(isAuthenticated()) showApplication(); else showLogin();
-      }
-    }catch(e){console.warn('Fern startup recovery:',e);}
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',recover,{once:true}); else recover();
-})();
-</script>
+
 </body>
 </html>
