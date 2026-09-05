@@ -6,7 +6,7 @@
 
     <title>Fern</title>
 
-    <meta name="fern-version" content="5.7.8">
+    <meta name="fern-version" content="1.2.9">
 
     <!-- UV -->
     <script src="/uv/uv.bundle.js"></script>
@@ -2779,6 +2779,54 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 <style id="fern-aurora-definition">
 #fernWebGLAurora{opacity:.9!important;filter:saturate(1.18) contrast(1.16)!important}
 </style>
+<style>
+/* ============================================================
+   FERN SCROLL FIX — keep the app fixed, scroll only the content
+   ============================================================ */
+html, body {
+    min-height: 100%;
+    overflow: hidden;
+}
+#app {
+    height: 100dvh !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+}
+.content {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    height: auto !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+}
+.page {
+    width: min(1200px, 100%);
+    min-height: 0;
+}
+#gamesPage.active {
+    min-height: max-content !important;
+}
+.games-grid {
+    padding-bottom: 60px !important;
+}
+</style>
+<style>
+/* Final library polish */
+#gamesPage .games-grid {
+    width: 100%;
+    min-width: 0;
+    overflow: visible;
+}
+#gamesPage .game-card {
+    min-width: 0;
+}
+#gamesPage img {
+    max-width: 100%;
+}
+</style>
 </head>
 
 
@@ -3983,17 +4031,18 @@ updateFullscreenUI();
    ============================================================ */
 
 function openGame(targetURL) {
-
-    const proxyButton =
-        document.querySelector(
-            '.nav-button[data-page="proxy"]'
-        );
-
-    if (proxyButton) {
-        proxyButton.click();
-    }
+    const proxyButton = document.querySelector('.nav-button[data-page="proxy"]');
+    if (proxyButton) proxyButton.click();
 
     launchURL(targetURL);
+
+    // Try to enter fullscreen immediately from the card's user gesture.
+    // If the browser blocks programmatic fullscreen, the existing toolbar
+    // fullscreen button remains available.
+    const container = document.getElementById("iframeContainer");
+    if (container && document.fullscreenElement !== container && container.requestFullscreen) {
+        container.requestFullscreen().catch(() => {});
+    }
 }
 
 
@@ -4002,205 +4051,55 @@ function openGame(targetURL) {
    ============================================================ */
 
 const games = [
+    { name: "Snake", description: "Classic HTML5 snake with keyboard controls.", link: "https://parkminkyu.github.io/snake/" },
+    { name: "Tetris", description: "Classic falling-block puzzle game.", link: "https://vacationlabs.github.io/tetris/" },
+    { name: "Pac-Man", description: "HTML5 maze arcade classic.", link: "https://gbelwariar.github.io/Pacman/" },
+    { name: "Doodle Jump", description: "Jump from platform to platform and climb higher.", link: "https://doodle-jumponline.github.io/file/" },
+    { name: "2048", description: "Merge matching tiles and reach 2048.", link: "https://all2048.github.io/2048/" },
+    { name: "Minesweeper", description: "Classic minesweeper with beginner to expert boards.", link: "https://jfredrickson.github.io/minesweeper/minesweeper.canvas.html" },
+    { name: "MiniSweeper", description: "Tiny HTML/JavaScript minesweeper implementation.", link: "https://xem.github.io/MiniSweeper/" },
+    { name: "Connect Four", description: "Play Connect Four against AI or another player.", link: "https://kenrick95.github.io/c4/" },
+    { name: "Pong", description: "Classic two-player browser Pong.", link: "https://sethclydesdale.github.io/browser-pong/" },
+    { name: "Pong Neon", description: "Modern neon Pong with multiple modes.", link: "https://mastersj5.github.io/projects/2_project/" },
+    { name: "Breakout", description: "Classic brick-breaking arcade action.", link: "https://cakebatterandsprinkles.github.io/breakout/" },
+    { name: "Breakout Space", description: "A space-themed HTML5 Breakout game.", link: "https://jkmilbourne.github.io/breakout/index.html" },
+    { name: "Frogger", description: "Cross the road and river while avoiding obstacles.", link: "https://wbchristerson.github.io/pfs/Frogger/" },
+    { name: "Frogger Canvas", description: "Another lightweight HTML5 Canvas Frogger.", link: "https://andrewcoonce.github.io/frogger/" },
+    { name: "HexGL", description: "Fast futuristic WebGL racing.", link: "https://biggerbetter96.github.io/HexGL/index.html" },
+    { name: "BrowserQuest", description: "Explore a multiplayer HTML5 adventure world.", link: "https://hiporepo.github.io/BrowserQuest/" },
 
-    {
-        name: "now.gg",
-        description: "Cloud gaming. Because apparently your computer wasn't invited.",
-        link: "https://nowgg.fun"
-    },
+    { name: "Dino's Adventure", description: "Pixel-art platformer built with Canvas and JavaScript.", link: "https://akaspanion.github.io/platformer-game/" },
+    { name: "Side-Scrolling Platformer", description: "A browser platformer with scrolling worlds.", link: "https://commjoen.github.io/generated-game-experiment/" },
+    { name: "Solitaire", description: "Classic solitaire games in HTML5 and JavaScript.", link: "https://worldofsolitaire.github.io/" },
+    { name: "Tangram", description: "Arrange seven pieces to match puzzle silhouettes.", link: "https://omerkel.github.io/Tangram/html5/src/index.html" },
+    { name: "Flappy Bird", description: "Simple HTML5 Canvas flapping challenge.", link: "https://mayow.github.io/" },
 
-    {
-        name: "itch.io",
-        description: "Indie games, experiments, and wonderfully weird stuff.",
-        link: "https://itch.io"
-    },
-    {
-        name: "EaglerCraft",
-        description: "You're playing minecraft instead of working... nice.",
-        link: "https://eaglercraft.com"
-    },
-    {
-        name: "Snake",
-        description: "hssssssssssssssssss.",
-        link: "tommalbran.github.io/games/snake/index.html"
-    },
-    {
-        name: "Tetris",
-        description: "Blocky fun",
-        link: "tommalbran.github.io/games/tetris/index.html"
-    },
-    {
-        name: "PacMan",
-        description: "Ohh Nooo Ghoooossstttts :O",
-        link: "tommalbran.github.io/games/pacman/index.html"
-    },
-    {
-        name: "Bounce",
-        description: "Idrk wat this one is :P",
-        link: "tommalbran.github.io/games/bounce/index.html"
-    },
-
-    {
-        name: "Poki",
-        description: "A huge collection of instant browser games.",
-        link: "https://poki.com"
-    },
-
-    {
-        name: "CrazyGames",
-        description: "Thousands of browser games across tons of genres.",
-        link: "https://www.crazygames.com"
-    },
-
-    {
-        name: "Coolmath Games",
-        description: "Classic puzzles, strategy, arcade, and more.",
-        link: "https://www.coolmathgames.com"
-    },
-
-    {
-        name: "Y8",
-        description: "A massive collection of browser games.",
-        link: "https://www.y8.com"
-    },
-
-    {
-        name: "Agar.io",
-        description: "Grow your cell and compete with other players.",
-        link: "https://agar.io"
-    },
-
-    {
-        name: "Slither.io",
-        description: "Classic multiplayer snake action.",
-        link: "https://slither.io"
-    },
-
-    {
-        name: "Skribbl.io",
-        description: "Draw, guess, and play with friends.",
-        link: "https://skribbl.io"
-    },
-
-    {
-        name: "Shell Shockers",
-        description: "Fast-paced browser multiplayer.",
-        link: "https://shellshock.io"
-    },
-
-    {
-        name: "Chess.com",
-        description: "Play chess online and practice your skills.",
-        link: "https://www.chess.com"
-    },
-
-    {
-        name: "Drift Boss",
-        description: "One-button drifting through increasingly tricky tracks.",
-        link: "https://poki.com/en/g/drift-boss"
-    },
-
-    {
-        name: "Stickman Hook",
-        description: "Swing through levels using your grappling hook.",
-        link: "https://poki.com/en/g/stickman-hook"
-    },
-
-    {
-        name: "Smash Karts",
-        description: "Fast multiplayer kart battles in your browser.",
-        link: "https://poki.com/en/g/smash-karts"
-    },
-
-    {
-        name: "Subway Surfers",
-        description: "Run, dodge, and collect coins in the classic runner.",
-        link: "https://poki.com/en/g/subway-surfers"
-    },
-
-    {
-        name: "Level Devil",
-        description: "A platformer full of unexpected traps.",
-        link: "https://poki.com/en/g/level-devil"
-    },
-
-    {
-        name: "Drive Mad",
-        description: "Try to keep your vehicle balanced across wild tracks.",
-        link: "https://poki.com/en/g/drive-mad"
-    },
-
-    {
-        name: "Moto X3M",
-        description: "Race through obstacle-filled motorcycle courses.",
-        link: "https://poki.com/en/g/moto-x3m"
-    },
-
-    {
-        name: "Fireboy & Watergirl",
-        description: "Solve cooperative platforming puzzles with two characters.",
-        link: "https://www.coolmathgames.com/0-fireboy-and-water-girl"
-    },
-
-    {
-        name: "Run 3",
-        description: "Run through twisting tunnels in space.",
-        link: "https://www.coolmathgames.com/0-run-3"
-    },
-
-    {
-        name: "World's Hardest Game",
-        description: "A classic precision challenge.",
-        link: "https://www.coolmathgames.com/0-worlds-hardest-game"
-    },
-
-    {
-        name: "Action Turnip",
-        description: "Fast-paced browser arcade action.",
-        link: "https://www.crazygames.com/game/action-turnip"
-    },
-
-    {
-        name: "Geometry Dash",
-        description: "Jump and fly through rhythm-based obstacle courses.",
-        link: "https://www.crazygames.com/game/geometry-dash-online"
-    },
-
-    {
-        name: "Bloxd.io",
-        description: "A block-building multiplayer browser world.",
-        link: "https://bloxd.io"
-    },
-
-    {
-        name: "Diep.io",
-        description: "Upgrade your tank and compete in an arena.",
-        link: "https://diep.io"
-    },
-
-    {
-        name: "Paper.io 2",
-        description: "Claim territory while avoiding other players.",
-        link: "https://paper-io.com"
-    },
-
-    {
-        name: "Hole.io",
-        description: "Grow by collecting objects around the map.",
-        link: "https://hole-io.com"
-    },
-
-    {
-        name: "2048",
-        description: "Combine matching tiles to reach 2048.",
-        link: "https://play2048.co"
-    },
-
-    {
-        name: "GBA Web Demo",
-        description: "A browser GBA demo that launches directly into its demo game.",
-        link: "https://x1n-q.github.io/Web-Based-Emulator/"
-    }
+    { name: "HTML5 Pong", description: "Customizable Pong with difficulty settings.", link: "https://nolansoo.github.io/html5-pong/" },
+    { name: "Doodle Jump 2", description: "Another lightweight GitHub Pages Doodle Jump build.", link: "https://sangeetm.github.io/Doodle-Jump/" },
+    { name: "Doodle Jump Classic", description: "Classic vertical platform jumping.", link: "https://doodle-jump2.github.io/" },
+    { name: "Snake Retro", description: "HTML5 Snake with multiple keyboard control options.", link: "https://catmiddlefinger.github.io/snake/" },
+    { name: "Snake Retro Evolved", description: "Fast classic Snake with adjustable speed.", link: "https://harshakns.github.io/" },
+    { name: "2048 Classic", description: "Another clean GitHub Pages 2048 implementation.", link: "https://negishu.github.io/2048/" },
+    { name: "2048 Variants", description: "A collection of different 2048 variants.", link: "https://thereal23.github.io/2048all/" },
+    { name: "Minesweeper Rust", description: "A polished WebAssembly Minesweeper game.", link: "https://jumbledfox.github.io/minesweeper/" },
+    { name: "Minesweeper Classic", description: "Classic HTML5 Canvas Minesweeper.", link: "https://patrickhliu.github.io/minesweeper/" },
+    { name: "Connect Four", description: "Offline or online Connect Four with AI mode.", link: "https://kenrick95.github.io/c4/" },
+    { name: "Connect Four Classic", description: "Simple two-player Connect Four.", link: "https://mherr95.github.io/connectfour-app/" },
+    { name: "Jump King Web", description: "Precision platformer with charge jumps.", link: "https://tanmoy34.github.io/web-game-jump-king.html" },
+    { name: "GameBox", description: "Open-source collection of classic browser games.", link: "https://saiuttejr.github.io/GameBox/" },
+    { name: "GitHub Games Collection", description: "Curated collection of open-source HTML5 games hosted on GitHub Pages.", link: "https://gamearians.github.io/games/" },
+    { name: "Memory Match", description: "Flip cards and find all matching pairs.", link: "https://wbchristerson.github.io/pfs/MatchingGame/" },
+    { name: "Checkers", description: "Play classic checkers against a simple computer opponent.", link: "https://mfbx9da4.github.io/checkers" },
+    { name: "Tic Tac Toe", description: "Classic tic-tac-toe with a simple AI opponent.", link: "https://ianmethvin.github.io/tickytacky.html" },
+    { name: "Tic Tac Toe Accessible", description: "Keyboard-friendly tic-tac-toe with multiple modes.", link: "https://rebeccajalowicz.github.io/tictactoe.html" },
+    { name: "Sudoku", description: "Client-side Sudoku with multiple sizes and difficulties.", link: "https://mcronberg.github.io/soduku/" },
+    { name: "Whack A Mole", description: "Fast arcade whack-a-mole challenge.", link: "https://ldldylan.github.io/Whack-A-Mole/" },
+    { name: "Browser Pong", description: "Open-source classic Pong with customizable presets.", link: "https://sethclydesdale.github.io/browser-pong/" },
+    { name: "HTML5 Snake", description: "Lightweight Canvas Snake with multiple controls.", link: "https://catmiddlefinger.github.io/snake/" },
+    { name: "Breakout Classic", description: "Canvas Breakout with keyboard controls.", link: "https://mclean-dev.github.io/" },
+    { name: "FNF", description: "you know me & I know you ;)", link: "https://ninja-muffin24.itch.io/funkin" },
+    { name: "EaglerCraft", description: "Minecraft-style browser sandbox.", link: "https://eaglercraft.com" },
+    { name: "GBA Web Demo", description: "Browser-based GBA emulator demonstration.", link: "https://x1n-q.github.io/Web-Based-Emulator/" }
 ];
 
 
