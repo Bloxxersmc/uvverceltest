@@ -4056,7 +4056,8 @@ body::after{content:""!important;position:fixed!important;inset:0!important;z-in
     addEventListener('pointermove',e=>{mouse.x=e.clientX;mouse.y=e.clientY;schedule()},{passive:true});
     addEventListener('pointerleave',()=>{mouse.x=mouse.y=-9999;schedule()},{passive:true});
     document.addEventListener('visibilitychange',()=>{if(!document.hidden) schedule();});
-    resize();
+    // Start decoration only after the UI has had time to become interactive.
+    setTimeout(resize, 1200);
 })();
 
 /* ============================================================
@@ -4968,6 +4969,8 @@ function renderGames() {
         image.className = 'game-image';
         image.alt = game.name + ' logo';
         image.loading = 'lazy';
+        image.decoding = 'async';
+        image.fetchPriority = 'low';
         image.referrerPolicy = 'no-referrer';
         const imageCandidates = getGameImageCandidates(game);
         let imageCandidateIndex = 0;
@@ -5545,24 +5548,40 @@ if (aboutVersion) aboutVersion.textContent = "v" + FERN_VERSION;
     root.style.setProperty('--fern-user-accent',cfg.accent);root.style.setProperty('--fern-user-scale',(+cfg.scale||100)/100);root.style.setProperty('--fern-user-panel-alpha',(+cfg.panelOpacity||82)/100);root.style.setProperty('--fern-cloud-strength',(+cfg.cloudStrength||0)/100);root.style.setProperty('--fern-cloud-pos',(cfg.cloudPosition||76)+'%');root.style.setProperty('--fern-cloud-scale',(+cfg.cloudScale||110)/100);root.style.setProperty('--fern-grain',(+cfg.grain||0)/100);root.style.setProperty('--fern-vignette',(+cfg.vignette||0)/100);root.style.setProperty('--green',cfg.accent);
     body.dataset.proxySize=cfg.proxySize;body.dataset.buttonShape=cfg.buttonShape;body.dataset.cardDensity=cfg.cardDensity;body.dataset.font=cfg.font;body.dataset.buttonGlow=(+cfg.buttonGlow>60?'high':'normal');
     const cloud=document.querySelector('#proxyPage .hero'); if(cloud)cloud.style.setProperty('--fern-cloud-strength',cfg.cloudStyle==='off'?'0':((+cfg.cloudStrength||0)/100).toString());
-    document.querySelectorAll('.fern-control input[type=range]').forEach(el=>el.dispatchEvent(new Event('input')));
+    // Never dispatch control events from apply(). Those listeners call apply()
+    // themselves, so dispatching here creates a recursive loop and can freeze the page.
+    rangePairs.forEach(([id,out,suffix])=>{
+      const el=$(id), target=$(out);
+      if(el && target) target.textContent=el.value+suffix;
+    });
   }
-  function persist(){saveBlob('profile',cfg)}
+  let persistTimer=0;
+  function persist(){
+    clearTimeout(persistTimer);
+    persistTimer=setTimeout(()=>saveBlob('profile',cfg),220);
+  }
+  function persistNow(){clearTimeout(persistTimer);saveBlob('profile',cfg)}
   function bind(){
     syncUI();
     rangePairs.forEach(([id,out,suffix])=>$(id)?.addEventListener('input',()=>{$(out).textContent=$(id).value+suffix;cfg[{fernScale:'scale',fernPanelOpacity:'panelOpacity',fernButtonGlow:'buttonGlow',fernCloudStrength:'cloudStrength',fernCloudPosition:'cloudPosition',fernCloudScale:'cloudScale',fernGrain:'grain',fernVignette:'vignette',fernParticleInteraction:'particleInteraction'}[id]]=$(id).value;apply();persist()}));
     const controls={fernAccent:'accent',fernProxySize:'proxySize',fernButtonShape:'buttonShape',fernCardDensity:'cardDensity',fernFont:'font',fernCloudStyle:'cloudStyle',fernParticles:'particles'};
-    Object.entries(controls).forEach(([id,key])=>$(id)?.addEventListener('input',()=>{cfg[key]=$(id).value;apply();persist()}));
+    Object.entries(controls).forEach(([id,key])=>$(id)?.addEventListener('change',()=>{cfg[key]=$(id).value;apply();persist()}));
     $('fernAddGame')?.addEventListener('click',addGame);
     $('fernExportSettings')?.addEventListener('click',()=>{$('fernDataBox').value=JSON.stringify(cfg,null,2)});
     $('fernImportSettings')?.addEventListener('click',()=>{try{const incoming=JSON.parse($('fernDataBox').value);cfg=Object.assign({},defaults,incoming);persist();apply();syncUI();renderCustomGames();if(typeof renderGames==='function')renderGames();alert('Fern profile imported.')}catch(e){alert('That profile is not valid JSON.')}});
     $('fernResetCustomization')?.addEventListener('click',()=>{cfg=Object.assign({},defaults,{customGames:[]});persist();apply();syncUI();renderCustomGames();if(typeof renderGames==='function')renderGames()});
-    renderCustomGames();apply();
+    renderCustomGames();
+    apply();
   }
   function addGame(){const name=$('fernGameName')?.value.trim(),description=$('fernGameDescription')?.value.trim(),link=$('fernGameLink')?.value.trim(),image=$('fernGameImage')?.value.trim(),category=$('fernGameCategory')?.value||'Other';if(!name||!link){alert('Game name and game URL are required.');return}cfg.customGames.push({name,description:description||'Custom Fern game',link,image,category,custom:true});persist();renderCustomGames();if(typeof renderGames==='function')renderGames();['fernGameName','fernGameDescription','fernGameLink','fernGameImage'].forEach(id=>{if($(id))$(id).value=''})}
   function renderCustomGames(){const box=$('fernCustomGames');if(!box)return;box.innerHTML='';if(!cfg.customGames.length){box.innerHTML='<div style="color:var(--muted);font-size:13px;padding:10px 0;">No custom games yet.</div>';return}cfg.customGames.forEach((g,i)=>{const row=document.createElement('div');row.className='fern-custom-game';row.innerHTML='<div><strong></strong><small></small></div><button type="button">Remove</button>';row.querySelector('strong').textContent=g.name;row.querySelector('small').textContent=(g.category||'Other')+' · '+g.link;row.querySelector('button').onclick=()=>{cfg.customGames.splice(i,1);persist();renderCustomGames();if(typeof renderGames==='function')renderGames()};box.appendChild(row)})}
   window.FernCustomization={getConfig:()=>cfg,save:persist,apply};
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind);else bind();
+  function delayedBind(){
+    const start=()=>setTimeout(bind,700);
+    if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});
+    else start();
+  }
+  delayedBind();
 })();
 </script>
 
