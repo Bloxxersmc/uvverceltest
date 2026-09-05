@@ -2827,6 +2827,13 @@ html, body {
     max-width: 100%;
 }
 </style>
+
+<style id="fern-featured-games">
+#gamesGrid .game-card[data-game-featured="true"]{border-color:rgba(125,165,255,.42)!important;box-shadow:0 10px 30px rgba(75,110,220,.20)!important}
+#gamesGrid .game-card[data-game-featured="true"] .game-card-top h3{color:#dce8ff}
+#gamesGrid .game-card[data-game-featured="true"]:first-child{grid-column:span 2}
+@media(max-width:900px){#gamesGrid .game-card[data-game-featured="true"]:first-child{grid-column:span 1}}
+</style>
 </head>
 
 
@@ -4051,6 +4058,19 @@ function openGame(targetURL) {
    ============================================================ */
 
 const games = [
+    { name: "FNF — Optimized", description: "Performance-focused web build for smoother FNF gameplay.", link: "https://dante-el-gamer.github.io/FNF-optimized-web/", featured: true },
+    { name: "Friday Night Funkin'", description: "The classic Friday Night Funkin' web game.", link: "https://now.gg/apps/ninjamuffin99/51181/friday-night-funkin.html", featured: true },
+    { name: "FNF — Newgrounds", description: "Official classic web release with fullscreen support.", link: "https://www.newgrounds.com/portal/view/770371", featured: true },
+    { name: "now.gg Browser Games", description: "Official now.gg browser game catalog.", link: "https://now.gg/games/browser.html", featured: true },
+
+    { name: "Slope", description: "Fast 3D endless runner with increasing speed.", link: "https://rycellgames.github.io/games/slope/" },
+    { name: "Run 3", description: "Run, jump, and rotate through the endless tunnel.", link: "https://pisaucer.github.io/boredhtml/games/runs/run3/" },
+    { name: "Fireboy & Watergirl", description: "Two-player puzzle platforming and teamwork.", link: "https://fireboyandwatergirls.github.io/" },
+    { name: "Drive Mad", description: "Physics-based driving through tricky obstacle courses.", link: "https://drivemad76.github.io/" },
+    { name: "Stickman Hook", description: "Swing through levels using momentum and timing.", link: "https://ballistixgames.github.io/games/stickman-hook/" },
+    { name: "Getting Over It", description: "Climb a brutal physics-based mountain.", link: "https://getting-over-it-online.github.io/" },
+    { name: "Retro Bowl", description: "Retro football with team management and arcade gameplay.", link: "https://retrobowl-76.github.io/" },
+    { name: "Slope WebGL", description: "Direct browser WebGL build of Slope.", link: "https://slopegameio.github.io/" },
     { name: "Snake", description: "Classic HTML5 snake with keyboard controls.", link: "https://parkminkyu.github.io/snake/" },
     { name: "Tetris", description: "Classic falling-block puzzle game.", link: "https://vacationlabs.github.io/tetris/" },
     { name: "Pac-Man", description: "HTML5 maze arcade classic.", link: "https://gbelwariar.github.io/Pacman/" },
@@ -4097,7 +4117,6 @@ const games = [
     { name: "Browser Pong", description: "Open-source classic Pong with customizable presets.", link: "https://sethclydesdale.github.io/browser-pong/" },
     { name: "HTML5 Snake", description: "Lightweight Canvas Snake with multiple controls.", link: "https://catmiddlefinger.github.io/snake/" },
     { name: "Breakout Classic", description: "Canvas Breakout with keyboard controls.", link: "https://mclean-dev.github.io/" },
-    { name: "FNF", description: "you know me & I know you ;)", link: "https://ninja-muffin24.itch.io/funkin" },
     { name: "EaglerCraft", description: "Minecraft-style browser sandbox.", link: "https://eaglercraft.com" },
     { name: "GBA Web Demo", description: "Browser-based GBA emulator demonstration.", link: "https://x1n-q.github.io/Web-Based-Emulator/" }
 ];
@@ -4163,6 +4182,7 @@ function renderGames() {
         const card = document.createElement('article');
         card.className = 'game-card';
         card.dataset.gameIndex = index;
+        if (game.featured) card.dataset.gameFeatured = 'true';
 
         // Make the entire game card clickable, not just the Play now text.
         card.setAttribute('role', 'button');
@@ -4186,7 +4206,8 @@ function renderGames() {
         const image = document.createElement('img');
         image.className = 'game-image';
         image.alt = game.name + ' logo';
-        image.loading = 'lazy';
+        image.loading = index < 8 ? 'eager' : 'lazy';
+        if (index < 3) image.fetchPriority = 'high';
         image.referrerPolicy = 'no-referrer';
         const imageCandidates = getGameImageCandidates(game);
         let imageCandidateIndex = 0;
