@@ -2668,101 +2668,109 @@ body .fern-nebula{mix-blend-mode:normal;}
 }
 
 /* Respect the animation setting. */
-body.no-animations .fern-nebula-cloud{animation:none!important;}
+body.no-animations .fern-nebula-cloud{animation:none!important;} .fern-bright-aurora i{animation:none!important;}
 @media(prefers-reduced-motion:reduce){.fern-nebula-cloud{animation:none!important;}}
 </style>
-
-<style id="fern-v30-whisp-cloud">
-/* Fern v3.0 — soft right-side wispy cloud. No canvas, no live blur, no heavy JS. */
-.fern-whisp-cloud{
-    position:fixed;
-    z-index:0;
-    top:0;
-    right:0;
-    width:58vw;
-    height:100vh;
-    overflow:hidden;
-    pointer-events:none;
-    isolation:isolate;
-    opacity:.70;
-    -webkit-mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.12) 13%,#000 38%,#000 100%);
-    mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.12) 13%,#000 38%,#000 100%);
-}
-.fern-whisp-layer{
-    position:absolute;
-    inset:-8% -16%;
-    width:132%;
-    height:116%;
-    background-repeat:repeat-x;
-    background-position:center;
-    background-size:auto 100%;
-    will-change:transform;
-    transform:translate3d(0,0,0);
-    mix-blend-mode:screen;
-}
-.fern-whisp-one{
-    opacity:.52;
-    background-image:url("https://raw.githubusercontent.com/danielstuart14/CSS_FOG_ANIMATION/master/fog1.png");
-    animation:fernWhispOne 72s linear infinite;
-    filter:hue-rotate(12deg) saturate(1.15);
-}
-.fern-whisp-two{
-    opacity:.34;
-    background-image:url("https://raw.githubusercontent.com/danielstuart14/CSS_FOG_ANIMATION/master/fog2.png");
-    background-size:auto 115%;
-    animation:fernWhispTwo 96s linear infinite;
-    transform:translate3d(-18%,2%,0) scale(1.08);
-    filter:hue-rotate(35deg) saturate(1.25);
-}
-@keyframes fernWhispOne{
-    from{transform:translate3d(-20%,0,0) scale(1.03)}
-    to{transform:translate3d(4%,0,0) scale(1.03)}
-}
-@keyframes fernWhispTwo{
-    from{transform:translate3d(-28%,3%,0) scale(1.08)}
-    to{transform:translate3d(0%,3%,0) scale(1.08)}
-}
-/* Keep Fern's UI and interactive particles above the cloud. */
-#bgCanvas{z-index:1!important;}
-#app,#loginScreen{position:relative;z-index:2;}
-@media(max-width:900px){
-  .fern-whisp-cloud{width:72vw;opacity:.58;}
-}
-body.no-animations .fern-whisp-layer,
-@media(prefers-reduced-motion:reduce){.fern-whisp-layer{animation:none!important;}}
+<style id="fern-fixed-mist-texture">
+/* Fern v3 — bright atmosphere, GPU-light version. */
+#fernMistTexture{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:0;overflow:hidden;background:transparent url("https://opengameart.org/sites/default/files/oga-textures/136561/fx_cloudalpha05.png") 68% 48%/145% 145% no-repeat;opacity:.68;mix-blend-mode:screen;}
+#fernMistTexture::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(2,6,18,.96) 0%,rgba(3,9,28,.70) 34%,rgba(5,12,35,.12) 68%,rgba(5,8,25,.02) 100%);}
+#fernMistTexture::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 82% 32%,rgba(55,150,255,.34),transparent 38%),radial-gradient(ellipse at 87% 64%,rgba(175,65,255,.32),transparent 39%),radial-gradient(ellipse at 65% 82%,rgba(25,220,205,.25),transparent 36%);}
+#app,#loginScreen{position:relative;z-index:3;}
+#bgCanvas{display:none!important;}
+@media(max-width:900px){#fernMistTexture{opacity:.55;background-size:180% 180%;}}
+</style>>>
+<style id="fern-final-performance">
+/* Final performance pass: static texture + compositor-friendly SVG transforms only. */
+#bgCanvas{display:none!important;}
+.fern-nebula{display:none!important;}
+.fern-mist-layer,.fern-nebula-cloud{animation:none!important;filter:none!important;}
 </style>
 
-<style id="fern-fast-constellations">
-#fernConstellations{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:.42}
-#bgCanvas{opacity:.10!important;z-index:0!important}
-#app,#loginScreen{position:relative;z-index:3!important}
-.fern-nebula{z-index:1!important;opacity:.70!important;pointer-events:none!important}
-.fern-fog-gradient{position:fixed;top:0;right:0;width:72vw;height:100vh;z-index:2;pointer-events:none;background:linear-gradient(90deg,transparent 0%,rgba(25,40,90,.04) 25%,rgba(70,90,180,.10) 55%,rgba(120,90,220,.16) 100%);mask-image:linear-gradient(90deg,transparent,black 42%);-webkit-mask-image:linear-gradient(90deg,transparent,black 42%)}
-/* Keep theme controls/variables from the v3 build intact. */
-body[data-theme="midnight"]{--bg:#040817;--bg-light:#081126;--green:#72a7ff;--green-dark:#4776cf;--green-soft:#b9d2ff;--text:#edf4ff;--muted:#8192b0;--border:rgba(114,167,255,.20);--border-bright:rgba(114,167,255,.50)}
-body[data-theme="nebula"]{--bg:#090411;--bg-light:#16091e;--green:#c084ff;--green-dark:#8b52c7;--green-soft:#e4c4ff;--text:#fbf2ff;--muted:#a98fb7;--border:rgba(192,132,255,.20);--border-bright:rgba(235,135,255,.52)}
-@media(prefers-reduced-motion:reduce){.fern-nebula-cloud,.fern-whisp-layer{animation:none!important}}
+<style id="fern-cpu-killer-fix">
+/* Fern performance pass: atmosphere is STATIC. No continuous animation, no canvas, no blur. */
+#bgCanvas{display:none!important;}
+.fern-nebula,.fern-nebula-cloud,.fern-mist-layer{display:none!important;animation:none!important;filter:none!important;will-change:auto!important;}
+#fernMistTexture{animation:none!important;filter:none!important;transform:none!important;will-change:auto!important;opacity:.46!important;background-size:cover!important;}
+/* Keep only compositor-friendly UI transitions. */
+body::before,body::after{animation:none!important;will-change:auto!important;}
+@media (max-width:900px){#fernMistTexture{opacity:.38!important;}}
 </style>
+<style id="fern-disable-old-aurora">
+.fern-aurora,.aurora,.aurora-layer,#aurora,.fernAurora,.aurora-layer *{animation:none!important;filter:none!important;will-change:auto!important}
+</style>
+
+
+<style id="fern-webgl-aurora">
+#fernWebGLAurora{position:fixed;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;opacity:.78;mix-blend-mode:screen;}
+#app,#loginScreen{position:relative;z-index:3;}
+</style>
+
+<script id="fern-webgl-aurora-script">
+(()=>{
+const boot=()=>{
+ if(document.getElementById('fernWebGLAurora'))return;
+ const c=document.createElement('canvas'); c.id='fernWebGLAurora'; document.body.appendChild(c);
+ const gl=c.getContext('webgl2',{alpha:true,antialias:false,preserveDrawingBuffer:false,powerPreference:'low-power'});
+ if(!gl){c.style.display='none';return;}
+ const vs=`#version 300 es
+ in vec2 p; void main(){gl_Position=vec4(p,0.,1.);}`;
+ const fs=`#version 300 es
+ precision mediump float;
+ out vec4 o; uniform vec2 r; uniform float t;
+ float hash(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);}
+ float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);float a=hash(i),b=hash(i+vec2(1.,0.)),c=hash(i+vec2(0.,1.)),d=hash(i+1.);return mix(mix(a,b,f.x),mix(c,d,f.x),f.y);}
+ float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<4;i++){v+=a*noise(p);p=p*2.03+vec2(7.1,3.7);a*=.5;}return v;}
+ float field(vec2 uv,float seed){
+   vec2 p=uv;
+   p.x+=.12*sin(uv.y*4.0+seed)+.055*sin(uv.y*10.0-seed*1.7);
+   p.x+=.045*sin(uv.y*22.0+seed*2.3);
+   float n=fbm(p*vec2(1.55,2.35)+vec2(seed,seed*.7));
+   float bands=sin((p.x+n*.55)*9.0+sin(p.y*5.0)*2.0);
+   float curtain=smoothstep(.18,.72,n)*smoothstep(-.95,.25,bands);
+   float edge=smoothstep(.05,.42,abs(bands));
+   return curtain*(.72+.28*(1.-edge));
+ }
+ void main(){
+   vec2 uv=gl_FragCoord.xy/r; uv.y=1.-uv.y;
+   float tt=t*.055;
+   vec2 q=uv; q.x-=.08;
+   float horizon=smoothstep(.72,.12,uv.y);
+   float f1=field(q+vec2(tt*.16,0.),1.7);
+   float f2=field(q+vec2(-tt*.11,.02),5.3);
+   float f3=field(q+vec2(tt*.07,-.015),9.1);
+   float f=(f1*.52+f2*.32+f3*.22)*horizon;
+   f*=smoothstep(.05,.28,uv.x)*smoothstep(1.02,.52,uv.x);
+   vec3 col=vec3(.02,.48,.34)*f;
+   col+=vec3(.04,.34,.72)*f2*.55;
+   col+=vec3(.25,.12,.62)*f3*.34;
+   float glow=smoothstep(.72,.18,uv.y)*.16;
+   col+=vec3(.02,.12,.25)*glow;
+   o=vec4(col,clamp(f*.92,0.,.82));
+ }`;
+ const compile=(type,src)=>{const sh=gl.createShader(type);gl.shaderSource(sh,src);gl.compileShader(sh);return sh;};
+ const a=compile(gl.VERTEX_SHADER,vs),b=compile(gl.FRAGMENT_SHADER,fs);
+ if(!gl.getShaderParameter(a,gl.COMPILE_STATUS)||!gl.getShaderParameter(b,gl.COMPILE_STATUS)){c.style.display='none';return;}
+ const pr=gl.createProgram();gl.attachShader(pr,a);gl.attachShader(pr,b);gl.linkProgram(pr);if(!gl.getProgramParameter(pr,gl.LINK_STATUS)){c.style.display='none';return;}
+ const buf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buf);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
+ const loc=gl.getAttribLocation(pr,'p'),rr=gl.getUniformLocation(pr,'r'),tm=gl.getUniformLocation(pr,'t');gl.useProgram(pr);gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
+ let w=0,h=0,last=0,active=true;
+ const resize=()=>{w=Math.max(1,Math.floor(innerWidth*.62));h=Math.max(1,Math.floor(innerHeight*.62));c.width=w;c.height=h;c.style.width='100%';c.style.height='100%';gl.viewport(0,0,w,h);};
+ addEventListener('resize',resize,{passive:true}); resize();
+ const io=new IntersectionObserver(es=>{active=es.some(e=>e.isIntersecting)});io.observe(c);
+ document.addEventListener('visibilitychange',()=>active=!document.hidden);
+ const frame=now=>{if(active){if(now-last>32){last=now;gl.uniform2f(rr,w,h);gl.uniform1f(tm,now*.001);gl.drawArrays(gl.TRIANGLES,0,3);}}requestAnimationFrame(frame)};
+ requestAnimationFrame(frame);
+};
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
+})();
+</script>
 </head>
 
 
-<body><canvas id="fernConstellations" aria-hidden="true"></canvas><div class="fern-fog-gradient" aria-hidden="true"></div>
-
-<!-- Lightweight wispy cloud atmosphere inspired by a CSS-only fog technique. -->
-<div class="fern-whisp-cloud" aria-hidden="true">
-  <div class="fern-whisp-layer fern-whisp-one"></div>
-  <div class="fern-whisp-layer fern-whisp-two"></div>
-</div>
-
-
-<!-- BACKGROUND CANVAS FOR FLOATING PARTICLES -->
-<canvas id="bgCanvas"></canvas>
-
-<!-- Lightweight atmospheric nebula layers. CSS gradients are used instead of
-     animated canvas blur so the cloud stays soft without hammering the GPU. -->
-<div class="fern-nebula" aria-hidden="true">
-    <div class="fern-nebula-cloud cloud-a"></div>
-    <div class="fern-nebula-cloud cloud-b"></div>
+<body>
+<div id="fernMistTexture" aria-hidden="true"></div>
+<div class="fern-nebula-cloud cloud-b"></div>
     <div class="fern-nebula-cloud cloud-c"></div>
 </div>
 
@@ -3231,99 +3239,7 @@ body[data-theme="nebula"]{--bg:#090411;--bg-light:#16091e;--green:#c084ff;--gree
 /* ============================================================
    BACKGROUND — LOW-CPU STARFIELD + STATIC CONSTELLATIONS
    ============================================================ */
-(function initParticles(){
-    const canvas=document.getElementById('bgCanvas');
-    if(!canvas) return;
-    const ctx=canvas.getContext('2d',{alpha:true,desynchronized:true});
-    if(!ctx) return;
-
-    const mouse={x:-9999,y:-9999};
-    let stars=[],links=[],w=0,h=0,lastFrame=0,lastLinks=0,raf=0,running=true,lastAccent='';
-    const FRAME_MS=66; // ~15 FPS for the background only
-    const LINK_DISTANCE=125, LINK_DISTANCE2=LINK_DISTANCE*LINK_DISTANCE, MOUSE_RADIUS=135;
-    const getAccent=()=>getComputedStyle(document.documentElement).getPropertyValue('--green').trim()||'#36f6d0';
-
-    addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY},{passive:true});
-    addEventListener('mouseleave',()=>{mouse.x=mouse.y=-9999},{passive:true});
-
-    function resize(){
-        w=innerWidth; h=innerHeight;
-        canvas.width=Math.max(1,w); canvas.height=Math.max(1,h);
-        canvas.style.width=w+'px'; canvas.style.height=h+'px';
-        const count=Math.max(120,Math.min(185,Math.floor(w*h/10800)));
-        stars=Array.from({length:count},()=>({
-            x:Math.random()*w,y:Math.random()*h,
-            vx:(Math.random()-.5)*.10,vy:(Math.random()-.5)*.10,
-            r:.45+Math.random()*1.05,a:.34+Math.random()*.56,
-            phase:Math.random()*6.283,tw:.3+Math.random()*.7
-        }));
-        links=[]; lastLinks=0;
-    }
-    addEventListener('resize',resize,{passive:true});
-
-    function rebuildLinks(){
-        links=[];
-        // Rebuild infrequently. This is the expensive part, so it is never done per frame.
-        for(let i=0;i<stars.length;i++){
-            const p=stars[i]; let best=-1,bestD=LINK_DISTANCE2;
-            for(let j=i+1;j<stars.length;j++){
-                const q=stars[j],dx=q.x-p.x,dy=q.y-p.y,d=dx*dx+dy*dy;
-                if(d<bestD){bestD=d;best=j;}
-            }
-            if(best>=0) links.push([i,best]);
-        }
-        lastLinks=performance.now();
-    }
-
-    function frame(t){
-        if(!running) return;
-        raf=requestAnimationFrame(frame);
-        if(document.hidden || t-lastFrame<FRAME_MS) return;
-        lastFrame=t;
-        const accent=getAccent();
-        if(t-lastLinks>900) rebuildLinks();
-
-        ctx.clearRect(0,0,w,h);
-        for(const p of stars){
-            p.x+=p.vx; p.y+=p.vy;
-            if(p.x<-3)p.x=w+3; else if(p.x>w+3)p.x=-3;
-            if(p.y<-3)p.y=h+3; else if(p.y>h+3)p.y=-3;
-            const dx=p.x-mouse.x,dy=p.y-mouse.y,d2=dx*dx+dy*dy;
-            if(d2<MOUSE_RADIUS*MOUSE_RADIUS && d2>25){
-                const d=Math.sqrt(d2),force=(1-d/MOUSE_RADIUS)*.9;
-                p.x+=(dx/d)*force; p.y+=(dy/d)*force;
-            }
-            p.phase+=.035*p.tw;
-        }
-
-        ctx.strokeStyle=accent; ctx.lineWidth=.48; ctx.globalAlpha=.16; ctx.beginPath();
-        for(const [a,b] of links){
-            const p=stars[a],q=stars[b];
-            ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y);
-        }
-        ctx.stroke();
-
-        ctx.fillStyle=accent;
-        for(const p of stars){
-            const pulse=.82+.18*Math.sin(p.phase);
-            ctx.globalAlpha=p.a*pulse;
-            ctx.fillRect(p.x-p.r*.5,p.y-p.r*.5,p.r,p.r);
-        }
-        ctx.globalAlpha=1;
-    }
-
-    function start(){
-        if(running) return;
-        running=true; lastFrame=performance.now(); raf=requestAnimationFrame(frame);
-    }
-    function stop(){
-        running=false; if(raf) cancelAnimationFrame(raf); raf=0;
-    }
-    resize(); running=true; raf=requestAnimationFrame(frame);
-    document.addEventListener('visibilitychange',()=>{
-        if(document.hidden) stop(); else start();
-    });
-})();
+;
 
 /* ============================================================
    FERN CONFIGURATION
@@ -4912,5 +4828,5 @@ randomJoke();
 
 </script>
 
-<script id="fern-fast-constellation-js">(()=>{const c=document.getElementById('fernConstellations'),x=c.getContext('2d');let w,h,d=1,stars=[];const N=34,L=155;function resize(){d=Math.min(devicePixelRatio||1,1.25);w=innerWidth;h=innerHeight;c.width=w*d;c.height=h*d;x.setTransform(d,0,0,d,0,0);if(!stars.length)for(let i=0;i<N;i++)stars.push({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.012,vy:(Math.random()-.5)*.008,r:.5+Math.random()*.5,a:.18+Math.random()*.28});draw()}function draw(){x.clearRect(0,0,w,h);for(let i=0;i<N;i++){let a=stars[i];for(let j=i+1;j<N;j++){let b=stars[j],dx=a.x-b.x,dy=a.y-b.y,ds=dx*dx+dy*dy;if(ds<L*L){let q=1-Math.sqrt(ds)/L;x.strokeStyle='rgba(170,195,255,'+(q*.13)+')';x.lineWidth=.45;x.beginPath();x.moveTo(a.x,a.y);x.lineTo(b.x,b.y);x.stroke()}}}for(const s of stars){x.fillStyle='rgba(215,230,255,'+s.a+')';x.beginPath();x.arc(s.x,s.y,s.r,0,6.283);x.fill()}}let last=0;function loop(t){if(t-last>90){last=t;for(const s of stars){s.x+=s.vx;s.y+=s.vy;if(s.x<0)s.x=w;if(s.x>w)s.x=0;if(s.y<0)s.y=h;if(s.y>h)s.y=0}draw()}requestAnimationFrame(loop)}resize();addEventListener('resize',resize,{passive:true});if(!matchMedia('(prefers-reduced-motion:reduce)').matches)requestAnimationFrame(loop)})();</script></body>
+</body>
 </html>
