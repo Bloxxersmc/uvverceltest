@@ -6,7 +6,7 @@
 
     <title>Fern</title>
 
-    <meta name="fern-version" content="1.2.9">
+    <meta name="fern-version" content="1.2.19">
 
     <!-- UV -->
     <script src="/uv/uv.bundle.js"></script>
@@ -2739,14 +2739,25 @@ const boot=()=>{
    float f1=field(q+vec2(tt*.16,0.),1.7);
    float f2=field(q+vec2(-tt*.11,.02),5.3);
    float f3=field(q+vec2(tt*.07,-.015),9.1);
-   float f=(f1*.52+f2*.32+f3*.22)*horizon;
-   f*=smoothstep(.05,.28,uv.x)*smoothstep(1.02,.52,uv.x);
-   vec3 col=vec3(.02,.48,.34)*f;
+   float f=(f1*.52+f2*.32+f3*.22)*horizon*2.65;
+
+   // Thin cinematic aurora ribbon: a narrow curved band across the
+   // upper sky, with the brightest section dipping gently near center.
+   float dx=abs(uv.x-.55);
+   float arc=.16+.18*exp(-pow(dx/.34,2.0));
+   float ribbon=1.-smoothstep(.018,.070,abs(uv.y-arc));
+   float above=smoothstep(.40,.025,uv.y-arc);
+   float sideFade=1.-smoothstep(.52,.86,dx);
+   float concentration=(ribbon*.98 + above*.46)*sideFade;
+   f*=clamp(concentration,0.,1.);
+
+   f*=smoothstep(.04,.18,uv.x)*smoothstep(1.00,.82,uv.x);
+   vec3 col=vec3(.015,.82,.50)*(f*1.70);
    col+=vec3(.04,.34,.72)*f2*.55;
    col+=vec3(.25,.12,.62)*f3*.34;
    float glow=smoothstep(.72,.18,uv.y)*.16;
    col+=vec3(.02,.12,.25)*glow;
-   o=vec4(col,clamp(f*.92,0.,.82));
+   o=vec4(col,clamp(f*1.28,0.,.96));
  }`;
  const compile=(type,src)=>{const sh=gl.createShader(type);gl.shaderSource(sh,src);gl.compileShader(sh);return sh;};
  const a=compile(gl.VERTEX_SHADER,vs),b=compile(gl.FRAGMENT_SHADER,fs);
@@ -2755,12 +2766,12 @@ const boot=()=>{
  const buf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buf);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
  const loc=gl.getAttribLocation(pr,'p'),rr=gl.getUniformLocation(pr,'r'),tm=gl.getUniformLocation(pr,'t');gl.useProgram(pr);gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
  let w=0,h=0,last=0,active=true,raf=0;
- const resize=()=>{w=Math.max(1,Math.floor(innerWidth*.40));h=Math.max(1,Math.floor(innerHeight*.40));c.width=w;c.height=h;c.style.width='100%';c.style.height='100%';gl.viewport(0,0,w,h);};
+ const resize=()=>{w=Math.max(1,Math.floor(innerWidth*.32));h=Math.max(1,Math.floor(innerHeight*.32));c.width=w;c.height=h;c.style.width='100%';c.style.height='100%';gl.viewport(0,0,w,h);};
  addEventListener('resize',resize,{passive:true}); resize();
  const shouldRun=()=>active&&!document.hidden&&!document.body.classList.contains('fern-proxy-active');
  const stop=()=>{if(raf){cancelAnimationFrame(raf);raf=0;}};
  const start=()=>{if(raf||!shouldRun())return; raf=requestAnimationFrame(frame);};
- const frame=now=>{raf=0;if(!shouldRun())return;if(now-last>=100){last=now;gl.uniform2f(rr,w,h);gl.uniform1f(tm,now*.001);gl.drawArrays(gl.TRIANGLES,0,3);}start();};
+ const frame=now=>{raf=0;if(!shouldRun())return;if(now-last>=120){last=now;gl.uniform2f(rr,w,h);gl.uniform1f(tm,now*.001);gl.drawArrays(gl.TRIANGLES,0,3);}start();};
  const sync=()=>{if(shouldRun())start();else stop();};
  const io=new IntersectionObserver(es=>{active=es.some(e=>e.isIntersecting);sync()});io.observe(c);
  document.addEventListener('visibilitychange',sync,{passive:true});
@@ -2903,6 +2914,308 @@ button,.nav-button,.game-card,.theme-card,input,select{will-change:auto!importan
   contain:paint;
 }
 </style>
+
+<style id="fern-modern-ui-v1-2-10">
+:root {
+    --fern-radius:10px;
+    --fern-radius-sm:7px;
+    --fern-border:rgba(255,255,255,.075);
+    --fern-shadow:0 10px 30px rgba(0,0,0,.22);
+}
+button,.button,.nav-button,.game-card,.card,.panel,.modal {
+    text-shadow:none !important;
+}
+.nav-button,.button,button {
+    border-radius:var(--fern-radius-sm) !important;
+    box-shadow:none !important;
+}
+.game-card {
+    border-radius:var(--fern-radius) !important;
+    box-shadow:var(--fern-shadow) !important;
+    border:1px solid var(--fern-border) !important;
+    text-shadow:none !important;
+}
+.game-card:hover {
+    transform:translateY(-2px) !important;
+    box-shadow:0 14px 32px rgba(0,0,0,.28) !important;
+}
+.game-card::before,.game-card::after,
+.game-card .game-media::before,.game-card .game-media::after {
+    display:none !important;
+    animation:none !important;
+    filter:none !important;
+}
+.game-image { filter:none !important; }
+input,select,textarea {
+    border-radius:var(--fern-radius-sm) !important;
+    box-shadow:none !important;
+}
+h1,h2,h3,h4,p,span,label { text-shadow:none !important; }
+#auroraCanvas,#starsCanvas,#moon { opacity:.34 !important; }
+
+:fullscreen #iframeContainer,
+:-webkit-full-screen #iframeContainer {
+    background:#000 !important;
+    border:0 !important;
+    box-shadow:none !important;
+    filter:none !important;
+    backdrop-filter:none !important;
+    -webkit-backdrop-filter:none !important;
+    transform:none !important;
+    contain:none !important;
+}
+:fullscreen #iframeWindow,
+:-webkit-full-screen #iframeWindow {
+    background:#000 !important;
+    border:0 !important;
+    box-shadow:none !important;
+    filter:none !important;
+    backdrop-filter:none !important;
+    -webkit-backdrop-filter:none !important;
+    transform:none !important;
+    contain:none !important;
+    isolation:auto !important;
+}
+:fullscreen #iframeWindow iframe,
+:-webkit-full-screen #iframeWindow iframe {
+    display:block !important;
+    width:100% !important;
+    height:100% !important;
+    margin:0 !important;
+    padding:0 !important;
+    border:0 !important;
+    background:#000 !important;
+    filter:none !important;
+    transform:none !important;
+    will-change:auto !important;
+    contain:none !important;
+}
+body.fern-fullscreen-performance * {
+    animation:none !important;
+    transition:none !important;
+    backdrop-filter:none !important;
+    -webkit-backdrop-filter:none !important;
+}
+:fullscreen #auroraCanvas,:fullscreen #starsCanvas,:fullscreen #moon,
+:fullscreen .nebula,:fullscreen .mist,:fullscreen .background,
+:fullscreen .bg-layer,:fullscreen .particles,
+:-webkit-full-screen #auroraCanvas,:-webkit-full-screen #starsCanvas,
+:-webkit-full-screen #moon,:-webkit-full-screen .nebula,
+:-webkit-full-screen .mist,:-webkit-full-screen .background,
+:-webkit-full-screen .bg-layer,:-webkit-full-screen .particles {
+    display:none !important;
+}
+</style>
+
+
+<style id="fern-concentrated-aurora-ui-v1-2-12">
+html,body{background:#03050c !important;}
+body{
+    color:#eef4ff !important;
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif !important;
+}
+.navbar,.nav-bar,.topbar,header{
+    background:rgba(8,12,24,.78) !important;
+    border:1px solid rgba(0,225,255,.22) !important;
+    border-radius:12px !important;
+    box-shadow:0 16px 45px rgba(0,0,0,.28) !important;
+}
+.nav-button{
+    background:rgba(8,12,24,.52) !important;
+    border-radius:8px !important;
+    box-shadow:none !important;
+    text-shadow:none !important;
+}
+.nav-button:hover{background:rgba(20,28,44,.82) !important;}
+.nav-button.active,.nav-button[data-active="true"]{
+    background:rgba(8,20,34,.92) !important;
+    border-color:rgba(0,229,255,.58) !important;
+    box-shadow:inset 0 -2px 0 rgba(255,0,200,.75) !important;
+}
+.game-card,.card,.panel,.modal,.welcome-card,.proxy-card,.content-card{
+    background:rgba(7,12,24,.78) !important;
+    border:1px solid rgba(0,207,230,.24) !important;
+    border-radius:12px !important;
+    box-shadow:0 18px 42px rgba(0,0,0,.30) !important;
+}
+.game-card:hover{
+    transform:translateY(-2px) !important;
+    border-color:rgba(0,225,255,.46) !important;
+    box-shadow:0 20px 46px rgba(0,0,0,.36) !important;
+}
+.game-card::before,.game-card::after,
+.game-card .game-media::before,.game-card .game-media::after{
+    display:none !important;
+}
+h1,h2,h3,h4{
+    color:#f2f6ff !important;
+    text-shadow:none !important;
+    letter-spacing:-.025em !important;
+}
+p,.muted,.subtitle,.description{color:#969caf !important;text-shadow:none !important;}
+input,select,textarea{
+    background:rgba(3,5,13,.82) !important;
+    border:1px solid rgba(220,0,190,.56) !important;
+    border-radius:8px !important;
+    color:#eef4ff !important;
+    box-shadow:none !important;
+}
+input:focus,select:focus,textarea:focus{
+    border-color:rgba(0,229,255,.78) !important;
+    outline:none !important;
+    box-shadow:0 0 0 2px rgba(0,229,255,.10) !important;
+}
+button,.button{border-radius:8px !important;box-shadow:none !important;text-shadow:none !important;}
+#auroraCanvas{opacity:.96 !important;}
+</style>
+
+
+<style id="fern-space-polish-v1-2-16">
+/* Fern v1.2.16 — deep-space base layer */
+html,body {
+    background:
+        radial-gradient(ellipse 72% 48% at 58% 5%, rgba(0,104,122,.30), transparent 62%),
+        radial-gradient(ellipse 58% 42% at 82% 30%, rgba(31,58,112,.22), transparent 68%),
+        radial-gradient(ellipse 45% 38% at 36% 45%, rgba(24,44,79,.18), transparent 72%),
+        linear-gradient(180deg, #06111b 0%, #050b15 43%, #02040b 100%) !important;
+}
+
+/* Put the base behind Fern's existing WebGL effects. */
+body::before {
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:-30;
+    pointer-events:none;
+    background:
+        radial-gradient(circle at 20% 18%, rgba(255,255,255,.035) 0 1px, transparent 1.5px),
+        radial-gradient(circle at 67% 24%, rgba(255,255,255,.028) 0 1px, transparent 1.5px),
+        radial-gradient(circle at 87% 12%, rgba(255,255,255,.025) 0 1px, transparent 1.5px);
+    background-size: 260px 220px, 330px 280px, 410px 340px;
+    opacity:.65;
+}
+
+/* More realistic moon: layered shading + subtle craters. */
+#moon {
+    background:
+        radial-gradient(circle at 34% 29%, rgba(255,255,255,.72) 0 5%, transparent 5.8%),
+        radial-gradient(circle at 62% 65%, rgba(122,133,148,.25) 0 7%, transparent 8%),
+        radial-gradient(circle at 31% 68%, rgba(132,142,156,.22) 0 9%, transparent 10%),
+        radial-gradient(circle at 67% 34%, rgba(116,128,145,.20) 0 6%, transparent 7%),
+        radial-gradient(circle at 42% 49%, rgba(120,131,146,.16) 0 5%, transparent 6%),
+        radial-gradient(circle at 38% 34%, #f4f7fa 0%, #dce4ed 48%, #aeb9c7 78%, #778394 100%) !important;
+    box-shadow:
+        0 0 18px rgba(210,228,255,.52),
+        0 0 46px rgba(145,190,255,.22),
+        inset -10px -8px 18px rgba(47,57,72,.28),
+        inset 6px 5px 14px rgba(255,255,255,.34) !important;
+    border:1px solid rgba(224,236,250,.42) !important;
+    overflow:hidden !important;
+}
+
+#moon::before {
+    content:"";
+    position:absolute;
+    inset:8%;
+    border-radius:50%;
+    background:
+        radial-gradient(circle at 24% 24%, rgba(93,105,120,.20) 0 7%, transparent 8%),
+        radial-gradient(circle at 72% 30%, rgba(87,98,113,.16) 0 8%, transparent 9%),
+        radial-gradient(circle at 55% 70%, rgba(92,103,118,.19) 0 10%, transparent 11%),
+        radial-gradient(circle at 28% 72%, rgba(83,95,111,.13) 0 6%, transparent 7%);
+    filter:blur(.3px);
+    opacity:.9;
+}
+
+#moon::after {
+    content:"";
+    position:absolute;
+    inset:-3%;
+    border-radius:50%;
+    background:radial-gradient(circle at 32% 28%, rgba(255,255,255,.42), transparent 36%);
+    pointer-events:none;
+}
+
+/* Occasional lightweight shooting stars. */
+.fern-shooting-star {
+    position:fixed;
+    z-index:1;
+    width:110px;
+    height:2px;
+    pointer-events:none;
+    border-radius:999px;
+    opacity:0;
+    background:linear-gradient(90deg, transparent, rgba(255,255,255,.9) 42%, rgba(170,235,255,.98));
+    box-shadow:0 0 7px rgba(170,235,255,.65);
+    transform-origin:right center;
+    animation:fern-shoot 850ms cubic-bezier(.18,.7,.25,1) forwards;
+}
+
+@keyframes fern-shoot {
+    0% {
+        opacity:0;
+        transform:translate3d(0,0,0) rotate(28deg) scaleX(.35);
+    }
+    12% { opacity:.9; }
+    70% { opacity:.78; }
+    100% {
+        opacity:0;
+        transform:translate3d(-260px,150px,0) rotate(28deg) scaleX(1);
+    }
+}
+
+@media (prefers-reduced-motion:reduce) {
+    .fern-shooting-star { display:none !important; }
+}
+</style>
+
+
+<style id="fern-optimization-v1-2-19">
+/* Fern v1.2.19 — conservative performance pass */
+html {
+    text-rendering: optimizeSpeed;
+}
+img {
+    content-visibility: auto;
+}
+.games-grid {
+    contain: layout paint style;
+}
+.game-card {
+    contain: layout paint;
+}
+.game-media {
+    contain: layout paint;
+}
+.game-image {
+    backface-visibility: hidden;
+}
+
+/* The WebGL aurora stays animated, but at a smaller render target and
+   slightly lower update rate. This cuts GPU work without removing it. */
+#fernWebGLAurora {
+    mix-blend-mode:normal !important;
+}
+body.fern-proxy-active #fernWebGLAurora {
+    display:none !important;
+}
+
+/* Avoid expensive hover filtering on game artwork. */
+.game-card:hover .game-image {
+    filter:none !important;
+}
+
+/* Don't animate off-screen card internals. */
+@media (prefers-reduced-motion: reduce) {
+    .game-card,
+    .game-card *,
+    .game-image {
+        animation:none !important;
+        transition:none !important;
+    }
+}
+</style>
+
 </head>
 
 
@@ -4184,14 +4497,14 @@ function getGameImage(game) {
     const query = encodeURIComponent(game.name + " logo");
     // Automatic artwork: the query is generated from the game name, so adding a new
     // game automatically gives it a logo/image without editing the card markup.
-    return "https://tse1.mm.bing.net/th?q=" + query + "&w=900&h=500&c=7&rs=1";
+    return "https://tse1.mm.bing.net/th?q=" + query + "&w=600&h=338&c=7&rs=1";
 }
 
 function getGameImageCandidates(game) {
     if (game.image) return [game.image];
     const q = encodeURIComponent(game.name + " logo");
     return [
-        "https://tse1.mm.bing.net/th?q=" + q + "&w=900&h=500&c=7&rs=1"
+        "https://tse1.mm.bing.net/th?q=" + q + "&w=600&h=338&c=7&rs=1"
     ];
 }
 
@@ -4259,8 +4572,8 @@ function renderGames() {
         const image = document.createElement('img');
         image.className = 'game-image';
         image.alt = game.name + ' logo';
-        image.loading = index < 3 ? 'eager' : 'lazy';
-        if (index < 2) image.fetchPriority = 'high';
+        image.loading = index < 2 ? 'eager' : 'lazy';
+        if (index === 0) image.fetchPriority = 'high';
         image.referrerPolicy = 'no-referrer';
         const imageCandidates = getGameImageCandidates(game);
         let imageCandidateIndex = 0;
@@ -4355,7 +4668,13 @@ function renderBookmarks() {
 
 const gameSearch = document.getElementById('gameSearch');
 const gameFilter = document.getElementById('gameFilter');
-if (gameSearch) gameSearch.addEventListener('input', renderGames);
+if (gameSearch) {
+    let gameSearchTimer = 0;
+    gameSearch.addEventListener('input', () => {
+        clearTimeout(gameSearchTimer);
+        gameSearchTimer = setTimeout(renderGames, 100);
+    });
+}
 if (gameFilter) gameFilter.addEventListener('change', renderGames);
 renderGames();
 renderBookmarks();
@@ -4819,6 +5138,54 @@ if (isAuthenticated()) {
 
 randomJoke();
 
+</script>
+
+
+<script id="fern-fullscreen-performance-js-v1-2-10">
+(() => {
+    const sync = () => {
+        const active = !!document.fullscreenElement ||
+                       !!document.webkitFullscreenElement ||
+                       !!document.msFullscreenElement;
+        document.body.classList.toggle("fern-fullscreen-performance", active);
+    };
+    document.addEventListener("fullscreenchange", sync, {passive:true});
+    document.addEventListener("webkitfullscreenchange", sync, {passive:true});
+    document.addEventListener("MSFullscreenChange", sync, {passive:true});
+    sync();
+})();
+</script>
+
+
+<script id="fern-shooting-stars-v1-2-16">
+(() => {
+    let timer = 0;
+
+    function schedule() {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+            if (!document.hidden &&
+                !document.body.classList.contains("fern-fullscreen-performance")) {
+                const star = document.createElement("span");
+                star.className = "fern-shooting-star";
+                star.style.left = `${18 + Math.random() * 78}%`;
+                star.style.top = `${8 + Math.random() * 42}%`;
+                star.style.width = `${70 + Math.random() * 80}px`;
+                star.style.animationDuration = `${650 + Math.random() * 500}ms`;
+                document.body.appendChild(star);
+                setTimeout(() => star.remove(), 1400);
+            }
+            schedule();
+        }, 7000 + Math.random() * 11000);
+    }
+
+    schedule();
+
+    document.addEventListener("visibilitychange", () => {
+        if (document.hidden) clearTimeout(timer);
+        else schedule();
+    }, {passive:true});
+})();
 </script>
 
 </body>
