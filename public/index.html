@@ -2834,6 +2834,24 @@ html, body {
 #gamesGrid .game-card[data-game-featured="true"]:first-child{grid-column:span 2}
 @media(max-width:900px){#gamesGrid .game-card[data-game-featured="true"]:first-child{grid-column:span 1}}
 </style>
+
+<style id="fern-proxy-performance">
+/* Proxy performance mode: keep the actual game surface as close to a native iframe as possible. */
+.iframe-container{contain:layout paint;isolation:isolate;}
+#iframeWindow{display:block;contain:strict;transform:none!important;animation:none!important;will-change:auto!important;}
+.iframe-container.window-pop,.iframe-container.window-pop #iframeWindow{animation:none!important;transform:none!important;}
+.proxy-opening-overlay{transition:none!important;animation:none!important;}
+/* When the proxy is active, stop decorative GPU work behind it. */
+body.fern-proxy-active #fernWebGLAurora,
+body.fern-proxy-active #fernSkyDecor,
+body.fern-proxy-active #fernMistTexture{visibility:hidden!important;}
+body.fern-proxy-active .fern-nebula,
+body.fern-proxy-active .fern-nebula-cloud,
+body.fern-proxy-active .fern-mist-layer{display:none!important;}
+</style>
+
+<link rel="dns-prefetch" href="https://dante-el-gamer.github.io">
+<link rel="dns-prefetch" href="https://now.gg">
 </head>
 
 
@@ -3041,8 +3059,10 @@ html, body {
                 <iframe
                     id="iframeWindow"
                     title="Fern"
-                    allow="fullscreen"
+                    allow="fullscreen; autoplay; gamepad"
                     allowfullscreen
+                    loading="eager"
+                    referrerpolicy="no-referrer"
                 ></iframe>
 
             </div>
@@ -3612,7 +3632,9 @@ const iframeContainer =
 
 function setProxyFrameVisible(visible) {
     if (!iframeContainer) return;
-    iframeContainer.classList.toggle("fern-visible", !!visible);
+    const active = !!visible;
+    iframeContainer.classList.toggle("fern-visible", active);
+    document.body.classList.toggle("fern-proxy-active", active);
 }
 
 // Never show the empty proxy window on startup.
@@ -3674,22 +3696,9 @@ function launchURL(targetURL = null) {
     // A proxy window should only exist after a URL has actually been entered.
     setProxyFrameVisible(true);
 
-    if (iframeContainer) {
-
-        iframeContainer.classList.remove("window-pop");
-        void iframeContainer.offsetWidth;
-        iframeContainer.classList.add("window-pop");
-
-    }
-
-
-    if (proxyOpeningOverlay) {
-
-        proxyOpeningOverlay.classList.remove("show");
-        void proxyOpeningOverlay.offsetWidth;
-        proxyOpeningOverlay.classList.add("show");
-
-    }
+    // Do not force a reflow or animate the iframe: both add latency when a
+    // proxied page is doing heavy JavaScript/WebGL work.
+    if (proxyOpeningOverlay) proxyOpeningOverlay.classList.remove("show");
 
 
     if (
@@ -4058,67 +4067,60 @@ function openGame(targetURL) {
    ============================================================ */
 
 const games = [
-    { name: "FNF — Optimized", description: "Performance-focused web build for smoother FNF gameplay.", link: "https://dante-el-gamer.github.io/FNF-optimized-web/", featured: true },
-    { name: "Friday Night Funkin'", description: "The classic Friday Night Funkin' web game.", link: "https://now.gg/apps/ninjamuffin99/51181/friday-night-funkin.html", featured: true },
-    { name: "FNF — Newgrounds", description: "Official classic web release with fullscreen support.", link: "https://www.newgrounds.com/portal/view/770371", featured: true },
-    { name: "now.gg Browser Games", description: "Official now.gg browser game catalog.", link: "https://now.gg/games/browser.html", featured: true },
-
-    { name: "Slope", description: "Fast 3D endless runner with increasing speed.", link: "https://rycellgames.github.io/games/slope/" },
-    { name: "Run 3", description: "Run, jump, and rotate through the endless tunnel.", link: "https://pisaucer.github.io/boredhtml/games/runs/run3/" },
-    { name: "Fireboy & Watergirl", description: "Two-player puzzle platforming and teamwork.", link: "https://fireboyandwatergirls.github.io/" },
-    { name: "Drive Mad", description: "Physics-based driving through tricky obstacle courses.", link: "https://drivemad76.github.io/" },
-    { name: "Stickman Hook", description: "Swing through levels using momentum and timing.", link: "https://ballistixgames.github.io/games/stickman-hook/" },
-    { name: "Getting Over It", description: "Climb a brutal physics-based mountain.", link: "https://getting-over-it-online.github.io/" },
-    { name: "Retro Bowl", description: "Retro football with team management and arcade gameplay.", link: "https://retrobowl-76.github.io/" },
-    { name: "Slope WebGL", description: "Direct browser WebGL build of Slope.", link: "https://slopegameio.github.io/" },
-    { name: "Snake", description: "Classic HTML5 snake with keyboard controls.", link: "https://parkminkyu.github.io/snake/" },
-    { name: "Tetris", description: "Classic falling-block puzzle game.", link: "https://vacationlabs.github.io/tetris/" },
-    { name: "Pac-Man", description: "HTML5 maze arcade classic.", link: "https://gbelwariar.github.io/Pacman/" },
-    { name: "Doodle Jump", description: "Jump from platform to platform and climb higher.", link: "https://doodle-jumponline.github.io/file/" },
-    { name: "2048", description: "Merge matching tiles and reach 2048.", link: "https://all2048.github.io/2048/" },
-    { name: "Minesweeper", description: "Classic minesweeper with beginner to expert boards.", link: "https://jfredrickson.github.io/minesweeper/minesweeper.canvas.html" },
-    { name: "MiniSweeper", description: "Tiny HTML/JavaScript minesweeper implementation.", link: "https://xem.github.io/MiniSweeper/" },
-    { name: "Connect Four", description: "Play Connect Four against AI or another player.", link: "https://kenrick95.github.io/c4/" },
-    { name: "Pong", description: "Classic two-player browser Pong.", link: "https://sethclydesdale.github.io/browser-pong/" },
-    { name: "Pong Neon", description: "Modern neon Pong with multiple modes.", link: "https://mastersj5.github.io/projects/2_project/" },
-    { name: "Breakout", description: "Classic brick-breaking arcade action.", link: "https://cakebatterandsprinkles.github.io/breakout/" },
-    { name: "Breakout Space", description: "A space-themed HTML5 Breakout game.", link: "https://jkmilbourne.github.io/breakout/index.html" },
-    { name: "Frogger", description: "Cross the road and river while avoiding obstacles.", link: "https://wbchristerson.github.io/pfs/Frogger/" },
-    { name: "Frogger Canvas", description: "Another lightweight HTML5 Canvas Frogger.", link: "https://andrewcoonce.github.io/frogger/" },
-    { name: "HexGL", description: "Fast futuristic WebGL racing.", link: "https://biggerbetter96.github.io/HexGL/index.html" },
-    { name: "BrowserQuest", description: "Explore a multiplayer HTML5 adventure world.", link: "https://hiporepo.github.io/BrowserQuest/" },
-
-    { name: "Dino's Adventure", description: "Pixel-art platformer built with Canvas and JavaScript.", link: "https://akaspanion.github.io/platformer-game/" },
-    { name: "Side-Scrolling Platformer", description: "A browser platformer with scrolling worlds.", link: "https://commjoen.github.io/generated-game-experiment/" },
-    { name: "Solitaire", description: "Classic solitaire games in HTML5 and JavaScript.", link: "https://worldofsolitaire.github.io/" },
-    { name: "Tangram", description: "Arrange seven pieces to match puzzle silhouettes.", link: "https://omerkel.github.io/Tangram/html5/src/index.html" },
-    { name: "Flappy Bird", description: "Simple HTML5 Canvas flapping challenge.", link: "https://mayow.github.io/" },
-
-    { name: "HTML5 Pong", description: "Customizable Pong with difficulty settings.", link: "https://nolansoo.github.io/html5-pong/" },
-    { name: "Doodle Jump 2", description: "Another lightweight GitHub Pages Doodle Jump build.", link: "https://sangeetm.github.io/Doodle-Jump/" },
-    { name: "Doodle Jump Classic", description: "Classic vertical platform jumping.", link: "https://doodle-jump2.github.io/" },
-    { name: "Snake Retro", description: "HTML5 Snake with multiple keyboard control options.", link: "https://catmiddlefinger.github.io/snake/" },
-    { name: "Snake Retro Evolved", description: "Fast classic Snake with adjustable speed.", link: "https://harshakns.github.io/" },
-    { name: "2048 Classic", description: "Another clean GitHub Pages 2048 implementation.", link: "https://negishu.github.io/2048/" },
-    { name: "2048 Variants", description: "A collection of different 2048 variants.", link: "https://thereal23.github.io/2048all/" },
-    { name: "Minesweeper Rust", description: "A polished WebAssembly Minesweeper game.", link: "https://jumbledfox.github.io/minesweeper/" },
-    { name: "Minesweeper Classic", description: "Classic HTML5 Canvas Minesweeper.", link: "https://patrickhliu.github.io/minesweeper/" },
-    { name: "Connect Four", description: "Offline or online Connect Four with AI mode.", link: "https://kenrick95.github.io/c4/" },
-    { name: "Connect Four Classic", description: "Simple two-player Connect Four.", link: "https://mherr95.github.io/connectfour-app/" },
-    { name: "Jump King Web", description: "Precision platformer with charge jumps.", link: "https://tanmoy34.github.io/web-game-jump-king.html" },
-    { name: "GameBox", description: "Open-source collection of classic browser games.", link: "https://saiuttejr.github.io/GameBox/" },
-    { name: "GitHub Games Collection", description: "Curated collection of open-source HTML5 games hosted on GitHub Pages.", link: "https://gamearians.github.io/games/" },
-    { name: "Memory Match", description: "Flip cards and find all matching pairs.", link: "https://wbchristerson.github.io/pfs/MatchingGame/" },
-    { name: "Checkers", description: "Play classic checkers against a simple computer opponent.", link: "https://mfbx9da4.github.io/checkers" },
-    { name: "Tic Tac Toe", description: "Classic tic-tac-toe with a simple AI opponent.", link: "https://ianmethvin.github.io/tickytacky.html" },
-    { name: "Tic Tac Toe Accessible", description: "Keyboard-friendly tic-tac-toe with multiple modes.", link: "https://rebeccajalowicz.github.io/tictactoe.html" },
-    { name: "Sudoku", description: "Client-side Sudoku with multiple sizes and difficulties.", link: "https://mcronberg.github.io/soduku/" },
-    { name: "Whack A Mole", description: "Fast arcade whack-a-mole challenge.", link: "https://ldldylan.github.io/Whack-A-Mole/" },
-    { name: "Browser Pong", description: "Open-source classic Pong with customizable presets.", link: "https://sethclydesdale.github.io/browser-pong/" },
-    { name: "HTML5 Snake", description: "Lightweight Canvas Snake with multiple controls.", link: "https://catmiddlefinger.github.io/snake/" },
-    { name: "Breakout Classic", description: "Canvas Breakout with keyboard controls.", link: "https://mclean-dev.github.io/" },
-    { name: "EaglerCraft", description: "Minecraft-style browser sandbox.", link: "https://eaglercraft.com" },
-    { name: "GBA Web Demo", description: "Browser-based GBA emulator demonstration.", link: "https://x1n-q.github.io/Web-Based-Emulator/" }
+    { name: "Friday Night Funkin' — Optimized", description: "Performance-focused browser build of FNF.", link: "https://dante-el-gamer.github.io/FNF-optimized-web/", featured: true },
+    { name: "Friday Night Funkin'", description: "Play FNF in the browser.", link: "https://now.gg/apps/ninjamuffin99/51181/friday-night-funkin.html", featured: true },
+    { name: "Eaglercraft 1.8.8", description: "Minecraft 1.8.8 in the browser with multiplayer support.", link: "https://eaglercraftcentral.github.io/eaglercraft-1.8.8/", featured: true },
+    { name: "Eaglercraft 1.5.2", description: "Minecraft 1.5.2 browser client with singleplayer and multiplayer.", link: "https://eaglercraft.github.io/", featured: true },
+    { name: "Basket Random", description: "Chaotic one-button basketball.", link: "https://basketballrandom2.github.io/", featured: true },
+    { name: "PolyTrack", description: "Fast low-poly racing inspired by TrackMania.", link: "https://skj0nes-2.github.io/polytrack/", featured: true },
+    { name: "Slope", description: "Fast 3D downhill runner.", link: "https://rycellgames.github.io/games/slope/", featured: true },
+    { name: "Run 3", description: "Run through the endless space tunnel.", link: "https://pisaucer.github.io/boredhtml/games/runs/run3/" },
+    { name: "Drive Mad", description: "Physics driving over ridiculous obstacle courses.", link: "https://drivemad76.github.io/" },
+    { name: "Stickman Hook", description: "Swing through levels with grappling momentum.", link: "https://ballistixgames.github.io/games/stickman-hook/" },
+    { name: "Ragdoll Archers", description: "Physics-based archery survival and local multiplayer.", link: "https://ragdollarchers2.github.io/" },
+    { name: "Fireboy & Watergirl", description: "Two-player puzzle platforming.", link: "https://fireboyandwatergirls.github.io/" },
+    { name: "Fireboy & Watergirl 2", description: "More co-op temple platforming.", link: "https://fireboyandwatergirls.github.io/2/" },
+    { name: "Fireboy & Watergirl 3", description: "Threequel with new temple puzzles.", link: "https://fireboyandwatergirls.github.io/3/" },
+    { name: "Fireboy & Watergirl 4", description: "Four-player-friendly temple adventure.", link: "https://fireboyandwatergirls.github.io/4/" },
+    { name: "Vex 3", description: "Precision platforming with traps and parkour.", link: "https://vex3.github.io/" },
+    { name: "Vex 4", description: "Fast parkour platforming.", link: "https://vex4.github.io/" },
+    { name: "Vex 5", description: "More precision platforming challenges.", link: "https://vex5.github.io/" },
+    { name: "Vex 6", description: "Fast platforming with new stages.", link: "https://vex6.github.io/" },
+    { name: "Vex 7", description: "Latest-style Vex browser platforming.", link: "https://vex7.github.io/" },
+    { name: "Retro Bowl", description: "Retro football with team management.", link: "https://retrobowl-76.github.io/" },
+    { name: "Drift Boss", description: "One-button endless drifting.", link: "https://retrobowlubg.github.io/drift-boss.html" },
+    { name: "Moto X3M", description: "Motorbike obstacle-course racing.", link: "https://motox3m.github.io/" },
+    { name: "Moto X3M Pool Party", description: "Water-park motorcycle stunt racing.", link: "https://motox3mpoolparty.github.io/" },
+    { name: "Moto X3M Winter", description: "Snowy motorcycle obstacle racing.", link: "https://motox3mwinter.github.io/" },
+    { name: "Getaway Shootout", description: "Chaotic local multiplayer hopping game.", link: "https://getawayshootout.github.io/" },
+    { name: "Tomb of the Mask", description: "Fast maze action with instant movement.", link: "https://tomb-of-the-mask.github.io/" },
+    { name: "Cluster Rush", description: "Jump across speeding vehicles and survive.", link: "https://cluster-rush.github.io/" },
+    { name: "Doodle Jump", description: "Endless vertical platform jumping.", link: "https://doodle-jumponline.github.io/file/" },
+    { name: "Duck Life", description: "Train, race, and upgrade your duck.", link: "https://ducklife.github.io/" },
+    { name: "Duck Life 2", description: "Train your duck for bigger races.", link: "https://ducklife2.github.io/" },
+    { name: "Duck Life 3", description: "Evolve and race your duck.", link: "https://ducklife3.github.io/" },
+    { name: "Duck Life 4", description: "Train your duck and compete in races.", link: "https://ducklife4.github.io/" },
+    { name: "Monkey Mart", description: "Run a tiny supermarket as a monkey.", link: "https://monkeymart.github.io/" },
+    { name: "Tanuki Sunset", description: "Chill downhill longboarding through a city.", link: "https://tanukisunset.github.io/" },
+    { name: "Snow Battle IO", description: "Arcade snowball arena gameplay.", link: "https://snow-battle-io.github.io/" },
+    { name: "Basket Bros", description: "Fast arcade basketball.", link: "https://basketbros.io/" },
+    { name: "Soccer Random", description: "One-button chaotic soccer matches.", link: "https://soccer-random.github.io/" },
+    { name: "Volley Random", description: "One-button chaotic volleyball.", link: "https://volley-random.github.io/" },
+    { name: "Action Turnip", description: "Arcade platforming adventure.", link: "https://actionturnip.github.io/" },
+    { name: "Baldi's Basics", description: "Classic schoolhouse browser game.", link: "https://baldis-basics.github.io/" },
+    { name: "Henry Stickmin", description: "Choose-your-path stick figure adventures.", link: "https://henrystickmin.github.io/" },
+    { name: "Papas Pizzeria", description: "Run the pizzeria and serve customers.", link: "https://papaspizzeria.github.io/" },
+    { name: "Papas Burgeria", description: "Cook and serve burgers under pressure.", link: "https://papasburgeria.github.io/" },
+    { name: "Learn to Fly", description: "Launch, upgrade, and fly farther.", link: "https://learntofly.github.io/" },
+    { name: "This Is the Only Level", description: "A platformer where the level keeps changing.", link: "https://thisistheonlylevel.github.io/" },
+    { name: "World's Hardest Game", description: "Precision maze challenge.", link: "https://worldshardestgame.github.io/" },
+    { name: "Crossy Road", description: "Keep crossing without getting hit.", link: "https://crossyroad.github.io/" },
+    { name: "Ovo", description: "Fast precision platforming.", link: "https://ovo-game.github.io/" },
+    { name: "Bloxors", description: "Roll the block through increasingly tricky levels.", link: "https://bloxors.github.io/" },
+    { name: "Awesome Tanks", description: "Arcade tank action and upgrades.", link: "https://awesometanks.github.io/" },
+    { name: "Bloons TD 4", description: "Classic tower-defense strategy.", link: "https://bloons-td-4.github.io/" },
+    { name: "Sonic the Hedgehog", description: "Fast classic platforming browser build.", link: "https://sonic-classic.github.io/" },
+    { name: "now.gg Browser Games", description: "Official now.gg browser-games catalog.", link: "https://now.gg/games/browser.html", featured: true }
 ];
 
 
@@ -4206,7 +4208,7 @@ function renderGames() {
         const image = document.createElement('img');
         image.className = 'game-image';
         image.alt = game.name + ' logo';
-        image.loading = index < 8 ? 'eager' : 'lazy';
+        image.loading = index < 6 ? 'eager' : 'lazy';
         if (index < 3) image.fetchPriority = 'high';
         image.referrerPolicy = 'no-referrer';
         const imageCandidates = getGameImageCandidates(game);
