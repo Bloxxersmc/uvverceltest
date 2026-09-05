@@ -6,7 +6,7 @@
 
     <title>Fern</title>
 
-    <meta name="fern-version" content="1.2.19">
+    <meta name="fern-version" content="1.2.20">
 
     <!-- UV -->
     <script src="/uv/uv.bundle.js"></script>
@@ -2718,46 +2718,26 @@ const boot=()=>{
  const fs=`#version 300 es
  precision mediump float;
  out vec4 o; uniform vec2 r; uniform float t;
- float hash(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);}
- float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);float a=hash(i),b=hash(i+vec2(1.,0.)),c=hash(i+vec2(0.,1.)),d=hash(i+1.);return mix(mix(a,b,f.x),mix(c,d,f.x),f.y);}
- float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<4;i++){v+=a*noise(p);p=p*2.03+vec2(7.1,3.7);a*=.5;}return v;}
- float field(vec2 uv,float seed){
-   vec2 p=uv;
-   p.x+=.12*sin(uv.y*4.0+seed)+.055*sin(uv.y*10.0-seed*1.7);
-   p.x+=.045*sin(uv.y*22.0+seed*2.3);
-   float n=fbm(p*vec2(1.55,2.35)+vec2(seed,seed*.7));
-   float bands=sin((p.x+n*.55)*9.0+sin(p.y*5.0)*2.0);
-   float curtain=smoothstep(.18,.72,n)*smoothstep(-.95,.25,bands);
-   float edge=smoothstep(.05,.42,abs(bands));
-   return curtain*(.72+.28*(1.-edge));
+ float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+ float noise(vec2 p){
+   vec2 i=floor(p),f=fract(p);
+   f=f*f*(3.-2.*f);
+   return mix(mix(hash(i),hash(i+vec2(1.,0.)),f.x),
+              mix(hash(i+vec2(0.,1.)),hash(i+vec2(1.,1.)),f.x),f.y);
  }
  void main(){
    vec2 uv=gl_FragCoord.xy/r; uv.y=1.-uv.y;
-   float tt=t*.055;
-   vec2 q=uv; q.x-=.08;
-   float horizon=smoothstep(.72,.12,uv.y);
-   float f1=field(q+vec2(tt*.16,0.),1.7);
-   float f2=field(q+vec2(-tt*.11,.02),5.3);
-   float f3=field(q+vec2(tt*.07,-.015),9.1);
-   float f=(f1*.52+f2*.32+f3*.22)*horizon*2.65;
-
-   // Thin cinematic aurora ribbon: a narrow curved band across the
-   // upper sky, with the brightest section dipping gently near center.
+   float tt=t*.018;
    float dx=abs(uv.x-.55);
-   float arc=.16+.18*exp(-pow(dx/.34,2.0));
-   float ribbon=1.-smoothstep(.018,.070,abs(uv.y-arc));
-   float above=smoothstep(.40,.025,uv.y-arc);
-   float sideFade=1.-smoothstep(.52,.86,dx);
-   float concentration=(ribbon*.98 + above*.46)*sideFade;
-   f*=clamp(concentration,0.,1.);
-
-   f*=smoothstep(.04,.18,uv.x)*smoothstep(1.00,.82,uv.x);
-   vec3 col=vec3(.015,.82,.50)*(f*1.70);
-   col+=vec3(.04,.34,.72)*f2*.55;
-   col+=vec3(.25,.12,.62)*f3*.34;
-   float glow=smoothstep(.72,.18,uv.y)*.16;
-   col+=vec3(.02,.12,.25)*glow;
-   o=vec4(col,clamp(f*1.28,0.,.96));
+   float arc=.16+.18*exp(-pow(dx/.34,2.));
+   float wave=.028*sin(uv.x*10.+tt*2.)+.018*sin(uv.x*24.-tt*1.4);
+   float band=1.-smoothstep(.015,.060,abs(uv.y-(arc+wave)));
+   float n=noise(uv*vec2(3.0,4.0)+vec2(tt,tt*.35));
+   float f=band*(.72+.28*n)*smoothstep(.02,.16,uv.x)*smoothstep(1.,.82,uv.x);
+   float fade=smoothstep(.78,.16,uv.y);
+   f*=fade;
+   vec3 col=vec3(.015,.82,.50)*f*1.35;
+   o=vec4(col,clamp(f*.82,0.,.78));
  }`;
  const compile=(type,src)=>{const sh=gl.createShader(type);gl.shaderSource(sh,src);gl.compileShader(sh);return sh;};
  const a=compile(gl.VERTEX_SHADER,vs),b=compile(gl.FRAGMENT_SHADER,fs);
@@ -2766,12 +2746,12 @@ const boot=()=>{
  const buf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buf);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
  const loc=gl.getAttribLocation(pr,'p'),rr=gl.getUniformLocation(pr,'r'),tm=gl.getUniformLocation(pr,'t');gl.useProgram(pr);gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
  let w=0,h=0,last=0,active=true,raf=0;
- const resize=()=>{w=Math.max(1,Math.floor(innerWidth*.32));h=Math.max(1,Math.floor(innerHeight*.32));c.width=w;c.height=h;c.style.width='100%';c.style.height='100%';gl.viewport(0,0,w,h);};
+ const resize=()=>{w=Math.max(1,Math.floor(innerWidth*.18));h=Math.max(1,Math.floor(innerHeight*.18));c.width=w;c.height=h;c.style.width='100%';c.style.height='100%';gl.viewport(0,0,w,h);};
  addEventListener('resize',resize,{passive:true}); resize();
  const shouldRun=()=>active&&!document.hidden&&!document.body.classList.contains('fern-proxy-active');
  const stop=()=>{if(raf){cancelAnimationFrame(raf);raf=0;}};
  const start=()=>{if(raf||!shouldRun())return; raf=requestAnimationFrame(frame);};
- const frame=now=>{raf=0;if(!shouldRun())return;if(now-last>=120){last=now;gl.uniform2f(rr,w,h);gl.uniform1f(tm,now*.001);gl.drawArrays(gl.TRIANGLES,0,3);}start();};
+ const frame=now=>{raf=0;if(!shouldRun())return;if(now-last>=200){last=now;gl.uniform2f(rr,w,h);gl.uniform1f(tm,now*.001);gl.drawArrays(gl.TRIANGLES,0,3);}start();};
  const sync=()=>{if(shouldRun())start();else stop();};
  const io=new IntersectionObserver(es=>{active=es.some(e=>e.isIntersecting);sync()});io.observe(c);
  document.addEventListener('visibilitychange',sync,{passive:true});
@@ -3213,6 +3193,91 @@ body.fern-proxy-active #fernWebGLAurora {
         animation:none !important;
         transition:none !important;
     }
+}
+</style>
+
+
+<style id="fern-hard-performance-v1-2-20">
+/* Fern v1.2.20 — aggressive performance mode */
+*,
+*::before,
+*::after {
+    -webkit-backdrop-filter:none !important;
+    backdrop-filter:none !important;
+}
+
+.game-card,
+.game-card:hover {
+    transform:none !important;
+    box-shadow:none !important;
+    transition:none !important;
+}
+.game-card:hover .game-image {
+    transform:none !important;
+    filter:none !important;
+}
+.game-image {
+    transition:none !important;
+    filter:none !important;
+}
+.game-media-glow {
+    display:none !important;
+}
+.game-media::after {
+    display:none !important;
+}
+.topbar,
+.nav,
+.online,
+.hero,
+.game-card,
+.settings-section,
+.theme-card,
+.settings-toggle,
+.iframe-container,
+.library-controls,
+.bookmarks-panel,
+.about-grid {
+    box-shadow:none !important;
+}
+.page.active {
+    animation:none !important;
+}
+button,
+a,
+input,
+select,
+textarea {
+    transition:none !important;
+}
+body::before,
+body::after,
+#fernMistTexture {
+    animation:none !important;
+    filter:none !important;
+}
+#fernWebGLAurora {
+    opacity:.58 !important;
+    will-change:auto !important;
+}
+.fern-shooting-star {
+    display:none !important;
+}
+
+/* When the proxy is running, eliminate every nonessential compositor layer. */
+body.fern-proxy-active #fernWebGLAurora,
+body.fern-proxy-active .fern-shooting-star,
+body.fern-proxy-active #fernMistTexture,
+body.fern-proxy-active .fern-nebula,
+body.fern-proxy-active .fern-nebula-cloud,
+body.fern-proxy-active .fern-mist-layer {
+    display:none !important;
+}
+
+/* Let the browser skip layout/paint work for off-screen game cards. */
+.game-card {
+    content-visibility:auto;
+    contain-intrinsic-size:260px 330px;
 }
 </style>
 
@@ -4497,14 +4562,14 @@ function getGameImage(game) {
     const query = encodeURIComponent(game.name + " logo");
     // Automatic artwork: the query is generated from the game name, so adding a new
     // game automatically gives it a logo/image without editing the card markup.
-    return "https://tse1.mm.bing.net/th?q=" + query + "&w=600&h=338&c=7&rs=1";
+    return "https://tse1.mm.bing.net/th?q=" + query + "&w=400&h=225&c=7&rs=1";
 }
 
 function getGameImageCandidates(game) {
     if (game.image) return [game.image];
     const q = encodeURIComponent(game.name + " logo");
     return [
-        "https://tse1.mm.bing.net/th?q=" + q + "&w=600&h=338&c=7&rs=1"
+        "https://tse1.mm.bing.net/th?q=" + q + "&w=400&h=225&c=7&rs=1"
     ];
 }
 
@@ -5185,6 +5250,21 @@ randomJoke();
         if (document.hidden) clearTimeout(timer);
         else schedule();
     }, {passive:true});
+})();
+</script>
+
+
+<script id="fern-image-cache-v1-2-20">
+(() => {
+    const original = window.getGameImageCandidates;
+    if (typeof original !== "function") return;
+    const cache = new Map();
+    window.getGameImageCandidates = function(game) {
+        const key = game && (game.name || game.link);
+        if (!key) return original(game);
+        if (!cache.has(key)) cache.set(key, original(game));
+        return cache.get(key);
+    };
 })();
 </script>
 
