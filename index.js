@@ -227,4 +227,3 @@ function shutdown() {
         process.exit(0);
     });
 }
-```
