@@ -1,4 +1,3 @@
-```json
 {
   "name": "uv-on-one-url",
   "description": "A uv bare compatible bare server, on vercel and render",
@@ -36,6 +35,7 @@
     "@mercuryworkshop/scramjet-controller": "0.0.14",
     "@mercuryworkshop/scramjet-utils": "0.0.3",
     "@mercuryworkshop/libcurl-transport": "^2.0.5",
+    "@mercuryworkshop/bare-transport": "^1.0.0",
     "@mercuryworkshop/wisp-js": "^0.4.1",
     "cors": "^2.8.5",
     "express": "^4.18.2"
