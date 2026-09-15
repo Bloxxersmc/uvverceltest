@@ -1,12 +1,26 @@
 {
-    "version": 2,
-    "devCommand": "node index.js",
-    "builds": [{
-        "src": "index.js",
-        "use": "@vercel/node"
-    }],
-    "routes": [{
-        "src": "/(.*)",
-        "dest": "index.js"
-    }]
-  }
+  "version": 2,
+  "devCommand": "node index.js",
+  "builds": [
+    {
+      "src": "index.js",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": [
+          "public/**",
+          "node_modules/@mercuryworkshop/scramjet/**",
+          "node_modules/@mercuryworkshop/scramjet-controller/**",
+          "node_modules/@mercuryworkshop/scramjet-utils/**",
+          "node_modules/@mercuryworkshop/bare-transport/**",
+          "node_modules/@mercuryworkshop/libcurl-transport/**"
+        ]
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "index.js"
+    }
+  ]
+}
