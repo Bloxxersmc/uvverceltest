@@ -1,3 +1,4 @@
+```json
 {
   "name": "uv-on-one-url",
   "description": "A uv bare compatible bare server, on vercel and render",
@@ -31,8 +32,14 @@
   "dependencies": {
     "@tomphttp/bare-client": "^2.2.0-alpha",
     "@tomphttp/bare-server-node": "2.0.3",
+    "@mercuryworkshop/scramjet": "2.0.67-alpha.2",
+    "@mercuryworkshop/scramjet-controller": "0.0.14",
+    "@mercuryworkshop/scramjet-utils": "0.0.3",
+    "@mercuryworkshop/libcurl-transport": "^2.0.5",
+    "@mercuryworkshop/wisp-js": "^0.4.1",
     "cors": "^2.8.5",
     "express": "^4.18.2"
   },
   "type": "module"
 }
+```
